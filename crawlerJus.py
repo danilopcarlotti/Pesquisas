@@ -112,3 +112,10 @@ class crawlerJus(object):
 			return '12'
 
 #comandos: gera relatório, pesquisa tribunal específico
+
+class object1():
+	"""docstring for ClassName"""
+	def __init__(self):
+		crawlerJus.__init__(self)
+		pass
+		

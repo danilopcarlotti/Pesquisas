@@ -11,7 +11,7 @@ links_diarios = []
 class publicacoes_diarios_oficiais(crawlerJus):
     """docstring for ClassName"""
     def __init__(self):
-        super(crawlerJus, self).__init__()
+        crawlerJus.__init__(self)
         self.diarios_a_baixar = [self.baixa_stf,self.baixa_ro,self.baixa_rr,self.baixa_pa,self.baixa_ma,self.baixa_to,self.baixa_pi,self.baixa_stj,self.baixa_trf1,\
         self.baixa_trf5,self.baixa_go,self.baixa_rs,self.baixa_ac,self.baixa_trf4,self.baixa_df,self.baixa_sc,self.baixa_rn,self.baixa_trf3,self.baixa_pe,\
         self.baixa_sp,self.baixa_ce,self.baixa_al,self.baixa_ms,self.baixa_am,self.baixa_pr,self.baixa_trt,self.baixa_es,self.baixa_ap,self.baixa_pb,self.baixa_se,\
