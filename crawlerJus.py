@@ -38,7 +38,7 @@ class crawlerJus(object):
 	            cont += 1
 
 	def extrai_texto_html(self,pagina):
-		pag = BeautifulSoup(pagina,'lxml')
+		soup = BeautifulSoup(pagina,'lxml')
 		for script in soup(["script", "style"]):
 			script.extract()
 		return soup.get_text()

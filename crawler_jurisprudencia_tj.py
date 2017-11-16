@@ -1,4 +1,5 @@
 from crawlerJus import crawlerJus
+from bs4 import BeautifulSoup
 
 class crawler_jurisprudencia_tj():
 	"""Generic class with methods for crawler_jurisprudencia_tj's"""
@@ -10,3 +11,9 @@ class crawler_jurisprudencia_tj():
 		driver.find_element_by_xpath(data_julg_iniXP).send_keys(data_julg_ini)
 		driver.find_element_by_xpath(data_julg_fimXP).send_keys(data_julg_fim)
 		driver.find_element_by_xpath(botao_pesquisar).click()
+
+	def extrai_texto_html(self,pagina):
+		soup = BeautifulSoup(pagina,'lxml')
+		for script in soup(["script", "style"]):
+			script.extract()
+		return soup.get_text()
