@@ -37,12 +37,15 @@ class crawlerJus(object):
 	        except:
 	            cont += 1
 
-	def baixa_texto_html(self,link):
-		html = self.baixa_pag(link)
-		soup = BeautifulSoup(html,'lxml')
+	def extrai_texto_html(self,pagina):
+		pag = BeautifulSoup(pagina,'lxml')
 		for script in soup(["script", "style"]):
 			script.extract()
 		return soup.get_text()
+
+	def baixa_texto_html(self,link):
+		html = self.baixa_pag(link)
+		return self.extrai_texto_html(html)
 
 	def encontrar_links_html(self, link, links_baixar, re_href):
 		pag = BeautifulSoup(self.baixa_pag(link),'lxml')

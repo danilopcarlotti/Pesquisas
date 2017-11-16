@@ -16,19 +16,16 @@ class crawler_jurisprudencia_tjma():
 		self.botao_pesquisar = 'btnConsultar'
 
 	def download_tj(self,termo, data_julg_ini, data_julg_fim):
-		def download_texto(pagina):
-			pag = BeautifulSoup(pagina,'lxml')
-			for script in soup(["script", "style"]):
-				script.extract()
-			return soup.get_text()
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
 		driver.find_element_by_xpath(self.pesquisa_livre).send_keys(termo)
 		driver.find_element_by_name(self.data_julgamento_inicial).send_keys(data_julg_ini)
 		driver.find_element_by_name(self.data_julgamento_final).send_keys(data_julg_fim)
 		driver.find_elements_by_name(self.botao_pesquisar)[2].click()
-		texto = download_texto(driver.page_source)
+		texto = crawler_jurisprudencia_tj.extrai_texto_html(self,driver.page_source)
 		# apertar botão de próximo e refazer
+		
+
 
 
 c = crawler_jurisprudencia_tjma()
