@@ -1,0 +1,13 @@
+Cython
+bs4
+selenium
+matplotlib
+pandas
+sklearn
+lxml
+numpy
+scipy
+wheel
+fasttext
+click
+pymysql
