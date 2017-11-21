@@ -14,7 +14,7 @@ class crawler_jurisprudencia_tjal():
 		self.botao_pesquisar = '//*[@id="pbSubmit"]'
 		self.botao_proximo_ini = '//*[@id="paginacaoSuperior-A"]/table/tbody/tr[1]/td[2]/div/a[5]'
 		self.botao_proximo = '//*[@id="paginacaoSuperior-A"]/table/tbody/tr[1]/td[2]/div/a[7]'
-		self.tabela_colunas = 'jurisprudencia_estadual.jurisprudencia_al (ementas)'
+		self.tabela_colunas = 'justica_estadual.jurisprudencia_al (ementas)'
 
 if __name__ == '__main__':
 	# só vai baixar as ementas

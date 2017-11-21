@@ -38,6 +38,7 @@ class crawler_jurisprudencia_tj():
 		contador = 0
 		loop_counter = 0
 		while True:
+			time.sleep(2)
 			try:
 				contador += 1
 				driver.find_element_by_xpath(self.botao_proximo).click()
