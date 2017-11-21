@@ -39,4 +39,4 @@ class crawler_jurisprudencia_tjma():
 					break
 
 c = crawler_jurisprudencia_tjma()
-c.download_tj('acordam','01/01/2014','10/10/2017')
+c.download_tj('acordam','01/01/2011','10/10/2017')
