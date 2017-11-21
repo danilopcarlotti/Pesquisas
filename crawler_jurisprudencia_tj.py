@@ -59,7 +59,7 @@ class crawler_jurisprudencia_tj():
 		driver.close()
 
 create_statement_ESAJ = '''
-use jurisprudencia_estadual;
+use justica_estadual;
 CREATE TABLE `jurisprudencia_am` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ementas` longtext,

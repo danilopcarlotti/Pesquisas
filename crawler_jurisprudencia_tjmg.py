@@ -12,3 +12,4 @@ class crawler_jurisprudencia_tjmg():
 		self.data_julgamento_final = '//*[@id="dataJulgamentoFinal"]'
 		self.botao_pesquisar = '//*[@id="pesquisaLivre"]'
 		self.link_captcha = '/html/body/table/tbody/tr[3]/td/table/tbody/tr[3]/td/a[2]'
+
