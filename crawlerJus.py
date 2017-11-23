@@ -14,7 +14,6 @@ class crawlerJus(object):
 		if len(self.dia)==1:
 		    self.dia = "0" + self.dia
 		self.cwd = os.getcwd()
-		logging.basicConfig(filename=self.cwd+'/publicacoes_'+self.dia+self.mes+self.ano+'.log',level=logging.INFO)
 		self.chromedriver = self.cwd+"/chromedriver"
 		os.environ["webdriver.chrome.driver"] = self.chromedriver
 

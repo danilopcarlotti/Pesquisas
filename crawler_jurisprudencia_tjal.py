@@ -1,7 +1,8 @@
-import sys, re
-from crawlerJus import crawlerJus
-from bs4 import BeautifulSoup
+import sys, re, os
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
 class crawler_jurisprudencia_tjal():
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de Alagoas"""

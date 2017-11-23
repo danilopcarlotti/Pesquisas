@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
-from conexao_local import conexao
+from conexao_local import cursorConexao
 
 class crawler_jurisprudencia_tjma():
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de Maranhão"""
@@ -15,8 +15,8 @@ class crawler_jurisprudencia_tjma():
 		self.data_julgamento_final = 'dtaTermino'
 		self.botao_pesquisar = 'btnConsultar'
 
-	def download_tj(self,termo, data_julg_ini, data_julg_fim):
-		cursor = conexao()
+	def download_tj(self, data_julg_ini, data_julg_fim, termo = 'acordam'):
+		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
 		driver.find_element_by_xpath(self.pesquisa_livre).send_keys(termo)
@@ -26,6 +26,7 @@ class crawler_jurisprudencia_tjma():
 		texto = crawler_jurisprudencia_tj.extrai_texto_html(self,driver.page_source)
 		while True:
 			try:
+				time.sleep(2)
 				driver.find_element_by_xpath('//*[@id="pagination"]/ul/li[13]').click()
 				texto = crawler_jurisprudencia_tj.extrai_texto_html(self,driver.page_source)
 				cursor.execute('INSERT INTO justica_estadual.jurisprudencia_tjma (textos_brutos) value("%s")' % texto.replace('"',''))
@@ -38,5 +39,6 @@ class crawler_jurisprudencia_tjma():
 				except:
 					break
 
-c = crawler_jurisprudencia_tjma()
-c.download_tj('acordam','01/01/2011','10/10/2017')
+if __name__ == '__main__':
+	c = crawler_jurisprudencia_tjma()
+	c.download_tj('01/01/2011','10/10/2017')

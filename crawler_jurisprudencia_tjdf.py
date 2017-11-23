@@ -46,8 +46,8 @@ if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjdf()
 	print('comecei ',c.__class__.__name__)
 	for l in c.lista_anos:
-		# try:
-		print(l[0], '  ',l[1])
-		c.download_tj(l[0],l[1])
-		# except:
-		# 	print('finalizei com erro o ano ',l[0],'  ',l[1])
+		try:
+			print(l[0], '  ',l[1])
+			c.download_tj(l[0],l[1])
+		except:
+			print('finalizei com erro o ano ',l[0],'  ',l[1])

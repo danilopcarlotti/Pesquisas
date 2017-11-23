@@ -28,10 +28,10 @@ class crawler_jurisprudencia_tjpa():
 		loop_counter = 0
 		while True:
 			try:
+				time.sleep(2)
 				texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
 				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
 				driver.find_element_by_xpath(self.botao_proximoXP).click()
-				time.sleep(2)
 			except:
 				loop_counter += 1
 				time.sleep(5)
@@ -42,7 +42,7 @@ class crawler_jurisprudencia_tjpa():
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjpa()
 	print('comecei ',c.__class__.__name__)
-	# try:
-	c.download_tj()
-	# except:
-	# 	print('finalizei\n')
+	try:
+		c.download_tj()	
+	except:
+		print('finalizei\n')
