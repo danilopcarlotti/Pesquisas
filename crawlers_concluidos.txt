@@ -16,10 +16,15 @@ pi
 pr
 rn
 ro
+rr
+rs
+sc
+sp
+to
+ms
 
 FALTANTES
 
-mg
-ms
 mt
 pe? - muito poucos acórdãos
+mg
