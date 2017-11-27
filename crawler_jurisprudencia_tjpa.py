@@ -36,7 +36,9 @@ class crawler_jurisprudencia_tjpa():
 				loop_counter += 1
 				time.sleep(5)
 				if loop_counter > 3:
-					break
+					input('me ajude')
+					# print('finalizei com erro\n')
+					# break
 		driver.close()
 
 if __name__ == '__main__':
@@ -45,4 +47,4 @@ if __name__ == '__main__':
 	try:
 		c.download_tj()	
 	except:
-		print('finalizei\n')
+		print('finalizei com erro\n')
