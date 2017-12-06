@@ -11,3 +11,4 @@ wheel
 fasttext
 click
 pymysql
+SpeechRecognition

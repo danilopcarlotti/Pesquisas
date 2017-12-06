@@ -3,18 +3,16 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from conexao_local import cursorConexao
+from datetime import date
 import time
 
 class crawler_jurisprudencia_tj():
 	"""Generic class with methods for crawler_jurisprudencia_tj's"""
 	def __init__(self):
 		crawlerJus.__init__(self)
-		self.lista_anos = [
-		['01/01/2011','31/12/2011'],['01/01/2012','31/12/2012'],
-		['01/01/2013','31/12/2013'],['01/01/2014','31/12/2014'],
-		['01/01/2015','31/12/2015'],['01/01/2016','31/12/2016'],
-		['01/01/2017','31/10/2017']
-		]
+		self.lista_anos = [str(i) for i in range(2011,date.today().year+1)]
+		self.lista_meses = ['0'+str(i) for i in range(1,10)]
+		self.lista_meses += ['10','11','12']
 
 	def download_jurisprudencia(self,driver,pesquisa_livre,data_julg_iniXP,data_julg_ini,data_julg_fimXP,data_julg_fim,botao_pesquisar,termo):
 		driver.find_element_by_xpath(pesquisa_livre).send_keys(termo)
@@ -58,11 +56,11 @@ class crawler_jurisprudencia_tj():
 						break
 		driver.close()
 
-create_statement_ESAJ = '''
-use justica_estadual;
-CREATE TABLE `jurisprudencia_am` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `ementas` longtext,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
-'''
+# create_statement_ESAJ = '''
+# use justica_estadual;
+# CREATE TABLE `jurisprudencia_am` (
+#   `id` int(11) NOT NULL AUTO_INCREMENT,
+#   `ementas` longtext,
+#   PRIMARY KEY (`id`)
+# ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+# '''

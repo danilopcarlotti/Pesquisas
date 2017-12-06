@@ -25,6 +25,7 @@ ms
 
 FALTANTES
 
-mt - problemas com site indisponível desde testes
-pe? - muito poucos acórdãos
-mg - captcha
+rj
+mg
+mt
+pe - muito poucos acórdãos
