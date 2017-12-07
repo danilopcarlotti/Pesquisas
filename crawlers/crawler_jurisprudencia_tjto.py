@@ -7,7 +7,7 @@ import re
 from common.conexao_local import cursorConexao
 
 class crawler_jurisprudencia_tjto():
-	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de Tocantins"""
+	"""Crawler especializado em retornar textos da jurisprudência de segunda instância do Tocantins"""
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
 		self.link_inicial = 'http://jurisprudencia.tjto.jus.br/consulta?q=a&start=%s&rows=20'
@@ -31,4 +31,4 @@ if __name__ == '__main__':
 	try:
 		c.download_tj()
 	except:
-		print('finalizei com erro')
+		print('finalizei com erro\n')

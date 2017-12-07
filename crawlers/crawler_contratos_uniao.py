@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 
 c = crawlerJus()
-cursor = conexao()
+cursor = cursorConexao()
 
 j = 352500
 while j < 458000:

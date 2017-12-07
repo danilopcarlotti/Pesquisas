@@ -44,20 +44,15 @@ class crawler_jurisprudencia_tjmg():
 		driver.find_element_by_xpath(self.link_download_captcha).click()
 		time.sleep(5)
 		driver.find_element_by_xpath(self.link_captcha).send_keys(self.captcha())
-		time.sleep(100)
 		self.delete_audios()
-		# driver.close()
+		driver.close()
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjmg()
-	# rodar pesquisa mês a mês
-	c.download_tj('01012017','01022017')
-	# print('comecei ',c.__class__.__name__)
-	# try:
-	# 	for a in c.lista_anos:
-	# 		for m in range(len(lista_meses)-1):
-	# 			c.download_tj('01'+lista_meses[m]+a,'01'+lista_meses[m+1]+a)
-
-	# 	c.download_tj(1,2)
-	# except:
-	# 	print('finalizei com erro\n')
+	print('comecei ',c.__class__.__name__)
+	try:
+		for a in c.lista_anos:
+			for m in range(len(lista_meses)-1):
+				c.download_tj('01'+lista_meses[m]+a,'01'+lista_meses[m+1]+a)
+	except:
+		print('finalizei com erro\n')

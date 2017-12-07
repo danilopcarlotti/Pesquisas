@@ -43,4 +43,4 @@ if __name__ == '__main__':
 	try:
 		c.download_tj()
 	except:
-		print('finalizei\n')
+		print('finalizei com erro\n')

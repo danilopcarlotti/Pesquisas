@@ -3,7 +3,7 @@ from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from bs4 import BeautifulSoup
 
 class crawler_jurisprudencia_tjce():
-	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de Ceará"""
+	"""Crawler especializado em retornar textos da jurisprudência de segunda instância do Ceará"""
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
 		self.link_inicial = 'http://www.tjce.jus.br/institucional/consulta-de-acordao/'
@@ -21,7 +21,7 @@ if __name__ == '__main__':
 	print('comecei ',c.__class__.__name__)
 	for l in c.lista_anos:
 		try:
-			print(l[0],'  ',l[1])
-			crawler_jurisprudencia_tj.download_tj_ESAJ(c,crawler_jurisprudencia_tj,l[0],l[1])
+			print(l,'\n')
+			crawler_jurisprudencia_tj.download_tj_ESAJ(c,crawler_jurisprudencia_tj,'01/01/'+l,'31/12/'+l)
 		except:
-			print('finalizei o ano',l[0],'  ',l[1])
+			print('finalizei o ano ',l,' com erro\n')

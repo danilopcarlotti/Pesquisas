@@ -6,7 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from common.conexao_local import cursorConexao
 
 class crawler_jurisprudencia_tjrr():
-	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de São Paulo"""
+	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de Roraima"""
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
 		self.link_inicial = 'http://www.tjrr.jus.br/sistemas/php/jurisprudencia/pesqform.php'

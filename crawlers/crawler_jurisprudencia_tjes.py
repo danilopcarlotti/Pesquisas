@@ -6,7 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from common.conexao_local import cursorConexao
 
 class crawler_jurisprudencia_tjes():
-	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de São Paulo"""
+	"""Crawler especializado em retornar textos da jurisprudência de segunda instância do Espírito Santo"""
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
 		self.link_inicial = 'http://aplicativos.tjes.jus.br/sistemaspublicos/consulta_jurisprudencia/cons_jurisp.cfm'
@@ -44,7 +44,7 @@ if __name__ == '__main__':
 	print('comecei ',c.__class__.__name__)
 	for l in c.lista_anos:
 		try:
-			print(l[0], '  ',l[1])
-			c.download_tj(l[0],l[1])
+			print(l, '\n')
+			c.download_tj('01/01/'+l,'31/12/'+l)
 		except:
-			print('finalizei com erro o ano ',l[0],'  ',l[1])
+			print('finalizei com erro\n')

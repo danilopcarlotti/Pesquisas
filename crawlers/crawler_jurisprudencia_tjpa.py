@@ -6,7 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from common.conexao_local import cursorConexao
 
 class crawler_jurisprudencia_tjpa():
-	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de São Paulo"""
+	"""Crawler especializado em retornar textos da jurisprudência de segunda instância do Pará"""
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
 		self.link_inicial = 'http://www.tjpa.jus.br/PortalExterno/institucional/Acordaos-e-Jurisprudencia/168242-Pesquisa-de-Jurisprudencia.xhtml'
@@ -36,9 +36,10 @@ class crawler_jurisprudencia_tjpa():
 				loop_counter += 1
 				time.sleep(5)
 				if loop_counter > 3:
-					input('me ajude')
-					# print('finalizei com erro\n')
-					# break
+					if input('me ajude'):
+						pass
+					else:
+						break
 		driver.close()
 
 if __name__ == '__main__':

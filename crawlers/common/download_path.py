@@ -1,1 +1,1 @@
-path = '/home/digesto20/Downloads'
+path = '/home/danilo/Downloads'

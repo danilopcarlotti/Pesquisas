@@ -6,7 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from common.conexao_local import cursorConexao
 
 class crawler_jurisprudencia_tjrs():
-	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de São Paulo"""
+	"""Crawler especializado em retornar textos da jurisprudência de segunda instância do Rio Grande do Sul"""
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
 		self.link_inicial = 'http://www.tjrs.jus.br/busca/?tb=jurisnova&partialfields=tribunal%3ATribunal%2520de%2520Justi%25C3%25A7a%2520do%2520RS.(TipoDecisao%3Aac%25C3%25B3rd%25C3%25A3o|TipoDecisao%3Amonocr%25C3%25A1tica|TipoDecisao:null)&t=s&pesq=ementario.#main_res_juris'
@@ -36,7 +36,7 @@ class crawler_jurisprudencia_tjrs():
 				loop_counter += 1
 				time.sleep(5)
 				if loop_counter > 3:
-					print('finalizei com erro')
+					print('finalizei com erro\n')
 					break
 		driver.close()
 
@@ -46,7 +46,7 @@ if __name__ == '__main__':
 	try:
 		c.download_tj()
 	except:
-		print('finalizei com erro')
+		print('finalizei com erro\n')
 
 		
 

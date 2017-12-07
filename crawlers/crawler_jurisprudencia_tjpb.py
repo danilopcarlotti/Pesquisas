@@ -6,7 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from common.conexao_local import cursorConexao
 
 class crawler_jurisprudencia_tjpb():
-	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de Rio Grande do Norte"""
+	"""Crawler especializado em retornar textos da jurisprudência de segunda instância da Paraíba"""
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
 		self.link_inicial = 'http://juris.tjpb.jus.br/search?site=jurisp_digitalizada&client=tjpb_index&output=xml_no_dtd&proxystylesheet=tjpb_index&proxycustom=%3CHOME/%3E'

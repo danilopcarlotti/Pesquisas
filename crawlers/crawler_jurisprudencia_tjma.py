@@ -26,7 +26,7 @@ class crawler_jurisprudencia_tjma():
 		texto = crawler_jurisprudencia_tj.extrai_texto_html(self,driver.page_source)
 		while True:
 			try:
-				time.sleep(2)
+				time.sleep(3)
 				driver.find_element_by_xpath('//*[@id="pagination"]/ul/li[13]').click()
 				texto = crawler_jurisprudencia_tj.extrai_texto_html(self,driver.page_source)
 				cursor.execute('INSERT INTO justica_estadual.jurisprudencia_tjma (ementas) value("%s")' % texto.replace('"',''))
@@ -38,4 +38,9 @@ class crawler_jurisprudencia_tjma():
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjma()
-	c.download_tj('01/01/2011','10/10/2017')
+	try:
+		for a in c.lista_anos:
+			for m in range(len(lista_meses)-1):
+				c.download_tj('01'+lista_meses[m]+a,'01'+lista_meses[m+1]+a)
+	except:
+		print('finalizei com erro\n')

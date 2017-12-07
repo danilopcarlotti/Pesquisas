@@ -5,7 +5,7 @@ from selenium import webdriver
 from common.conexao_local import cursorConexao
 
 class crawler_jurisprudencia_tjdf():
-	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de São Paulo"""
+	"""Crawler especializado em retornar textos da jurisprudência de segunda instância do Distrito Federal"""
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
 		self.link_inicial = 'https://pesquisajuris.tjdft.jus.br/IndexadorAcordaos-web/sistj?visaoId=tjdf.sistj.acordaoeletronico.buscaindexada.apresentacao.VisaoBuscaAcordao'
@@ -42,12 +42,11 @@ class crawler_jurisprudencia_tjdf():
 		driver.close()
 
 if __name__ == '__main__':
-	# só vai baixar as ementas
 	c = crawler_jurisprudencia_tjdf()
 	print('comecei ',c.__class__.__name__)
 	for l in c.lista_anos:
 		try:
-			print(l[0], '  ',l[1])
-			c.download_tj(l[0],l[1])
+			print(l,'\n')
+			c.download_tj('01/01/'+l,'31/12/'+l)
 		except:
-			print('finalizei com erro o ano ',l[0],'  ',l[1])
+			print('finalizei com erro\n')

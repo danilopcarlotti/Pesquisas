@@ -5,7 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
 class crawler_jurisprudencia_tjms():
-	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de São Paulo"""
+	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de Mato Grosso do Sul"""
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
 		self.link_inicial = 'https://www.tjms.jus.br/cjsg/resultadoCompleta.do'
@@ -18,12 +18,11 @@ class crawler_jurisprudencia_tjms():
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_ms (ementas)'
 
 if __name__ == '__main__':
-	# só vai baixar as ementas
 	c = crawler_jurisprudencia_tjms()
 	print('comecei ',c.__class__.__name__)
 	for l in c.lista_anos:
 		try:
-			print(l[0],'  ',l[1])
-			crawler_jurisprudencia_tj.download_tj_ESAJ(c,crawler_jurisprudencia_tj,l[0],l[1],'a')
+			print(l,'\n')
+			crawler_jurisprudencia_tj.download_tj_ESAJ(c,crawler_jurisprudencia_tj,'01/01/'+l,'31/12/'+l)
 		except:
 			print('finalizei o ano',l[0],' ',l[1])

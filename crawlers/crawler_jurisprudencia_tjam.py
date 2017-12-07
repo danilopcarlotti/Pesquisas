@@ -19,12 +19,11 @@ class crawler_jurisprudencia_tjam():
 
 
 if __name__ == '__main__':
-	# só vai baixar as ementas
 	c = crawler_jurisprudencia_tjam()
 	print('comecei ',c.__class__.__name__)
 	for l in c.lista_anos:
 		try:
-			print(l[0],'  ',l[1])
-			crawler_jurisprudencia_tj.download_tj_ESAJ(c,crawler_jurisprudencia_tj,l[0],l[1])
+			print(l,'\n')
+			crawler_jurisprudencia_tj.download_tj_ESAJ(c,crawler_jurisprudencia_tj,'01/01/'+l,'31/12/'+l)
 		except:
-			print('finalizei o ano',l[0],'  ',l[1])
+			print('finalizei o ano ',l,' com erro\n')

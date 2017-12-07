@@ -18,12 +18,11 @@ class crawler_jurisprudencia_tjrn():
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_rn (ementas)'
 
 if __name__ == '__main__':
-	# só vai baixar as ementas
 	c = crawler_jurisprudencia_tjrn()
 	print('comecei ',c.__class__.__name__)
 	for l in c.lista_anos:
 		try:
-			print(l[0],'  ',l[1])
-			crawler_jurisprudencia_tj.download_tj_ESAJ(c,crawler_jurisprudencia_tj,l[0].replace('/',''),l[1].replace('/',''),termo='ementa')
+			print(l,'\n')
+			crawler_jurisprudencia_tj.download_tj_ESAJ(c,crawler_jurisprudencia_tj,'0101'+l,'3112'+l,termo='ementa')
 		except:
-			print('finalizei o ano',l[0],'  ',l[1])
+			print('finalizei com erro\n')

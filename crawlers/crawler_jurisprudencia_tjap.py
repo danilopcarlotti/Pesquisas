@@ -35,4 +35,7 @@ class crawler_jurisprudencia_tjap():
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjap()
 	print('comecei ',c.__class__.__name__)
-	c.download_tj()
+	try:
+		c.download_tj()
+	except:
+		print('finalizei com erro\n')

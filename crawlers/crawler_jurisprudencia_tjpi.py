@@ -6,7 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from common.conexao_local import cursorConexao
 
 class crawler_jurisprudencia_tjpi():
-	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de Piauí"""
+	"""Crawler especializado em retornar textos da jurisprudência de segunda instância do Piauí"""
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
 		self.link_inicial = 'http://www.tjpi.jus.br/e-tjpi/home/jurisprudencia'
@@ -41,4 +41,4 @@ if __name__ == '__main__':
 	try:
 		c.download_tj()
 	except:
-		print('finalizei com erro o ano ',l[0],'  ',l[1])
+		print('finalizei com erro\n')

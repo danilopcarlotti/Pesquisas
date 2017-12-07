@@ -1,4 +1,4 @@
-import time, datetime, urllib.request,logging, click, os, re
+import time, datetime, urllib.request,logging, os, re
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
