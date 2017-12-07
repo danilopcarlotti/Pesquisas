@@ -1,7 +1,7 @@
 import sys, re, threading, time
 from crawlerJus import crawlerJus
 from bs4 import BeautifulSoup
-from conexao_local import conexao
+from common.conexao_local import cursorConexao
 
 c = crawlerJus()
 cursor = conexao()

@@ -2,7 +2,7 @@ from crawlerJus import crawlerJus
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from conexao_local import cursorConexao
+from common.conexao_local import cursorConexao
 from datetime import date
 import time
 

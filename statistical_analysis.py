@@ -1,11 +1,14 @@
-import re
+import re, nltk
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from mpl_toolkits.mplot3d import Axes3D
 import pandas as pd
-from conexao_local import cursorConexao
+from common.conexao_local import cursorConexao
 from sklearn.cluster import KMeans
+from nltk import word_tokenize
+from nltk.util import ngrams
+from collections import Counter
 
 class dataAnalysis():
 	"""Python class for data analysis and classification"""
@@ -75,3 +78,10 @@ class dataAnalysis():
 		ax.set_ylabel(yLabel)
 		ax.set_zlabel(zLabel)
 		plt.savefig(title+".png", dpi=80)
+
+	def ngramFreq(self,text,n):
+		''' Returns a Counter object with the frequency of each ngram in the text '''
+		token = nltk.word_tokenize(text)
+		Ngram = ngrams(token,n)
+		return Counter(Ngram)
+

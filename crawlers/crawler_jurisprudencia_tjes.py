@@ -3,7 +3,7 @@ from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from conexao_local import cursorConexao
+from common.conexao_local import cursorConexao
 
 class crawler_jurisprudencia_tjes():
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de São Paulo"""

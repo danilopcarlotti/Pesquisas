@@ -1,8 +1,7 @@
-import time, datetime, urllib.request,logging, click, os
+import time, datetime, urllib.request,logging, click, os, re
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import re
 
 class crawlerJus(object):
 	"""Classe contendo métodos auxiliares para cralwer"""

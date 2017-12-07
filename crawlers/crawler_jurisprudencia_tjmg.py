@@ -1,9 +1,9 @@
-import sys, re, time, download_path, os
+import sys, re, time, common.download_path, os
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from conexao_local import cursorConexao
+from common.conexao_local import cursorConexao
 
 class crawler_jurisprudencia_tjmg():
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de Minas Gerais"""
@@ -20,16 +20,16 @@ class crawler_jurisprudencia_tjmg():
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_mg (ementas)'
 
 	def delete_audios(self):
-		for file in os.listdir(download_path.path+'/'):
+		for file in os.listdir(common.download_path.path+'/'):
 			if re.search(r'wav',file):
-				os.remove(download_path.path+'/'+file)
+				os.remove(common.download_path.path+'/'+file)
 
 	def captcha(self):
 		from transcrever_audio import transcrever_audio
 		t = transcrever_audio()
-		for file in os.listdir(download_path.path+'/'):
+		for file in os.listdir(common.download_path.path+'/'):
 			if re.search(r'wav',file):
-				return t.transcrever(audio=download_path.path+'/'+file)
+				return t.transcrever(audio=common.download_path.path+'/'+file)
 
 	def download_tj(self,data_ini,data_fim):
 		self.delete_audios()

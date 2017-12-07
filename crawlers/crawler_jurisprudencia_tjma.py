@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
-from conexao_local import cursorConexao
+from common.conexao_local import cursorConexao
 
 class crawler_jurisprudencia_tjma():
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de Maranhão"""
@@ -29,14 +29,11 @@ class crawler_jurisprudencia_tjma():
 				time.sleep(2)
 				driver.find_element_by_xpath('//*[@id="pagination"]/ul/li[13]').click()
 				texto = crawler_jurisprudencia_tj.extrai_texto_html(self,driver.page_source)
-				cursor.execute('INSERT INTO justica_estadual.jurisprudencia_tjma (textos_brutos) value("%s")' % texto.replace('"',''))
+				cursor.execute('INSERT INTO justica_estadual.jurisprudencia_tjma (ementas) value("%s")' % texto.replace('"',''))
 			except:
-				time.sleep(3)
-				try:
-					driver.find_element_by_xpath('//*[@id="pagination"]/ul/li[13]').click()
-					texto = crawler_jurisprudencia_tj.extrai_texto_html(self,driver.page_source)
-					cursor.execute('INSERT INTO justica_estadual.jurisprudencia_tjma (textos_brutos) value("%s")' % texto.replace('"',''))
-				except:
+				if (input('ajude-me\n')):
+					pass
+				else:
 					break
 
 if __name__ == '__main__':

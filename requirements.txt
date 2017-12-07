@@ -12,3 +12,6 @@ fasttext
 click
 pymysql
 SpeechRecognition
+nltk
+pdfminer.six
+PyPDF2
