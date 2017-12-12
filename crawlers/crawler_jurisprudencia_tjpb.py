@@ -34,9 +34,7 @@ class crawler_jurisprudencia_tjpb():
 				driver.find_element_by_xpath(self.botao_proximoXP).click()
 				time.sleep(2)
 			except:
-				loop_counter += 1
-				time.sleep(5)
-				if loop_counter > 3:
+				if input('ajude-me'):
 					break
 		driver.close()
 
@@ -46,4 +44,4 @@ if __name__ == '__main__':
 	try:
 		c.download_tj()
 	except:
-		print('finalizei')
+		print('finalizei com erro \n')

@@ -36,8 +36,8 @@ class crawler_jurisprudencia_tjrs():
 				loop_counter += 1
 				time.sleep(5)
 				if loop_counter > 3:
-					print('finalizei com erro\n')
-					break
+					if input('me ajude'):
+						break
 		driver.close()
 
 if __name__ == '__main__':

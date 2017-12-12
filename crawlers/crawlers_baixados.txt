@@ -3,7 +3,7 @@ al
 am
 ba
 ce
-
+pi
 
 
 problemas
@@ -15,3 +15,6 @@ go
 ma
 mg
 mt
+pa
+pb
+pe

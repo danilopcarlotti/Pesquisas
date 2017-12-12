@@ -37,8 +37,6 @@ class crawler_jurisprudencia_tjpa():
 				time.sleep(5)
 				if loop_counter > 3:
 					if input('me ajude'):
-						pass
-					else:
 						break
 		driver.close()
 

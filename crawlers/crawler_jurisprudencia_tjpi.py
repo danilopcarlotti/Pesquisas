@@ -29,9 +29,7 @@ class crawler_jurisprudencia_tjpi():
 				driver.find_element_by_xpath(self.botao_proximoXP).click()
 				time.sleep(2)
 			except:
-				loop_counter += 1
-				time.sleep(5)
-				if loop_counter > 3:
+				if input('ajude-me'):
 					break
 		driver.close()
 
