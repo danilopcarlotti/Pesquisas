@@ -20,12 +20,12 @@ sc
 sp
 to
 ms
+pb
+mg
+mt
 
 FALTANTES
 
 rj
-mg
-mt
 pe - muito poucos acórdãos
-pa - possui uma limitação de exibição de até 1000 resultados. Mês a mês? -> Sim
-pb - possui uma limitação de exibição de até 1000 resultados. Mês a mês? -> Sim
+pa - possui uma limitação de exibição de até 1000 resultados. Mês a mês? -> Sim (Fora do ar)

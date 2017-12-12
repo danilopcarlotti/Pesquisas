@@ -37,11 +37,8 @@ class crawler_jurisprudencia_tjpr():
 				driver.find_element_by_xpath(self.botao_proximoXP).click()
 				time.sleep(2)
 			except:
-				loop_counter += 1
-				time.sleep(5)
-				if loop_counter > 3:
-					if input('me ajude'):
-						break
+				if input('me ajude'):
+					driver.find_element_by_xpath(self.botao_proximoXP).click()
 		driver.close()
 
 if __name__ == '__main__':

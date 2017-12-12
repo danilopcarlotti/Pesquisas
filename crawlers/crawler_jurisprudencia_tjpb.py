@@ -15,13 +15,18 @@ class crawler_jurisprudencia_tjpb():
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_pb (ementas)'
 		self.botao_proximo_iniXP = '//*[@id="content"]/div[2]/div[2]/div/div/span[2]/a '
 		self.botao_proximoXP = '//*[@id="content"]/div[2]/div[2]/div/div/span[4]/a'
+		self.botao_data_iniXP = '//*[@id="dataIni"]'
+		self.botao_data_fimXP = '//*[@id="dataFim"]'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_pb (ementas)'
 
-	def download_tj(self):
+	def download_tj(self,dataIni,dataFim):
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
 		driver.find_element_by_id(self.pesquisa_livre).send_keys('a')
+		driver.find_element_by_xpath(self.botao_data_iniXP).send_keys(dataIni)
+		driver.find_element_by_xpath(self.botao_data_fimXP).send_keys(dataFim)
+		driver.find_element_by_xpath('//*[@id="radio-intteor"]').click()
 		driver.find_element_by_xpath(self.botao_pesquisar).click()
 		loop_counter = 0
 		texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
@@ -33,15 +38,17 @@ class crawler_jurisprudencia_tjpb():
 				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
 				driver.find_element_by_xpath(self.botao_proximoXP).click()
 				time.sleep(2)
-			except:
-				if input('ajude-me'):
-					break
+			except Exception as e:
+				print(e)
 		driver.close()
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjpb()
 	print('comecei ',c.__class__.__name__)
 	try:
-		c.download_tj()
+		for a in c.lista_anos:
+			for m in range(len(c.lista_meses)):
+				c.download_tj('01'+c.lista_meses[m]+a,'14'+c.lista_meses[m]+a)
+				c.download_tj('15'+c.lista_meses[m]+a,'28'+c.lista_meses[m]+a)
 	except:
 		print('finalizei com erro \n')

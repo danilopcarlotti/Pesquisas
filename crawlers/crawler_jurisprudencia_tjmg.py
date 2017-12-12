@@ -16,6 +16,7 @@ class crawler_jurisprudencia_tjmg():
 		self.link_captcha = '//*[@id="captcha_text"]'
 		self.data_julgamento_inicialXP = '//*[@id="dataJulgamentoInicial"]'
 		self.data_julgamento_finalXP = '//*[@id="dataJulgamentoFinal"]'
+		self.botao_proximo_XP = '//*[@id="sistema"]/div/table/tbody/tr/td/table/tbody/tr/td/div/table[11]/tbody/tr[2]/td/table[1]/tbody/tr/td[12]/a'
 		self.link_download_captcha = '/html/body/table/tbody/tr[3]/td/table/tbody/tr[3]/td/a[2]'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_mg (ementas)'
 
@@ -25,7 +26,7 @@ class crawler_jurisprudencia_tjmg():
 				os.remove(common.download_path.path+'/'+file)
 
 	def captcha(self):
-		from transcrever_audio import transcrever_audio
+		from common.transcrever_audio import transcrever_audio
 		t = transcrever_audio()
 		for file in os.listdir(common.download_path.path+'/'):
 			if re.search(r'wav',file):
@@ -45,6 +46,16 @@ class crawler_jurisprudencia_tjmg():
 		time.sleep(5)
 		driver.find_element_by_xpath(self.link_captcha).send_keys(self.captcha())
 		self.delete_audios()
+		while True:
+			try:
+				time.sleep(2)
+				texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
+				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
+				driver.find_element_by_xpath(self.botao_proximo_XP).click()
+			except Exception as e:
+				print(e)
+				if input('ajude-me'):
+					pass
 		driver.close()
 
 if __name__ == '__main__':
@@ -52,7 +63,8 @@ if __name__ == '__main__':
 	print('comecei ',c.__class__.__name__)
 	try:
 		for a in c.lista_anos:
-			for m in range(len(lista_meses)-1):
-				c.download_tj('01'+lista_meses[m]+a,'01'+lista_meses[m+1]+a)
+			for m in range(len(c.lista_meses)):
+				c.download_tj('01'+c.lista_meses[m]+a,'14'+c.lista_meses[m]+a)
+				c.download_tj('15'+c.lista_meses[m]+a,'28'+c.lista_meses[m]+a)
 	except:
 		print('finalizei com erro\n')
