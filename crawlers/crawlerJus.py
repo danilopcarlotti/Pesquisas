@@ -1,4 +1,4 @@
-import time, datetime, urllib.request,logging, os, re
+import time, datetime, urllib.request,logging, os, re, ssl
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -15,6 +15,7 @@ class crawlerJus(object):
 		self.cwd = os.getcwd()
 		self.chromedriver = self.cwd+"/chromedriver"
 		os.environ["webdriver.chrome.driver"] = self.chromedriver
+		ssl._create_default_https_context = ssl._create_unverified_context
 
 	def baixa_pag(self,link):
 		for i in range(3):
