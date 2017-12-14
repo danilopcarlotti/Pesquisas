@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from mpl_toolkits.mplot3d import Axes3D
 import pandas as pd
-from common.conexao_local import cursorConexao
+# from common.conexao_local import cursorConexao
 from sklearn.cluster import KMeans
 from nltk import word_tokenize
 from nltk.util import ngrams
@@ -33,12 +33,9 @@ class dataAnalysis():
 			plt.plot(yAxis,y,'ro')
 			for a,b in zip(yAxis,y):
 				plt.annotate(a,xy=(a,b))
-		if xAxis:
-			plt.xlabel(xAxis)
-		if yAxis:
-			plt.ylabel(yAxis)
+		plt.xlabel(xLabel)
+		plt.ylabel(yLabel)
 		plt.title(title)
-		plt.tight_layout()
 		plt.savefig(title+".png", dpi=80)
 
 	def histogramPlot(self,tupleT,title,minimum,maximum,interval,xLabel,yLabel):
