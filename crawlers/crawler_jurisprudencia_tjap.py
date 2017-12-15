@@ -21,13 +21,10 @@ class crawler_jurisprudencia_tjap():
 		driver.find_element_by_id(self.botao_pesquisar).click()
 		while True:
 			try:
+				time.sleep(4)
 				driver.find_element_by_id('btMaisResultados').click()
 			except:
-				time.sleep(3)
-				try:
-					driver.find_element_by_id('btMaisResultados').click()
-				except:
-					break
+				break
 		arq = open('jurisprudencia_tjap.txt','a')
 		arq.write(crawler_jurisprudencia_tj.extrai_texto_html(self,driver.page_source))
 		driver.close()

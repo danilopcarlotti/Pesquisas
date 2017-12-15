@@ -31,10 +31,8 @@ class crawler_jurisprudencia_tjgo():
 				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
 				time.sleep(2)
 			except:
-				loop_counter += 1
-				time.sleep(5)
-				if loop_counter > 3:
-					break
+				if input('ajude-me'):
+					pass
 		driver.close()
 
 if __name__ == '__main__':

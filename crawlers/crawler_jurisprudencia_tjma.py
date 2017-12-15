@@ -24,23 +24,29 @@ class crawler_jurisprudencia_tjma():
 		driver.find_element_by_name(self.data_julgamento_final).send_keys(data_julg_fim)
 		driver.find_elements_by_name(self.botao_pesquisar)[2].click()
 		texto = crawler_jurisprudencia_tj.extrai_texto_html(self,driver.page_source)
+		tamanho = 5
 		while True:
 			try:
 				time.sleep(3)
-				driver.find_element_by_xpath('//*[@id="pagination"]/ul/li[13]').click()
+				links_proximos = driver.find_elements_by_class_name('linkQuery')
 				texto = crawler_jurisprudencia_tj.extrai_texto_html(self,driver.page_source)
 				cursor.execute('INSERT INTO justica_estadual.jurisprudencia_tjma (ementas) value("%s")' % texto.replace('"',''))
-			except:
-				if (input('ajude-me\n')):
-					pass
-				else:
+				try:
+					int(links_proximos[-1].text)
+					driver.close()
 					break
+				except:
+					driver.find_element_by_id('pagination').click()
+			except Exception as e:
+				driver.close()
+				print(e)
+				break
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjma()
 	try:
 		for a in c.lista_anos:
-			for m in range(len(lista_meses)-1):
-				c.download_tj('01'+lista_meses[m]+a,'01'+lista_meses[m+1]+a)
-	except:
-		print('finalizei com erro\n')
+			for m in range(len(c.lista_meses)):
+				c.download_tj('01'+c.lista_meses[m]+a,'28'+c.lista_meses[m]+a)
+	except Exception as e:
+		print(e)

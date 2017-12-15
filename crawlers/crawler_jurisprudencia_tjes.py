@@ -11,19 +11,15 @@ class crawler_jurisprudencia_tjes():
 		crawler_jurisprudencia_tj.__init__(self)
 		self.link_inicial = 'http://aplicativos.tjes.jus.br/sistemaspublicos/consulta_jurisprudencia/cons_jurisp.cfm'
 		self.pesquisa_livre = 'edPesquisaJuris'
-		self.data_julgamento_inicialID = 'edIni'
-		self.data_julgamento_finalID = 'edFim'
 		self.botao_pesquisar = 'Pesquisar'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_es (ementas)'
 		self.botao_proximoXP = '//*[@id="conteudo"]/table[2]/tbody/tr[1]/td[2]/a[1]'
 
-	def download_tj(self,data_ini,data_fim):
+	def download_tj(self):
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
 		driver.find_element_by_id(self.pesquisa_livre).send_keys('ementa')
-		driver.find_element_by_id(self.data_julgamento_inicialID).send_keys(data_ini)
-		driver.find_element_by_id(self.data_julgamento_finalID).send_keys(data_fim)
 		driver.find_element_by_id(self.botao_pesquisar).click()
 		loop_counter = 0
 		while True:
@@ -33,18 +29,14 @@ class crawler_jurisprudencia_tjes():
 				driver.find_element_by_xpath(self.botao_proximoXP).click()
 				time.sleep(2)
 			except:
-				loop_counter += 1
-				time.sleep(5)
-				if loop_counter > 3:
-					break
+				if input('ajude-me'):
+					pass
 		driver.close()
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjes()
 	print('comecei ',c.__class__.__name__)
 	for l in c.lista_anos:
-		try:
-			print(l, '\n')
-			c.download_tj('01/01/'+l,'31/12/'+l)
+		c.download_tj()
 		except:
 			print('finalizei com erro\n')

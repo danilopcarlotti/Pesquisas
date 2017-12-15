@@ -1,3 +1,5 @@
+baixados 
+
 ac
 al
 am
@@ -5,16 +7,31 @@ ba
 ce
 pi
 
+falta baixar
 
-problemas
-
-ap
 df
 es
 go
 ma
 mg
+ms
 mt
-pa
 pb
-pe
+pr
+rj
+sp
+
+problemas graves
+
+ap - não funciona o botão de "mais resultados"
+pa - bloqueio de mil páginas. Dificuldade em restringir resultados a pequenos períodos
+pe - Só há 500 acórdãos disponíveis nos processos do TJPE e 21k nos processos das turmas recursais
+
+confirmar
+
+rn
+ro
+rr
+rs
+sc
+to
