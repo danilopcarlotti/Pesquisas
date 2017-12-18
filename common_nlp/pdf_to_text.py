@@ -29,7 +29,7 @@ class pdf_to_text():
         return text
 
     def convert_PyPDF2(self,fname):
-        pdfFileObj = open(fname,'rb')     #'rb' for read binary mode
+        pdfFileObj = open(fname,'rb')
         pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
         text = ''
         for i in range(pdfReader.numPages):
