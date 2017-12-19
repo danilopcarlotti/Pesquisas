@@ -24,5 +24,5 @@ if __name__ == '__main__':
 		try:
 			print(l,'\n')
 			crawler_jurisprudencia_tj.download_tj_ESAJ(c,crawler_jurisprudencia_tj,'0101'+l,'3112'+l,termo='ementa')
-		except:
-			print('finalizei com erro\n')
+		except Exception as e:
+			print(e)

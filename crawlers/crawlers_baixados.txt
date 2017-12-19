@@ -20,6 +20,12 @@ pb
 pr
 rj
 sp
+rn
+ro
+rr
+rs
+sc
+to
 
 problemas graves
 
@@ -29,9 +35,3 @@ pe - Só há 500 acórdãos disponíveis nos processos do TJPE e 21k nos process
 
 confirmar
 
-rn
-ro
-rr
-rs
-sc
-to
