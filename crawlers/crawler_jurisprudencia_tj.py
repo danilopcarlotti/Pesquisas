@@ -20,41 +20,38 @@ class crawler_jurisprudencia_tj():
 		driver.find_element_by_xpath(data_julg_fimXP).send_keys(data_julg_fim)
 		driver.find_element_by_xpath(botao_pesquisar).click()
 
-	def extrai_texto_html(self,pagina):
-		return crawlerJus.extrai_texto_html(self,pagina)
-
 	def download_tj_ESAJ(self,superC,data_julg_ini,data_julg_fim,termo='acordam'):
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)
+		def insert_links(pagina):
+			pag = BeautifulSoup(pagina,'lxml')
+			links = pag.find_all('a', attrs={'title':'Visualizar Inteiro Teor'})
+			for l in links:
+				texto = 'http://esaj.tjac.jus.br/cjsg/getArquivo.do?cdAcordao=%s&cdForo=%s' % (l.attrs['cdacordao'],l.attrs['cdforo'])
+				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
 		driver.get(self.link_inicial)
 		superC.download_jurisprudencia(self,driver,self.pesquisa_livre,self.data_julgamento_inicialXP,data_julg_ini,self.data_julgamento_finalXP,data_julg_fim,self.botao_pesquisar,termo=termo)
-		texto = crawlerJus.extrai_texto_html(self,(driver.page_source).replace('"',''))
-		cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
+		time.sleep(2)
+		insert_links(driver.page_source)
 		driver.find_element_by_xpath(self.botao_proximo_ini).click()
-		texto = crawlerJus.extrai_texto_html(self,(driver.page_source).replace('"',''))
-		cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
+		time.sleep(2)
+		insert_links(driver.page_source)
 		contador = 0
-		loop_counter = 0
 		while True:
-			time.sleep(2)
 			try:
-				contador += 1
 				driver.find_element_by_xpath(self.botao_proximo).click()
-				texto = crawlerJus.extrai_texto_html(self,(driver.page_source).replace('"',''))
-				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
-			except:
-				try:
-					time.sleep(2)
-					driver.find_element_by_xpath(self.botao_proximo).click()
-					texto = crawlerJus.extrai_texto_html(self,(driver.page_source).replace('"',''))
-					cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
-				except:
-					loop_counter += 1
-					time.sleep(5)
-					print(contador)
-					if loop_counter > 3:
-						break
+				time.sleep(3)
+				insert_links(driver.page_source)
+			except Exception as e:
+				time.sleep(3)
+				print(e)
+				contador +=1
+				if contador > 2:
+					break
 		driver.close()
+
+	def extrai_texto_html(self,pagina):
+		return crawlerJus.extrai_texto_html(self,pagina)
 
 # create_statement_ESAJ = '''
 # use justica_estadual;

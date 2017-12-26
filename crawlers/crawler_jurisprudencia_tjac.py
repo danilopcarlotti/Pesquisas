@@ -24,5 +24,5 @@ if __name__ == '__main__':
 		try:
 			print(l,'\n')
 			crawler_jurisprudencia_tj.download_tj_ESAJ(c,crawler_jurisprudencia_tj,'01/01/'+l,'31/12/'+l)
-		except:
-			print('finalizei o ano ',l,' com erro\n')
+		except Exception as e:
+			print('finalizei o ano ',l,' com erro',e)

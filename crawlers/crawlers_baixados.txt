@@ -1,14 +1,18 @@
-baixados 
+baixados - links
 
 ac
+
+baixados pdf - concluídos
+
+
+
+falta baixar
+
 al
 am
 ba
 ce
 pi
-
-falta baixar
-
 df
 es
 go
@@ -34,4 +38,5 @@ pa - bloqueio de mil páginas. Dificuldade em restringir resultados a pequenos p
 pe - Só há 500 acórdãos disponíveis nos processos do TJPE e 21k nos processos das turmas recursais
 
 confirmar
+
 

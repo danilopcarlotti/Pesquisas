@@ -3,29 +3,30 @@ CONCLUIDOS
 ac
 al
 am
-ap
-ba
 ce
-df
+ms
+rn
+sp
+
+FALTANTES
+
+ap
+ba - !
+df - !
 es
 go
 ma
+mg
+mt
 pi
+pb
 pr
-rn
 ro
 rr
 rs
 sc
-sp
 to
-ms
-pb
-mg
-mt
-
-FALTANTES
-
 rj
+
 pe - muito poucos acórdãos
 pa - possui uma limitação de exibição de até 1000 resultados. Mês a mês? -> Sim (Fora do ar)

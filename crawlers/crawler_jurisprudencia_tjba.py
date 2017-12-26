@@ -28,7 +28,14 @@ class crawler_jurisprudencia_tjba():
 		loop_counter = 0
 		while True:
 			try:
-				texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
+				# texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
+
+				# ALGORITMO
+				# clicar no link "interio teor" (id:'jurisprudenciaGridId:4:j_idt152')
+				# mudar para aba[1] do navegador, como no caso do crawler do STJ
+				# baixar a página (método do CrawlerJus)
+				# mudar para aba[0] do navegador, como no caso do crawler do STJ
+
 				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
 				driver.find_element_by_xpath(self.botao_proximoXP).click()
 				time.sleep(2)
