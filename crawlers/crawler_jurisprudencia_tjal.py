@@ -9,13 +9,14 @@ class crawler_jurisprudencia_tjal():
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
 		self.link_inicial = 'https://www2.tjal.jus.br/cjsg/consultaCompleta.do'
-		self.pesquisa_livre = '/html/body/table[4]/tbody/tr/td/form/table[2]/tbody/tr/td[2]/input'
-		self.data_julgamento_inicialXP = '//*[@id="dtJulgamentoInicio"]/input'
-		self.data_julgamento_finalXP = '//*[@id="dtJulgamentoFim"]/input'
+		self.pesquisa_livre = '//*[@id="iddados.buscaInteiroTeor"]'
+		self.data_julgamento_inicialXP = '//*[@id="iddados.dtJulgamentoInicio"]'
+		self.data_julgamento_finalXP = '//*[@id="iddados.dtJulgamentoFim"]'
 		self.botao_pesquisar = '//*[@id="pbSubmit"]'
 		self.botao_proximo_ini = '//*[@id="paginacaoSuperior-A"]/table/tbody/tr[1]/td[2]/div/a[5]'
-		self.botao_proximo = '//*[@id="paginacaoSuperior-A"]/table/tbody/tr[1]/td[2]/div/a[7]'
+		self.botao_proximo = '//*[@id="paginacaoSuperior-A"]/table/tbody/tr[1]/td[2]/div/a[6]'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_al (ementas)'
+		self.link_esaj = 'https://www2.tjal.jus.br/cjsg/getArquivo.do?cdAcordao=%s&cdForo=%s'
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjal()

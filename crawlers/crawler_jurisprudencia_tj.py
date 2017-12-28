@@ -27,7 +27,7 @@ class crawler_jurisprudencia_tj():
 			pag = BeautifulSoup(pagina,'lxml')
 			links = pag.find_all('a', attrs={'title':'Visualizar Inteiro Teor'})
 			for l in links:
-				texto = 'http://esaj.tjac.jus.br/cjsg/getArquivo.do?cdAcordao=%s&cdForo=%s' % (l.attrs['cdacordao'],l.attrs['cdforo'])
+				texto = self.link_esaj % (l.attrs['cdacordao'],l.attrs['cdforo'])
 				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
 		driver.get(self.link_inicial)
 		superC.download_jurisprudencia(self,driver,self.pesquisa_livre,self.data_julgamento_inicialXP,data_julg_ini,self.data_julgamento_finalXP,data_julg_fim,self.botao_pesquisar,termo=termo)
