@@ -21,7 +21,8 @@ class crawler_jurisprudencia_tjal():
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjal()
 	print('comecei ',c.__class__.__name__)
-	for l in c.lista_anos:
+	lista_anos = ['2017']
+	for l in lista_anos:
 		try:
 			print(l,'\n')
 			crawler_jurisprudencia_tj.download_tj_ESAJ(c,crawler_jurisprudencia_tj,'01/01/'+l,'31/12/'+l)

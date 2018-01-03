@@ -14,14 +14,18 @@ class crawler_jurisprudencia_tjce():
 		self.botao_proximo_ini = '//*[@id="paginacaoSuperior-A"]/table/tbody/tr[1]/td[2]/div/a[5]'
 		self.botao_proximo = '//*[@id="paginacaoSuperior-A"]/table/tbody/tr[1]/td[2]/div/a[6]'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_ce (ementas)'
+		self.link_esaj = 'http://esaj.tjce.jus.br/cjsg/getArquivo.do?cdAcordao=%s&cdForo=%s'
 
 if __name__ == '__main__':
-	# só vai baixar as ementas
 	c = crawler_jurisprudencia_tjce()
 	print('comecei ',c.__class__.__name__)
-	for l in c.lista_anos:
-		try:
-			print(l,'\n')
-			crawler_jurisprudencia_tj.download_tj_ESAJ(c,crawler_jurisprudencia_tj,'01/01/'+l,'31/12/'+l)
-		except:
-			print('finalizei o ano ',l,' com erro\n')
+	try:
+		for l in range(3,len(c.lista_anos)):
+			print(c.lista_anos[l],'\n')
+			for m in range(len(c.lista_meses)):
+				try:
+					crawler_jurisprudencia_tj.download_tj_ESAJ(c,crawler_jurisprudencia_tj,'01'+c.lista_meses[m]+c.lista_anos[l],'28'+c.lista_meses[m]+c.lista_anos[l],termo='direito')
+				except Exception as e:
+					print(e)
+	except Exception as e:
+		print('finalizei o ano com erro ',e)

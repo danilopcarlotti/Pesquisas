@@ -20,9 +20,13 @@ class crawler_jurisprudencia_tjms():
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjms()
 	print('comecei ',c.__class__.__name__)
-	for l in c.lista_anos:
-		try:
-			print(l,'\n')
-			crawler_jurisprudencia_tj.download_tj_ESAJ(c,crawler_jurisprudencia_tj,'01/01/'+l,'31/12/'+l)
-		except:
-			print('finalizei o ano com erro\n')
+	try:
+		for l in range(3,len(c.lista_anos)):
+			print(c.lista_anos[l],'\n')
+			for m in range(len(c.lista_meses)):
+				try:
+					crawler_jurisprudencia_tj.download_tj_ESAJ(c,crawler_jurisprudencia_tj,'01'+c.lista_meses[m]+c.lista_anos[l],'28'+c.lista_meses[m]+c.lista_anos[l])
+				except Exception as e:
+					print(e)
+	except Exception as e:
+		print('finalizei o ano com erro ',e)
