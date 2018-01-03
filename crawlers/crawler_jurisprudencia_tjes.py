@@ -36,7 +36,7 @@ class crawler_jurisprudencia_tjes():
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjes()
 	print('comecei ',c.__class__.__name__)
-	for l in c.lista_anos:
+	try:
 		c.download_tj()
-		except:
-			print('finalizei com erro\n')
+	except Exception as e:
+		print('finalizei com erro ',e)

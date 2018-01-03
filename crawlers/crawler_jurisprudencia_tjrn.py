@@ -16,6 +16,7 @@ class crawler_jurisprudencia_tjrn():
 		self.botao_proximo_ini = '/html/body/table[4]/tbody/tr/td/table/tbody/tr/td/table[4]/tbody/tr[2]/td/table/tbody/tr[2]/td/table/tbody/tr/td[27]/a'
 		self.botao_proximo = '/html/body/table[4]/tbody/tr/td/table/tbody/tr/td/table[4]/tbody/tr[2]/td/table/tbody/tr[2]/td/table/tbody/tr/td[27]/a'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_rn (ementas)'
+		self.link_esaj = ''
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjrn()
@@ -26,3 +27,5 @@ if __name__ == '__main__':
 			crawler_jurisprudencia_tj.download_tj_ESAJ(c,crawler_jurisprudencia_tj,'0101'+l,'3112'+l,termo='ementa')
 		except Exception as e:
 			print(e)
+
+# 
