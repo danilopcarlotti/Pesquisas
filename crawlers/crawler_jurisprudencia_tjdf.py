@@ -16,28 +16,31 @@ class crawler_jurisprudencia_tjdf(crawler_jurisprudencia_tj):
 		cursor = cursorConexao()
 		for i in range(1,ultima_pag):
 			try:
+				time.sleep(5)
 				link = (self.link_inicial % str(i))
 				driver = webdriver.Chrome(self.chromedriver)
 				driver.get(link)
 				lista_acordaos = driver.find_elements_by_id('id_link_abrir_dados_acordao')
-				for link_ac in lista_acordaos:
-					link_ac.click()
+				for i in range(len(lista_acordaos)):
+					lista_acordaos_aux = driver.find_elements_by_id('id_link_abrir_dados_acordao')
+					lista_acordaos_aux[i].click()
 					divs_com_rotulo = driver.find_elements_by_class_name("conteudoComRotulo")
-					links_inteiro_teor = divs_com_rotulo[9].find_elements_by_tag_name('span')
-					links_inteiro_teor[0].click()
+					links_inteiro_teor = divs_com_rotulo[-1].find_elements_by_tag_name('span')
+					try:
+						links_inteiro_teor[0].click()
+					except:
+						pass
 					time.sleep(1)
 					driver.find_element_by_id('id_comando_voltar_supra').click()
-					return
+				driver.close()
 			except Exception as e:
 				print(e)
-				return
-			
 
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjdf()
 	print('comecei ',c.__class__.__name__)
 	try:
-		c.download_tj(39973) #número atualizado em dez 2017
+		c.download_tj(40000) #número atualizado em jan 2018
 	except Exception as e:
 		print(e)

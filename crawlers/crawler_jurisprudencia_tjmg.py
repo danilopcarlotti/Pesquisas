@@ -16,24 +16,12 @@ class crawler_jurisprudencia_tjmg():
 		self.link_captcha = '//*[@id="captcha_text"]'
 		self.data_julgamento_inicialXP = '//*[@id="dataJulgamentoInicial"]'
 		self.data_julgamento_finalXP = '//*[@id="dataJulgamentoFinal"]'
-		self.botao_proximo_XP = '//*[@id="sistema"]/div/table/tbody/tr/td/table/tbody/tr/td/div/table[11]/tbody/tr[2]/td/table[1]/tbody/tr/td[12]/a'
-		self.link_download_captcha = '/html/body/table/tbody/tr[3]/td/table/tbody/tr[3]/td/a[2]'
+		self.botao_proximo_XP = '//*[@id="textoUmaColuna"]/table[1]/tbody/tr[4]/td/table/tbody/tr/td[5]/a'
+		self.link_download_captcha = '/html/body/table/tbody/tr[3]/td/table/tbody/tr[4]/td/a[2]' 
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_mg (ementas)'
 
-	def delete_audios(self):
-		for file in os.listdir(common.download_path.path+'/'):
-			if re.search(r'wav',file):
-				os.remove(common.download_path.path+'/'+file)
-
-	def captcha(self):
-		from common.transcrever_audio import transcrever_audio
-		t = transcrever_audio()
-		for file in os.listdir(common.download_path.path+'/'):
-			if re.search(r'wav',file):
-				return t.transcrever(audio=common.download_path.path+'/'+file)
-
 	def download_tj(self,data_ini,data_fim):
-		self.delete_audios()
+		crawler_jurisprudencia_tj.delete_audios(self)
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
@@ -44,18 +32,25 @@ class crawler_jurisprudencia_tjmg():
 		time.sleep(5)
 		driver.find_element_by_xpath(self.link_download_captcha).click()
 		time.sleep(5)
-		driver.find_element_by_xpath(self.link_captcha).send_keys(self.captcha())
-		self.delete_audios()
+		driver.find_element_by_xpath(self.link_captcha).send_keys(crawler_jurisprudencia_tj.captcha(self))
+		crawler_jurisprudencia_tj.delete_audios(self)
 		while True:
 			try:
 				time.sleep(2)
+				driver.find_element_by_class_name('linkListaEspelhoAcordaos').click()
 				texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
 				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
 				driver.find_element_by_xpath(self.botao_proximo_XP).click()
 			except Exception as e:
 				print(e)
-				if input('ajude-me'):
-					pass
+				try:
+					driver.find_element_by_xpath(self.link_download_captcha).click()
+					time.sleep(5)
+					driver.find_element_by_xpath(self.link_captcha).send_keys(crawler_jurisprudencia_tj.captcha(self))
+					crawler_jurisprudencia_tj.delete_audios(self)
+					time.sleep(5)
+				except:
+					return			
 		driver.close()
 
 if __name__ == '__main__':
@@ -66,5 +61,5 @@ if __name__ == '__main__':
 			for m in range(len(c.lista_meses)):
 				c.download_tj('01'+c.lista_meses[m]+a,'14'+c.lista_meses[m]+a)
 				c.download_tj('15'+c.lista_meses[m]+a,'28'+c.lista_meses[m]+a)
-	except:
-		print('finalizei com erro\n')
+	except Exception as e:
+		print('finalizei com erro ',e)

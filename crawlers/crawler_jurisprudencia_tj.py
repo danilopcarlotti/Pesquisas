@@ -4,7 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from common.conexao_local import cursorConexao
 from datetime import date
-import time
+import time, os, common.download_path, re
 
 class crawler_jurisprudencia_tj():
 	"""Generic class with methods for crawler_jurisprudencia_tj's"""
@@ -13,6 +13,18 @@ class crawler_jurisprudencia_tj():
 		self.lista_anos = [str(i) for i in range(2011,date.today().year+1)]
 		self.lista_meses = ['0'+str(i) for i in range(1,10)]
 		self.lista_meses += ['10','11','12']
+
+	def captcha(self):
+		from common.transcrever_audio import transcrever_audio
+		t = transcrever_audio()
+		for file in os.listdir(common.download_path.path+'/'):
+			if re.search(r'wav',file):
+				return t.transcrever(audio=common.download_path.path+'/'+file)
+
+	def delete_audios(self):
+		for file in os.listdir(common.download_path.path+'/'):
+			if re.search(r'wav',file):
+				os.remove(common.download_path.path+'/'+file)
 
 	def download_jurisprudencia(self,driver,pesquisa_livre,data_julg_iniXP,data_julg_ini,data_julg_fimXP,data_julg_fim,botao_pesquisar,termo):
 		driver.find_element_by_xpath(pesquisa_livre).send_keys(termo)
