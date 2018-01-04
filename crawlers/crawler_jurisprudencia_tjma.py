@@ -30,7 +30,7 @@ class crawler_jurisprudencia_tjma():
 				time.sleep(3)
 				links_proximos = driver.find_elements_by_class_name('linkQuery')
 				texto = crawler_jurisprudencia_tj.extrai_texto_html(self,driver.page_source)
-				cursor.execute('INSERT INTO justica_estadual.jurisprudencia_tjma (ementas) value("%s")' % texto.replace('"',''))
+				cursor.execute('INSERT INTO justica_estadual.jurisprudencia_ma (ementas) value("%s")' % texto.replace('"',''))
 				try:
 					int(links_proximos[-1].text)
 					driver.close()

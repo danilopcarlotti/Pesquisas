@@ -1,12 +1,17 @@
 baixados - links
 
-ac
-al
-am
-ce
+ac - samba
+al - samba
+am - samba
+ce - samba
+ms - samba
+sp - samba
 
 baixados pdf - concluídos
 
+es - server
+go - server confirmar
+ma - samba
 
 
 falta baixar
@@ -14,18 +19,13 @@ falta baixar
 ba
 pi
 df
-es
-go
-ma
 mg
-ms
 mt
 pb
 pr
 rj
-sp
-rn
 ro
+rn
 rr
 rs
 sc
