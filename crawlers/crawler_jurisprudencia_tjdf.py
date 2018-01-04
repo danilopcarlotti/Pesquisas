@@ -17,10 +17,20 @@ class crawler_jurisprudencia_tjdf(crawler_jurisprudencia_tj):
 		for i in range(1,ultima_pag):
 			try:
 				link = (self.link_inicial % str(i))
-				texto = crawlerJus.baixa_pag(self,link)
-				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
+				driver = webdriver.Chrome(self.chromedriver)
+				driver.get(link)
+				lista_acordaos = driver.find_elements_by_id('id_link_abrir_dados_acordao')
+				for link_ac in lista_acordaos:
+					link_ac.click()
+					divs_com_rotulo = driver.find_elements_by_class_name("conteudoComRotulo")
+					links_inteiro_teor = divs_com_rotulo[9].find_elements_by_tag_name('span')
+					links_inteiro_teor[0].click()
+					time.sleep(1)
+					driver.find_element_by_id('id_comando_voltar_supra').click()
+					return
 			except Exception as e:
 				print(e)
+				return
 			
 
 
