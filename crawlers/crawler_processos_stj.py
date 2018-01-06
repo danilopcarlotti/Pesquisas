@@ -31,7 +31,6 @@ class processosSTJ(crawlerJus):
 		driver.find_element_by_xpath('//*[@id="pesquisaLivre"]').send_keys('a')
 		driver.find_element_by_xpath('//*[@id="botoesPesquisa"]/input[1]').click()
 		driver.find_elements_by_xpath('//*[@id="itemlistaresultados"]/span[2]/a')[2].click()
-		# driver.find_element_by_xpath('//*[@id="navegacao"]/a[2]').send_keys("\n")
 		driver.find_element_by_class_name('iconeProximaPagina').send_keys('\n')
 		i = 1
 		while i < self.contador:
@@ -75,7 +74,7 @@ class processosSTJ(crawlerJus):
 						if link_voto:
 							link_voto_download = 'https://ww2.stj.jus.br'+link_voto.group(0)+'&formato=html'
 							info.append(link_voto_download.replace('amp;',''))
-							cursor.execute('INSERT INTO stj.dados_processo (processo, recorrente, recorrido, autuacao, numero_unico, relator, ramo_direito, assunto, tribunal_origem, numeros_origem,link_voto) 		values ("%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s")',(info[0],info[1],info[2],info[3],info[4],info[5],info[6],info[7],info[8],info[9],info[10]))
+							cursor.execute('INSERT INTO stj.dados_processo (processo, recorrente, recorrido, autuacao, numero_unico, relator, ramo_direito, assunto, tribunal_origem, numeros_origem,link_voto) values ("%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s")',(info[0],info[1],info[2],info[3],info[4],info[5],info[6],info[7],info[8],info[9],info[10]))
 					driver.switch_to.window(driver.window_handles[0])
 				try:
 					driver.find_element_by_class_name('iconeProximaPagina').send_keys('\n')
@@ -95,5 +94,25 @@ class processosSTJ(crawlerJus):
 					driver.close()
 					self.baixarDadosProcesso()
 
-p = processosSTJ(5272)
-p.baixarDadosProcesso()
+	def baixarVotos(self):
+		cursor = cursorConexao()
+		crawler = crawlerJus()
+		cursor.execute('SELECT id, link_voto from stj.dados_processo limit 1000000;')
+		link_votos = cursor.fetchall()
+		contador = 1
+		for id_voto, link in link_votos:
+			html_ini = crawler.baixa_pag(link.replace('\'',''))
+			if html_ini == '':
+				continue
+			soup = BeautifulSoup(html_ini,'lxml')
+			link_final = soup.find_all('a')[0]
+			html_final = crawler.baixa_pag('https://ww2.stj.jus.br/'+link_final['href'])
+			soup2 = BeautifulSoup(html_final,'html.parser')
+			texto = soup2.get_text()
+			cursor.execute('INSERT into stj.votos (id_processo,voto) values ("%s","%s")' % (str(id_voto),texto.replace('"','')))
+			print(contador)
+			contador += 1
+
+if __name__ == '__main__':
+	p = processosSTJ(6000)
+	p.baixarVotos()
