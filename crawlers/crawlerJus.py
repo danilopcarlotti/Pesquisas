@@ -40,7 +40,7 @@ class crawlerJus():
 		response = urllib.request.urlopen(link,timeout=5)
 		file = open(self.dia+self.mes+self.ano+'_'+nome_arq+".pdf", 'wb')
 		file.write(response.read())
-		time.sleep(5)
+		time.sleep(1)
 		file.close()
 
 	def baixa_pag(self,link):
