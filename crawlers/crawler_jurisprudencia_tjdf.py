@@ -14,7 +14,7 @@ class crawler_jurisprudencia_tjdf(crawler_jurisprudencia_tj):
 		
 	def download_tj(self,ultima_pag):
 		cursor = cursorConexao()
-		for i in range(1,ultima_pag):
+		for i in range(15000,ultima_pag):
 			try:
 				time.sleep(5)
 				link = (self.link_inicial % str(i))
