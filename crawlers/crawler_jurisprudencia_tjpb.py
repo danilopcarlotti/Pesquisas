@@ -29,13 +29,15 @@ class crawler_jurisprudencia_tjpb():
 		driver.find_element_by_xpath('//*[@id="radio-intteor"]').click()
 		driver.find_element_by_xpath(self.botao_pesquisar).click()
 		loop_counter = 0
-		texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
-		cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
+		links_inteiro_teor = driver.find_elements_by_class_name('inteiro-teor')
+		for l in links_inteiro_teor:
+			cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,l.get_attribute("href")))
 		driver.find_element_by_xpath(self.botao_proximo_iniXP).click()
 		while True:
 			try:
-				texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
-				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
+				links_inteiro_teor = driver.find_elements_by_class_name('inteiro-teor')
+				for l in links_inteiro_teor:
+					cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,l.get_attribute("href")))
 				driver.find_element_by_xpath(self.botao_proximoXP).click()
 				time.sleep(2)
 			except Exception as e:
@@ -50,5 +52,5 @@ if __name__ == '__main__':
 			for m in range(len(c.lista_meses)):
 				c.download_tj('01'+c.lista_meses[m]+a,'14'+c.lista_meses[m]+a)
 				c.download_tj('15'+c.lista_meses[m]+a,'28'+c.lista_meses[m]+a)
-	except:
-		print('finalizei com erro \n')
+	except Exception as e:
+		print('finalizei com erro ',e)

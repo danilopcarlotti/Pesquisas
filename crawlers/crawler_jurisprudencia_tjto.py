@@ -1,5 +1,5 @@
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
-import time, datetime, urllib.request,logging, click, os
+import time, datetime, urllib.request,logging, click, os, sys
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -18,17 +18,21 @@ class crawler_jurisprudencia_tjto():
 		for i in range(0,65501,20):
 			try:
 				link = self.link_inicial % str(i)
-				req = urllib.request.Request(link, headers={'User-Agent': 'Mozilla/5.0'})
-				html = urllib.request.urlopen(req,timeout=5).read()
-				texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(html)).replace('"','')
-				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
-			except:
-				print('erro com ',i)
+				driver = webdriver.Chrome(self.chromedriver)
+				driver.get(self.link)
+				links_inteiro_teor = driver.find_elements_by_link_text('Inteiro Teor')
+				for l in links_inteiro_teor:
+					try:
+						cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,l.get_attribute('href')))		
+					except:
+						pass
+			except Exception as e:
+				print('erro com ',i,' ',e)
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjto()
 	print('comecei ',c.__class__.__name__)
 	try:
 		c.download_tj()
-	except:
-		print('finalizei com erro\n')
+	except Exception as e:
+		print('finalizei com erro ',e)

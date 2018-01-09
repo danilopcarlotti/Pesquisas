@@ -24,15 +24,27 @@ class crawler_jurisprudencia_tjrr():
 		driver.find_element_by_xpath(self.botao_pesquisar).click()
 		for i in self.lista_proximos:
 			bota_p = self.botao_proximoXP % i
-			texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
-			cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
+			links_inteiro_teor = driver.find_elements_by_partial_link_text('')
+			for l in links_inteiro_teor:
+				try:
+					if re.search(r'inteiroteor\.php',l.get_attribute('href')):
+						texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(l.get_attribute('href')).replace('"',''))
+						cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))		
+				except:
+					pass
 			driver.find_element_by_xpath(bota_p).click()
 		self.botao_proximoXP = '//*[@id="conteudo"]/table[1]/tbody/tr/td/a[11]/b'
 		loop_counter = 0
 		while True:
 			try:
-				texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
-				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
+				links_inteiro_teor = driver.find_elements_by_partial_link_text('')
+				for l in links_inteiro_teor:
+					try:
+						if re.search(r'inteiroteor\.php',l.get_attribute('href')):
+							texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(l.get_attribute('href')).replace('"',''))
+							cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))		
+					except:
+						pass
 				driver.find_element_by_xpath(self.botao_proximoXP).click()
 				time.sleep(2)
 			except:
@@ -48,5 +60,5 @@ if __name__ == '__main__':
 	print('comecei ',c.__class__.__name__)
 	try:
 		c.download_tj()
-	except:
-		print('finalizei com erro')
+	except Exception as e:
+		print('finalizei com erro ',e)

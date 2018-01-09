@@ -23,15 +23,28 @@ class crawler_jurisprudencia_tjsc():
 		driver.get(self.link_inicial)
 		driver.find_element_by_xpath(self.pesquisa_livre).send_keys('processo')
 		driver.find_element_by_xpath(self.botao_pesquisar).click()
-		texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
-		cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
+		time.sleep(1)
+		links_inteiro_teor = driver.find_elements_by_partial_link_text('')
+		for l in links_inteiro_teor:
+			try:
+				if re.search(r'html\.do',l.get_attribute('href')):
+					texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(l.get_attribute('href')).replace('"',''))
+					cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))	
+			except:
+				pass
 		driver.find_element_by_xpath(self.botao_proximo_iniXP).click()
 		loop_counter = 0
 		while True:
 			try:
 				time.sleep(1)
-				texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
-				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
+				links_inteiro_teor = driver.find_elements_by_partial_link_text('')
+				for l in links_inteiro_teor:
+					try:
+						if re.search(r'html\.do',l.get_attribute('href')):
+							texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(l.get_attribute('href')).replace('"',''))
+							cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))	
+					except:
+						pass
 				driver.find_element_by_xpath(self.botao_proximoXP).click()
 			except:
 				loop_counter += 1
@@ -46,7 +59,7 @@ if __name__ == '__main__':
 	print('comecei ',c.__class__.__name__)
 	try:
 		c.download_tj()
-	except:
-		print('finalizei com erro\n')
+	except Exception as e:
+		print('finalizei com erro ',e)
 
 		

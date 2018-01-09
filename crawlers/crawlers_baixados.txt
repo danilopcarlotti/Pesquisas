@@ -12,26 +12,26 @@ baixados pdf - concluídos
 es - server
 go - server confirmar
 ma - samba
-df - esc confirmar
+df - esc
 
 falta baixar
 
-mg
+mg (texto completo) - server confirmar
+pb (links para pdf)
+pi (textos completo)
+pr (texto completo) 
+ro (texto completo) 
+rn (links para pdf)
+rr (texto completo)
+rs (texto completo)
+sc (texto completo) 
+to (links para pdf)
 
 falta terminar
 
 ba - !!
-mt
-pb
-pi
-pr
+mt - !!
 rj
-ro
-rn
-rr
-rs
-sc
-to
 
 problemas graves
 
