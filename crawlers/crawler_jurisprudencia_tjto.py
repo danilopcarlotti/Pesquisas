@@ -19,11 +19,13 @@ class crawler_jurisprudencia_tjto():
 			try:
 				link = self.link_inicial % str(i)
 				driver = webdriver.Chrome(self.chromedriver)
-				driver.get(self.link)
+				driver.get(link)
+				time.sleep(1)
 				links_inteiro_teor = driver.find_elements_by_link_text('Inteiro Teor')
 				for l in links_inteiro_teor:
 					try:
-						cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,l.get_attribute('href')))		
+						cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,l.get_attribute('href')))
+						driver.close()
 					except:
 						pass
 			except Exception as e:

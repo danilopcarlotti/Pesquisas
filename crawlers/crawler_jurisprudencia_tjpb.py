@@ -33,6 +33,7 @@ class crawler_jurisprudencia_tjpb():
 		for l in links_inteiro_teor:
 			cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,l.get_attribute("href")))
 		driver.find_element_by_xpath(self.botao_proximo_iniXP).click()
+		contador = 0
 		while True:
 			try:
 				links_inteiro_teor = driver.find_elements_by_class_name('inteiro-teor')
@@ -42,6 +43,9 @@ class crawler_jurisprudencia_tjpb():
 				time.sleep(2)
 			except Exception as e:
 				print(e)
+				contador += 1
+				if contador > 2:
+					break
 		driver.close()
 
 if __name__ == '__main__':

@@ -6,32 +6,32 @@ am - samba
 ce - samba
 ms - samba
 sp - samba
+pb (links para pdf) - esc
+to (links para pdf) - esc
 
-baixados pdf - concluídos
+baixados texto - concluídos
 
 es - server
 go - server confirmar
 ma - samba
-df - esc
+df - esc antigo e novo
+mg (texto completo) - server confirmar
 
 falta baixar
 
-mg (texto completo) - server confirmar
-pb (links para pdf)
 pi (textos completo)
 pr (texto completo) 
 ro (texto completo) 
-rn (links para pdf)
 rr (texto completo)
 rs (texto completo)
 sc (texto completo) 
-to (links para pdf)
 
 falta terminar
 
 ba - !!
 mt - !!
 rj
+rn (texto completo)
 
 problemas graves
 
