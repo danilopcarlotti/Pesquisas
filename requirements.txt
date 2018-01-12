@@ -1,4 +1,6 @@
 Cython
+Xlib
+pyautogui
 bs4
 selenium
 matplotlib

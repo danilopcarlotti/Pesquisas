@@ -25,13 +25,10 @@ ro (texto completo)
 rr (texto completo)
 rs (texto completo)
 sc (texto completo) 
-
-falta terminar
-
-ba - !!
-mt - !!
-rj
+rj (links para pdf)
 rn (texto completo)
+ba - (texto completo)
+mt - (texto completo)
 
 problemas graves
 
