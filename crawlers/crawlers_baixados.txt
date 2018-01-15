@@ -19,6 +19,7 @@ mg (texto completo) - server confirmar
 
 falta baixar
 
+pa (texto completo)
 pi (textos completo)
 pr (texto completo) 
 ro (texto completo) 
@@ -27,11 +28,10 @@ rs (texto completo)
 sc (texto completo) 
 rj (links para pdf)
 rn (texto completo)
-ba - (texto completo)
-mt - (texto completo)
+ba (texto completo)
+mt (texto completo)
 
 problemas graves
 
 ap - não funciona o botão de "mais resultados"
-pa - bloqueio de mil páginas. Dificuldade em restringir resultados a pequenos períodos
 pe - Só há 500 acórdãos disponíveis nos processos do TJPE e 21k nos processos das turmas recursais
