@@ -18,3 +18,4 @@ nltk
 pdfminer.six
 PyPDF2
 gensim
+autopep8
