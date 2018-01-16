@@ -13,18 +13,20 @@ class crawler_jurisprudencia_tjrj():
 		self.pesquisa_livre = '//*[@id="ContentPlaceHolder1_txtTextoPesq"]'
 		self.botao_pesquisar = '//*[@id="ContentPlaceHolder1_btnPesquisar"]'
 		self.botao_ano_inicial = '//*[@id="ContentPlaceHolder1_cmbAnoInicio"]'
+		self.botao_ano_final = '//*[@id="ContentPlaceHolder1_cmbAnoFim"]'
 		self.botao_proximo_iniXP = '//*[@id="placeholder"]/span/table/tbody/tr[7]/td/a'
 		self.botao_proximo_XP = '//*[@id="placeholder"]/span/table/tbody/tr[7]/td/a[2]'
-		self.tabela_colunas = 'justica_estadual.jurisprudencia_tjrj (ementas)'
+		self.tabela_colunas = 'justica_estadual.jurisprudencia_rj (ementas)'
 
-	def download_tj(self):
+	def download_tj(self,ano_inicial,ano_final):
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
 		driver.find_element_by_xpath(self.pesquisa_livre).send_keys('direito')
-		driver.find_element_by_xpath(self.botao_ano_inicial).send_keys('2011')
+		driver.find_element_by_xpath(self.botao_ano_inicial).send_keys(ano_inicial)
+		driver.find_element_by_xpath(self.botao_ano_final).send_keys(ano_final)
 		driver.find_element_by_xpath(self.botao_pesquisar).click()
-		time.sleep(4)
+		time.sleep(20)
 		links_inteiro_teor = driver.find_elements_by_partial_link_text('')
 		for link in links_inteiro_teor:
 			try:
@@ -46,6 +48,7 @@ class crawler_jurisprudencia_tjrj():
 						pass
 				driver.find_element_by_xpath(self.botao_proximo_XP).click()
 			except Exception as e:
+				time.sleep(10)
 				print(e)
 				loop_counter += 1
 				if loop_counter > 2:
@@ -56,6 +59,8 @@ if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjrj()
 	print('comecei ',c.__class__.__name__)
 	try:
-		c.download_tj()
+		for l in c.lista_anos:
+			print(l,'\n')
+			c.download_tj(l,l)
 	except Exception as e:
 		print(e)

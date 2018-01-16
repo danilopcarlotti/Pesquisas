@@ -35,11 +35,10 @@ class crawler_jurisprudencia_tjpa():
 					l.click()
 					driver.switch_to.window(driver.window_handles[-1])
 					texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
-					print(texto)
 					cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
 					driver.switch_to.window(driver.window_handles[0])
 			except Exception as e:
-				print(e)
+				pass
 		driver.find_element_by_xpath(self.botao_proximo_iniXP).click()
 		loop_counter = 0
 		while True:
@@ -52,18 +51,16 @@ class crawler_jurisprudencia_tjpa():
 							l.click()
 							driver.switch_to.window(driver.window_handles[-1])
 							texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
-							print(texto)
 							cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
 							driver.switch_to.window(driver.window_handles[0])
 					except Exception as e:
-						print(e)
+						pass
 				driver.find_element_by_xpath(self.botao_proximoXP).click()
 			except:
 				loop_counter += 1
 				time.sleep(5)
 				if loop_counter > 3:
-					if input('me ajude'):
-						break
+					break
 		driver.close()
 
 if __name__ == '__main__':
