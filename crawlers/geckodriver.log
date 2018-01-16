@@ -1,0 +1,126 @@
+1515429706883	geckodriver	INFO	geckodriver 0.19.1
+1515429706886	geckodriver	INFO	Listening on 127.0.0.1:36411
+1515429707999	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.MHLhHqAapAz5"
+1515429708533	Marionette	INFO	Enabled via --marionette
+1515429711161	Marionette	INFO	Listening on port 42534
+1515429711296	Marionette	WARN	TLS certificate errors will be ignored for this session
+1515429711349	Marionette	DEBUG	Register listener.js for window 2147483649
+1515429711358	Marionette	DEBUG	Received DOM event "beforeunload" for "about:blank"
+1515429711921	Marionette	DEBUG	Received DOM event "pagehide" for "about:blank"
+1515429711921	Marionette	DEBUG	Received DOM event "unload" for "about:blank"
+1515429712781	Marionette	DEBUG	Received DOM event "DOMContentLoaded" for "https://www2.tjba.jus.br/erp-portal/publico/jurisprudencia/consultaJurisprudencia.xhtml"
+1515429712821	Marionette	DEBUG	Received DOM event "pageshow" for "https://www2.tjba.jus.br/erp-portal/publico/jurisprudencia/consultaJurisprudencia.xhtml"
+1515429712975	geckodriver	INFO	geckodriver 0.19.1
+1515429712979	geckodriver	INFO	Listening on 127.0.0.1:40387
+1515429714085	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.DtQKrKTveBJT"
+1515429714699	Marionette	INFO	Enabled via --marionette
+1515429717226	Marionette	INFO	Listening on port 42331
+1515429717335	Marionette	WARN	TLS certificate errors will be ignored for this session
+1515429717380	Marionette	DEBUG	Register listener.js for window 2147483649
+1515429717391	Marionette	DEBUG	Received DOM event "beforeunload" for "about:blank"
+1515429717691	Marionette	DEBUG	Received DOM event "pagehide" for "about:blank"
+1515429717692	Marionette	DEBUG	Received DOM event "unload" for "about:blank"
+1515429718348	Marionette	DEBUG	Received DOM event "DOMContentLoaded" for "https://www2.tjba.jus.br/erp-portal/publico/jurisprudencia/consultaJurisprudencia.xhtml"
+1515429718392	Marionette	DEBUG	Received DOM event "pageshow" for "https://www2.tjba.jus.br/erp-portal/publico/jurisprudencia/consultaJurisprudencia.xhtml"
+1515429718531	geckodriver	INFO	geckodriver 0.19.1
+1515429718534	geckodriver	INFO	Listening on 127.0.0.1:55255
+1515429719639	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.gaMoqWrjKA4g"
+1515429720199	Marionette	INFO	Enabled via --marionette
+1515429722769	addons.xpi	WARN	Exception running bootstrap method shutdown on activity-stream@mozilla.org: [Exception... "Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIObserverService.removeObserver]"  nsresult: "0x80004005 (NS_ERROR_FAILURE)"  location: "JS frame :: resource://activity-stream/lib/SnippetsFeed.jsm :: uninit :: line 123"  data: no] Stack trace: uninit()@resource://activity-stream/lib/SnippetsFeed.jsm:123 < onAction()@resource://activity-stream/lib/SnippetsFeed.jsm:138 < _middleware/</<()@resource://activity-stream/lib/Store.jsm:52 < Store/this[method]()@resource://activity-stream/lib/Store.jsm:31 < uninit()@resource://activity-stream/lib/Store.jsm:151 < uninit()@resource://activity-stream/lib/ActivityStream.jsm:266 < uninit()@resource://gre/modules/addons/XPIProvider.jsm -> jar:file:///usr/lib/firefox/browser/features/activity-stream@mozilla.org.xpi!/bootstrap.js:80 < shutdown()@resource://gre/modules/addons/XPIProvider.jsm -> jar:file:///usr/lib/firefox/browser/features/activity-stream@mozilla.org.xpi!/bootstrap.js:196 < callBootstrapMethod()@resource://gre/modules/addons/XPIProvider.jsm:4509 < observe()@resource://gre/modules/addons/XPIProvider.jsm:2281
+1515429722907	Marionette	INFO	Listening on port 37499
+1515429723196	Marionette	WARN	TLS certificate errors will be ignored for this session
+1515429723374	geckodriver	INFO	geckodriver 0.19.1
+1515429723383	geckodriver	INFO	Listening on 127.0.0.1:55356
+*** UTM:SVC TimerManager:registerTimer called after profile-before-change notification. Ignoring timer registration for id: telemetry_modules_ping
+1515429724487	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.cDOq60AK9R8g"
+*** UTM:SVC TimerManager:registerTimer called after profile-before-change notification. Ignoring timer registration for id: telemetry_modules_ping
+1515429725079	Marionette	INFO	Enabled via --marionette
+1515429796270	geckodriver	INFO	geckodriver 0.19.1
+1515429796272	geckodriver	INFO	Listening on 127.0.0.1:33569
+1515429797383	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.ARkiN0Ii8sEm"
+1515429797972	Marionette	INFO	Enabled via --marionette
+1515429800516	Marionette	INFO	Listening on port 37092
+1515429800599	Marionette	WARN	TLS certificate errors will be ignored for this session
+1515429800641	Marionette	DEBUG	Register listener.js for window 2147483649
+1515429800651	Marionette	DEBUG	Received DOM event "beforeunload" for "about:blank"
+1515429801226	Marionette	DEBUG	Received DOM event "pagehide" for "about:blank"
+1515429801226	Marionette	DEBUG	Received DOM event "unload" for "about:blank"
+1515429801893	Marionette	DEBUG	Received DOM event "DOMContentLoaded" for "https://www2.tjba.jus.br/erp-portal/publico/jurisprudencia/consultaJurisprudencia.xhtml"
+1515429801937	Marionette	DEBUG	Received DOM event "pageshow" for "https://www2.tjba.jus.br/erp-portal/publico/jurisprudencia/consultaJurisprudencia.xhtml"
+1515429802274	Marionette	DEBUG	Canceled page load listener because no navigation has been detected
+*** UTM:SVC TimerManager:registerTimer called after profile-before-change notification. Ignoring timer registration for id: telemetry_modules_ping
+1515429957270	geckodriver	INFO	geckodriver 0.19.1
+1515429957272	geckodriver	INFO	Listening on 127.0.0.1:56049
+1515429958386	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.RuH3N9cE5C9O"
+1515429958967	Marionette	INFO	Enabled via --marionette
+1515429961550	Marionette	INFO	Listening on port 44153
+1515429961717	Marionette	WARN	TLS certificate errors will be ignored for this session
+1515429961767	Marionette	DEBUG	Register listener.js for window 2147483649
+1515429961796	Marionette	DEBUG	Received DOM event "beforeunload" for "about:blank"
+1515429962414	Marionette	DEBUG	Received DOM event "pagehide" for "about:blank"
+1515429962415	Marionette	DEBUG	Received DOM event "unload" for "about:blank"
+1515429963192	Marionette	DEBUG	Received DOM event "DOMContentLoaded" for "https://www2.tjba.jus.br/erp-portal/publico/jurisprudencia/consultaJurisprudencia.xhtml"
+1515429963242	Marionette	DEBUG	Received DOM event "pageshow" for "https://www2.tjba.jus.br/erp-portal/publico/jurisprudencia/consultaJurisprudencia.xhtml"
+1515429963605	Marionette	DEBUG	Canceled page load listener because no navigation has been detected
+*** UTM:SVC TimerManager:registerTimer called after profile-before-change notification. Ignoring timer registration for id: telemetry_modules_ping
+1515430000753	geckodriver	INFO	geckodriver 0.19.1
+1515430000755	geckodriver	INFO	Listening on 127.0.0.1:41599
+1515430001869	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.Ctrba1zALjke"
+1515430002441	Marionette	INFO	Enabled via --marionette
+1515430005329	Marionette	INFO	Listening on port 35175
+1515430005384	Marionette	WARN	TLS certificate errors will be ignored for this session
+1515430005426	Marionette	DEBUG	Register listener.js for window 2147483649
+1515430005441	Marionette	DEBUG	Received DOM event "beforeunload" for "about:blank"
+1515430006002	Marionette	DEBUG	Received DOM event "pagehide" for "about:blank"
+1515430006002	Marionette	DEBUG	Received DOM event "unload" for "about:blank"
+1515430006646	Marionette	DEBUG	Received DOM event "DOMContentLoaded" for "https://www2.tjba.jus.br/erp-portal/publico/jurisprudencia/consultaJurisprudencia.xhtml"
+1515430006688	Marionette	DEBUG	Received DOM event "pageshow" for "https://www2.tjba.jus.br/erp-portal/publico/jurisprudencia/consultaJurisprudencia.xhtml"
+1515430007046	Marionette	DEBUG	Canceled page load listener because no navigation has been detected
+[Parent 13857, Gecko_IOThread] WARNING: pipe error: Broken pipe: file /build/firefox-itlqqH/firefox-57.0.4+build1/ipc/chromium/src/chrome/common/ipc_channel_posix.cc, line 709
+*** UTM:SVC TimerManager:registerTimer called after profile-before-change notification. Ignoring timer registration for id: telemetry_modules_ping
+1515430199615	geckodriver	INFO	geckodriver 0.19.1
+1515430199619	geckodriver	INFO	Listening on 127.0.0.1:36284
+1515430200729	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.0304DsZyjTFJ"
+1515430201347	Marionette	INFO	Enabled via --marionette
+1515430204293	Marionette	INFO	Listening on port 33702
+1515430204463	Marionette	WARN	TLS certificate errors will be ignored for this session
+1515430204550	Marionette	DEBUG	Register listener.js for window 2147483649
+1515430204606	Marionette	DEBUG	Received DOM event "beforeunload" for "about:blank"
+1515430205277	Marionette	DEBUG	Received DOM event "pagehide" for "about:blank"
+1515430205277	Marionette	DEBUG	Received DOM event "unload" for "about:blank"
+1515430206038	Marionette	DEBUG	Received DOM event "DOMContentLoaded" for "https://www2.tjba.jus.br/erp-portal/publico/jurisprudencia/consultaJurisprudencia.xhtml"
+1515430206083	Marionette	DEBUG	Received DOM event "pageshow" for "https://www2.tjba.jus.br/erp-portal/publico/jurisprudencia/consultaJurisprudencia.xhtml"
+1515430206452	Marionette	DEBUG	Canceled page load listener because no navigation has been detected
+*** UTM:SVC TimerManager:registerTimer called after profile-before-change notification. Ignoring timer registration for id: telemetry_modules_ping
+1515430325264	geckodriver	INFO	geckodriver 0.19.1
+1515430325267	geckodriver	INFO	Listening on 127.0.0.1:45363
+1515430326380	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.vvsy0fQWrLJ9"
+1515430327213	Marionette	INFO	Enabled via --marionette
+1515430329982	Marionette	INFO	Listening on port 35013
+1515430329999	Marionette	WARN	TLS certificate errors will be ignored for this session
+1515430330042	Marionette	DEBUG	Register listener.js for window 2147483649
+1515430330170	Marionette	DEBUG	Received DOM event "beforeunload" for "about:blank"
+1515430330792	Marionette	DEBUG	Received DOM event "pagehide" for "about:blank"
+1515430330792	Marionette	DEBUG	Received DOM event "unload" for "about:blank"
+1515430331794	Marionette	DEBUG	Received DOM event "DOMContentLoaded" for "https://www2.tjba.jus.br/erp-portal/publico/jurisprudencia/consultaJurisprudencia.xhtml"
+1515430331837	Marionette	DEBUG	Received DOM event "pageshow" for "https://www2.tjba.jus.br/erp-portal/publico/jurisprudencia/consultaJurisprudencia.xhtml"
+1515430332193	Marionette	DEBUG	Canceled page load listener because no navigation has been detected
+1515430345414	Marionette	DEBUG	Register listener.js for window 2147483653
+1515430345450	Marionette	DEBUG	Register listener.js for window 2147483656
+*** UTM:SVC TimerManager:registerTimer called after profile-before-change notification. Ignoring timer registration for id: telemetry_modules_ping
+1515430496012	geckodriver	INFO	geckodriver 0.19.1
+1515430496015	geckodriver	INFO	Listening on 127.0.0.1:39645
+1515430497128	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.1UfSroUJHICZ"
+1515430497870	Marionette	INFO	Enabled via --marionette
+1515430500695	Marionette	INFO	Listening on port 45086
+1515430500751	Marionette	WARN	TLS certificate errors will be ignored for this session
+1515430500793	Marionette	DEBUG	Register listener.js for window 2147483649
+*** UTM:SVC TimerManager:registerTimer called after profile-before-change notification. Ignoring timer registration for id: telemetry_modules_ping
+1515430523645	geckodriver	INFO	geckodriver 0.19.1
+1515430523647	geckodriver	INFO	Listening on 127.0.0.1:36694
+1515430524736	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.3l7KirBs3Blq"
+1515430525318	Marionette	INFO	Enabled via --marionette
+1515430528443	Marionette	INFO	Listening on port 34796
+1515430528454	Marionette	WARN	TLS certificate errors will be ignored for this session
+1515430528496	Marionette	DEBUG	Register listener.js for window 2147483649
+*** UTM:SVC TimerManager:registerTimer called after profile-before-change notification. Ignoring timer registration for id: telemetry_modules_ping

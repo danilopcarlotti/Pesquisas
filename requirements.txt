@@ -1,4 +1,6 @@
 Cython
+Xlib
+pyautogui
 bs4
 selenium
 matplotlib
@@ -16,3 +18,4 @@ nltk
 pdfminer.six
 PyPDF2
 gensim
+autopep8
