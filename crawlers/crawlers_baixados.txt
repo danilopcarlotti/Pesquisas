@@ -6,8 +6,8 @@ am - samba
 ce - samba
 ms - samba
 sp - samba
-pb (links para pdf) - esc
-to (links para pdf) - esc
+pb (links para pdf)
+to (links para pdf)
 
 baixados texto - concluídos
 
@@ -38,3 +38,5 @@ problemas graves
 ap - não funciona o botão de "mais resultados"
 pa - bloqueio de mil páginas. Dificuldade em restringir resultados a pequenos períodos
 pe - Só há 500 acórdãos disponíveis nos processos do TJPE e 21k nos processos das turmas recursais
+
+STJ - rever download de votos. Há links que não foram encontrados

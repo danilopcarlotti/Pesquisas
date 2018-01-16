@@ -25,9 +25,9 @@ class crawler_jurisprudencia_tjto():
 				for l in links_inteiro_teor:
 					try:
 						cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,l.get_attribute('href')))
-						driver.close()
 					except:
 						pass
+				driver.close()
 			except Exception as e:
 				print('erro com ',i,' ',e)
 

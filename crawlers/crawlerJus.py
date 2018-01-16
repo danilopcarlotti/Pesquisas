@@ -47,7 +47,7 @@ class crawlerJus():
 		for i in range(3):
 			try:
 				req = urllib.request.Request(link, headers={'User-Agent': 'Mozilla/5.0'})
-				html = urllib.request.urlopen(req,timeout=5).read()
+				html = urllib.request.urlopen(req,timeout=20).read()
 				return html
 			except:
 				pass
