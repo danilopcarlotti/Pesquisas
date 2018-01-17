@@ -1,13 +1,13 @@
 baixados - links
 
-ac - samba
-al - samba
-am - samba
-ce - samba
-ms - samba
-sp - samba
-pb (links para pdf) - esc
-to (links para pdf) - esc
+ac - ok
+al - ok
+am - ok
+ce - ok
+ms - ok
+sp - ok
+pb (links para pdf) - ok
+to (links para pdf) - ok
 
 baixados texto - concluídos
 
@@ -18,6 +18,7 @@ df - esc antigo e novo
 mg (texto completo) - server confirmar
 pa (texto completo) - esc confirmar
 rj (links para pdf) - esc confirmar
+STJ - ok
 
 falta baixar
 
@@ -31,8 +32,14 @@ rn (texto completo)
 ba (texto completo)
 mt (texto completo)
 
-problemas graves
+falta completar e/ou impossível completar
 
 ap - não funciona o botão de "mais resultados"
 pe - Só há 500 acórdãos disponíveis nos processos do TJPE e 21k nos processos das turmas recursais
-STJ - rever download de votos. Há links que não foram encontrados
+STF - baixar documentos
+
+trf1
+trf2
+trf3
+trf4
+trf5
