@@ -12,7 +12,7 @@ to (links para pdf) - ok
 baixados texto - concluídos
 
 ba (texto completo) - esc confirmar
-es - samba
+es - ok
 go - note confirmar
 ma - ok
 df - esc antigo e novo

@@ -60,9 +60,9 @@ if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjrs()
 	print('comecei ',c.__class__.__name__)
 	try:
-		for l in range(len(c.lista_anos)):
+		for l in range(1,len(c.lista_anos)):
 			print(c.lista_anos[l],'\n')
-			for m in range(4,len(c.lista_meses)):
+			for m in range(len(c.lista_meses)):
 				for i in range(1,8):
 					try:
 						c.download_tj('0'+str(i)+c.lista_meses[m]+c.lista_anos[l],'0'+str(i+1)+c.lista_meses[m]+c.lista_anos[l])
