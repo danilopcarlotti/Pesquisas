@@ -23,33 +23,38 @@ class crawler_jurisprudencia_tjpr():
 		driver.find_element_by_id(self.pesquisa_livre).send_keys('ementa')
 		driver.find_element_by_xpath(self.botao_pesquisar).click()
 		time.sleep(1)
+		contador = 0
 		links_inteiro_teor = driver.find_elements_by_class_name('decisao')
 		for l in links_inteiro_teor:
 			try:
 				if re.search(r'jurisprudencia',l.get_attribute("href")):
+					contador += 1
 					cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,l.get_attribute("href")))
-			except:
+			except Exception as e:
 				pass
-		sys.exit()
 		driver.find_element_by_xpath(self.botao_proximo_iniXP).click()
 		links_inteiro_teor = driver.find_elements_by_class_name('decisao')
 		for l in links_inteiro_teor:
 			try:
 				if re.search(r'jurisprudencia',l.get_attribute("href")):
+					contador += 1
 					cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,l.get_attribute("href")))
-			except:
+			except Exception as e:
 				pass
 		self.botao_proximo_iniXP = '//*[@id="navigator"]/div[1]/a[6]'
 		driver.find_element_by_xpath(self.botao_proximo_iniXP).click()
 		loop_counter = 0
 		while True:
 			try:
+				if (contador % 10000 == 0):
+					print(contador)
 				links_inteiro_teor = driver.find_elements_by_class_name('decisao')
 				for l in links_inteiro_teor:
 					try:
 						if re.search(r'jurisprudencia',l.get_attribute("href")):
+							contador += 1
 							cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,l.get_attribute("href")))
-					except:
+					except Exception as e:
 						pass
 				driver.find_element_by_xpath(self.botao_proximoXP).click()
 				time.sleep(2)
@@ -65,3 +70,5 @@ if __name__ == '__main__':
 		c.download_tj()
 	except Exception as e:
 		print('finalizei com erro ',e)
+
+# HÁ MUITO POUCOS LINKS!!!!

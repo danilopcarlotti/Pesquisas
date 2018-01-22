@@ -50,7 +50,8 @@ class crawler_jurisprudencia_tjmg():
 					crawler_jurisprudencia_tj.delete_audios(self)
 					time.sleep(5)
 				except:
-					return			
+					driver.close()
+					return	
 		driver.close()
 
 if __name__ == '__main__':
@@ -58,7 +59,7 @@ if __name__ == '__main__':
 	print('comecei ',c.__class__.__name__)
 	try:
 		for a in c.lista_anos:
-			for m in range(len(c.lista_meses)):
+			for m in range(3,len(c.lista_meses)):
 				c.download_tj('01'+c.lista_meses[m]+a,'14'+c.lista_meses[m]+a)
 				c.download_tj('15'+c.lista_meses[m]+a,'28'+c.lista_meses[m]+a)
 	except Exception as e:

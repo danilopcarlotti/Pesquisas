@@ -33,7 +33,8 @@ class crawler_jurisprudencia_trf1():
 				cursor.execute('INSERT INTO justica_federal.jurisprudencia_trf1 (ementas) value("%s")' % texto.replace('"',''))
 			except Exception as e:
 				print(e)
-				if contador > 2:
+				time.sleep(3)
+				if contador > 8:
 					driver.close()
 
 if __name__ == '__main__':

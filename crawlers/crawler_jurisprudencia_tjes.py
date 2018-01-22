@@ -19,6 +19,7 @@ class crawler_jurisprudencia_tjes():
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
+		time.sleep(5)
 		driver.find_element_by_id(self.pesquisa_livre).send_keys('ementa')
 		driver.find_element_by_id(self.botao_pesquisar).click()
 		loop_counter = 0

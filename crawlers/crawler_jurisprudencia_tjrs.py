@@ -14,48 +14,67 @@ class crawler_jurisprudencia_tjrs():
 		self.botao_pesquisar = '//*[@id="conteudo"]/form/div[1]/div/div/input'
 		self.botao_proximo_iniXP = '//*[@id="main_res_juris"]/div/div[2]/span[1]/a'
 		self.botao_proximoXP = '//*[@id="main_res_juris"]/div/div[2]/span[3]/a'
+		self.data_iniXP = '//*[@id="dia1"]'
+		self.data_fimXP = '//*[@id="dia2"]'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_rs (ementas)'
 
-	def download_tj(self):
+	def download_tj(self,data_ini,data_fim):
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
 		driver.find_element_by_xpath(self.pesquisa_livre).send_keys('a')
+		time.sleep(1)
+		driver.find_element_by_xpath(self.data_iniXP).send_keys(data_ini)
+		time.sleep(1)
+		driver.find_element_by_xpath(self.data_fimXP).send_keys(data_fim)
+		time.sleep(1)
 		driver.find_element_by_xpath(self.botao_pesquisar).click()
 		links_inteiro_teor = driver.find_elements_by_link_text('html')
 		for l in links_inteiro_teor:
 			try:
-				texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(l.get_attribute('href')).replace('"',''))
+				texto = l.get_attribute('href')
 				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))		
 			except:
 				pass
-		driver.find_element_by_xpath(self.botao_proximo_iniXP).click()
-		loop_counter = 0
+		try:
+			driver.find_element_by_xpath(self.botao_proximo_iniXP).click()
+		except:
+			driver.close()
+			return
 		while True:
+			time.sleep(1)
+			links_inteiro_teor = driver.find_elements_by_link_text('html')
+			for l in links_inteiro_teor:
+				try:
+					texto = l.get_attribute('href')
+					cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))		
+				except:
+					pass
 			try:
-				time.sleep(1)
-				for l in links_inteiro_teor:
-					try:
-						texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(l.get_attribute('href')).replace('"',''))
-						cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))		
-					except:
-						pass
 				driver.find_element_by_xpath(self.botao_proximoXP).click()
 			except:
-				loop_counter += 1
-				time.sleep(5)
-				if loop_counter > 3:
-					if input('me ajude'):
-						break
-		driver.close()
+				driver.close()
+				return
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjrs()
 	print('comecei ',c.__class__.__name__)
 	try:
-		c.download_tj()
+		for l in range(len(c.lista_anos)):
+			print(c.lista_anos[l],'\n')
+			for m in range(4,len(c.lista_meses)):
+				for i in range(1,8):
+					try:
+						c.download_tj('0'+str(i)+c.lista_meses[m]+c.lista_anos[l],'0'+str(i+1)+c.lista_meses[m]+c.lista_anos[l])
+					except Exception as e:
+						print(e)		
+				for i in range(10,27):
+					try:
+						c.download_tj(str(i)+c.lista_meses[m]+c.lista_anos[l],str(i+1)+c.lista_meses[m]+c.lista_anos[l])
+					except Exception as e:
+						print(e)
 	except Exception as e:
-		print('finalizei com erro ',e)
+		print('finalizei o ano com erro ',e)
 
 		
 
