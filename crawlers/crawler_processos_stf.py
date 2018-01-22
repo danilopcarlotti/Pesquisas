@@ -40,7 +40,7 @@ class crawlerSTF(crawlerJus):
 		self.numero_final = 6000000 #Este é o último número estimado de um processo válido no STF em 11/11/2017. Número deve ser atualizado
 		self.numero_inicial = 4806730#1169086 até 3000000
 
-	def worker(self,link):
+	def baixarVotos(self,link):
 		pagina = self.baixa_pag(link)
 		if pagina != '':
 			pagina = BeautifulSoup(pagina,'lxml')
@@ -67,11 +67,10 @@ class crawlerSTF(crawlerJus):
 	def baixa_decisoes_proc(self):
 		contador = 0
 		for i in range(self.numero_inicial,self.numero_final):
-			self.worker(self.link_base+str(i))
-			print(i)
+			self.baixarVotos(self.link_base+str(i))
+			if i % 1000 == 0:
+				print(i)
 			
 if __name__ == '__main__':
 	c = crawlerSTF()
-	# teste = 'http://www.stf.jus.br/portal/processo/verProcessoAndamento.asp?incidente=5060240'
-	# c.worker(teste)
 	c.baixa_decisoes_proc()
