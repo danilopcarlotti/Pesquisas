@@ -47,8 +47,8 @@ class crawler_jurisprudencia_tjba():
 				loop_counter += 1
 				time.sleep(5)
 				if loop_counter > 5:
-					break
-		driver.close()
+					driver.close()
+					return
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjba()

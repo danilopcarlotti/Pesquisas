@@ -1,4 +1,4 @@
-import sys, re, time
+import sys, re, time, pyautogui
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -36,11 +36,11 @@ class crawler_jurisprudencia_tjpa():
 					driver.switch_to.window(driver.window_handles[-1])
 					texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
 					cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
+					pyautogui.hotkey('ctrl','w')
 					driver.switch_to.window(driver.window_handles[0])
 			except Exception as e:
 				pass
 		driver.find_element_by_xpath(self.botao_proximo_iniXP).click()
-		loop_counter = 0
 		while True:
 			try:
 				time.sleep(2)
@@ -52,24 +52,25 @@ class crawler_jurisprudencia_tjpa():
 							driver.switch_to.window(driver.window_handles[-1])
 							texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
 							cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
+							pyautogui.hotkey('ctrl','w')
 							driver.switch_to.window(driver.window_handles[0])
 					except Exception as e:
 						pass
 				driver.find_element_by_xpath(self.botao_proximoXP).click()
 			except:
-				loop_counter += 1
-				time.sleep(5)
-				if loop_counter > 3:
-					break
-		driver.close()
+				return
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjpa()
 	print('comecei ',c.__class__.__name__)
-	try:
-		for a in c.lista_anos:
-			for m in range(len(c.lista_meses)):
+	for a in c.lista_anos:
+		print(a)
+		for m in range(len(c.lista_meses)):
+			try:
 				c.download_tj('01/'+c.lista_meses[m]+'/'+a,'14/'+c.lista_meses[m]+'/'+a)
+			except:
+				print(c.lista_meses[m])
+			try:
 				c.download_tj('15/'+c.lista_meses[m]+'/'+a,'28/'+c.lista_meses[m]+'/'+a)
-	except Exception as e:
-		print('finalizei com erro ',e)
+			except:
+				print(c.lista_meses[m])

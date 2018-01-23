@@ -5,23 +5,23 @@ al - ok
 am - ok
 ce - ok
 ms - ok
+sc (links para html) - esc confirmar
 sp - ok
 pb (links para pdf) - ok
 to (links para pdf) - ok
 
 baixados texto - concluídos
 
-ba (texto completo) - esc confirmar
+ba (texto completo) - esc
 es - samba
 go - note confirmar
 ma - ok
-df - esc antigo e novo
+df - ok (talvez contenha processos da BAHIA. Verificar)
 mg (texto completo) - note confirmar
 pa (texto completo) - esc confirmar
 pi (textos completo) - ok
-rj (links para pdf) - esc confirmar
+rj (links para pdf) - ok
 rs (links para html) - samba confirmar
-sc (texto completo) - esc confirmar
 STJ - ok
 trf1 (texto completo) - note confirmar
 
