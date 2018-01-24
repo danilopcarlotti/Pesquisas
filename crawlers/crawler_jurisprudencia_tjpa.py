@@ -64,13 +64,14 @@ if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjpa()
 	print('comecei ',c.__class__.__name__)
 	for a in c.lista_anos:
-		print(a)
-		for m in range(len(c.lista_meses)):
-			try:
-				c.download_tj('01/'+c.lista_meses[m]+'/'+a,'14/'+c.lista_meses[m]+'/'+a)
-			except:
-				print(c.lista_meses[m])
-			try:
-				c.download_tj('15/'+c.lista_meses[m]+'/'+a,'28/'+c.lista_meses[m]+'/'+a)
-			except:
-				print(c.lista_meses[m])
+		if int(a) > 2015:
+			print(a)
+			for m in range(len(c.lista_meses)):
+				try:
+					c.download_tj('01/'+c.lista_meses[m]+'/'+a,'14/'+c.lista_meses[m]+'/'+a)
+				except:
+					print(c.lista_meses[m])
+				try:
+					c.download_tj('15/'+c.lista_meses[m]+'/'+a,'28/'+c.lista_meses[m]+'/'+a)
+				except:
+					print(c.lista_meses[m])

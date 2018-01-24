@@ -24,18 +24,23 @@ class crawler_jurisprudencia_tjmt():
 		driver.find_element_by_xpath(botao_prox).click()
 		contador_proximo = 2
 		loop_counter = 0
+		contador = 0
 		while True:
 			try:
 				time.sleep(1)
 				for i in range(1,11):
 					try:
+						contador += 1
 						driver.find_element_by_xpath('//*[@id="divDetalhesConsultaAcordao"]/div[%s]/div/table/thead[1]/tr/td[2]/button[1]' % str(i)).click()
 						driver.switch_to.window(driver.window_handles[-1])
 						time.sleep(1)
 						pyautogui.hotkey('ctrl','s')
 						time.sleep(1)
+						pyautogui.typewrite('Acordao_MT_'+str(contador))
+						time.sleep(1)
 						pyautogui.press('enter')
 						time.sleep(1)
+						pyautogui.hotkey('ctrl','w')
 					except:
 						continue
 				driver.switch_to.window(driver.window_handles[0])
