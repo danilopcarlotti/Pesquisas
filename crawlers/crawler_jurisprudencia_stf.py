@@ -13,7 +13,7 @@ class processosSTF(crawlerJus):
 		ssl._create_default_https_context = ssl._create_unverified_context 
 		self.link_base = 'http://www.stf.jus.br/portal/processo/verProcessoAndamento.asp?incidente='
 		self.numero_final = 6000000 #Este é o último número estimado de um processo válido no STF em 11/11/2017. Número deve ser atualizado
-		self.numero_inicial = 4806730#1169086 até 3000000
+		self.numero_inicial = 2000000
 
 		
 	def baixarDadosProcesso(self):
@@ -52,7 +52,12 @@ class processosSTF(crawlerJus):
 
 	def baixarDocumentos(self):
 		pass
-		
+	
+	def loginSTF(self):
+		link = 'https://sistemas.stf.jus.br/cas/login?service=http%%3A%%2F%%2Fsistemas.stf.jus.br%%2Fpeticionamento%%2Fj_spring_cas_security_check'
+		username_xpath = '//*[@id="username"]'
+		senha_xpath = '//*[@id="password"]'
+
 
 # if __name__ == '__main__':
 # 	pass

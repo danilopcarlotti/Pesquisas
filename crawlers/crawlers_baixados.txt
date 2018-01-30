@@ -5,6 +5,7 @@ al - ok
 am - ok
 ce - ok
 ms - ok
+rj (links para pdf) - ok
 sc (links para html) - ok
 sp - ok
 pb (links para pdf) - ok
@@ -20,7 +21,7 @@ mg (texto completo) - note confirmar
 mt (texto completo) - esc 0 confirmar (ativo)
 pa (texto completo) - esc
 pi (textos completo) - ok
-rj (links para pdf) - ok
+rn (texto completo) - esc 0 confirmar
 rs (links para html) - samba confirmar
 STJ - ok
 trf1 (texto completo) - note confirmar
@@ -29,7 +30,6 @@ falta baixar
 
 ba (texto completo)
 pr (texto completo)
-rn (texto completo)
 ro (texto completo)
 
 falta completar e/ou impossível completar
