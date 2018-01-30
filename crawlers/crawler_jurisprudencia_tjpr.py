@@ -23,24 +23,13 @@ class crawler_jurisprudencia_tjpr():
 		driver.find_element_by_id(self.pesquisa_livre).send_keys('ementa')
 		driver.find_element_by_xpath(self.botao_pesquisar).click()
 		time.sleep(1)
-		contador = 0
-		links_inteiro_teor = driver.find_elements_by_class_name('decisao')
-		for l in links_inteiro_teor:
-			try:
-				if re.search(r'jurisprudencia',l.get_attribute("href")):
-					contador += 1
-					cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,l.get_attribute("href")))
-			except Exception as e:
-				pass
+		contador = 0		
+		texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
+		cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
 		driver.find_element_by_xpath(self.botao_proximo_iniXP).click()
-		links_inteiro_teor = driver.find_elements_by_class_name('decisao')
-		for l in links_inteiro_teor:
-			try:
-				if re.search(r'jurisprudencia',l.get_attribute("href")):
-					contador += 1
-					cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,l.get_attribute("href")))
-			except Exception as e:
-				pass
+		time.sleep(1)
+		texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
+		cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
 		self.botao_proximo_iniXP = '//*[@id="navigator"]/div[1]/a[6]'
 		driver.find_element_by_xpath(self.botao_proximo_iniXP).click()
 		loop_counter = 0
@@ -48,18 +37,14 @@ class crawler_jurisprudencia_tjpr():
 			try:
 				if (contador % 10000 == 0):
 					print(contador)
-				links_inteiro_teor = driver.find_elements_by_class_name('decisao')
-				for l in links_inteiro_teor:
-					try:
-						if re.search(r'jurisprudencia',l.get_attribute("href")):
-							contador += 1
-							cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,l.get_attribute("href")))
-					except Exception as e:
-						pass
+				texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
+				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
 				driver.find_element_by_xpath(self.botao_proximoXP).click()
 				time.sleep(2)
 			except:
 				if input('me ajude'):
+					texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
+					cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
 					driver.find_element_by_xpath(self.botao_proximoXP).click()
 		driver.close()
 

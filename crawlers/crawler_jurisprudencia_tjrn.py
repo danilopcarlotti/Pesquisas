@@ -35,14 +35,14 @@ class crawler_jurisprudencia_tjrn():
 					break
 			except:
 				pass
-		texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
+		texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source)).replace('"','')
 		cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
 		driver.find_element_by_xpath(self.botao_proximo).click()
 		loop_counter = 0
 		while True:
 			try:
 				time.sleep(2)
-				texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
+				texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source)).replace('"','')
 				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
 				driver.find_element_by_xpath(self.botao_proximo).click()
 			except Exception as e:

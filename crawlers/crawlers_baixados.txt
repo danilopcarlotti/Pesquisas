@@ -12,14 +12,13 @@ to (links para pdf) - ok
 
 baixados texto - concluídos
 
-ba (texto completo) - esc
 es - samba
 go - note confirmar
 ma - ok
-df - ok (talvez contenha processos da BAHIA. Verificar)
+df - esc (talvez contenha processos da BAHIA. Verificar)
 mg (texto completo) - note confirmar
-mt (texto completo) - esc confirmar
-pa (texto completo) - esc confirmar
+mt (texto completo) - esc 0 confirmar (ativo)
+pa (texto completo) - esc
 pi (textos completo) - ok
 rj (links para pdf) - ok
 rs (links para html) - samba confirmar
@@ -28,14 +27,15 @@ trf1 (texto completo) - note confirmar
 
 falta baixar
 
+ba (texto completo)
+pr (texto completo)
+rn (texto completo)
+ro (texto completo)
 
 falta completar e/ou impossível completar
 
 ap - não funciona o botão de "mais resultados"
 pe - Só há 500 acórdãos disponíveis nos processos do TJPE e 21k nos processos das turmas recursais
-pr (texto completo) - samba revisar
-ro (texto completo) - note confirmar - refazer!
-rn (texto completo) - revisar!
 rr (texto completo) - note confirmar - refazer!
 STF - baixar documentos
 

@@ -40,7 +40,11 @@ class crawler_jurisprudencia_tjpa():
 					driver.switch_to.window(driver.window_handles[0])
 			except Exception as e:
 				pass
-		driver.find_element_by_xpath(self.botao_proximo_iniXP).click()
+		try: 
+			driver.find_element_by_xpath(self.botao_proximo_iniXP).click()
+		except:
+			driver.close()
+			return
 		while True:
 			try:
 				time.sleep(2)
@@ -58,7 +62,8 @@ class crawler_jurisprudencia_tjpa():
 						pass
 				driver.find_element_by_xpath(self.botao_proximoXP).click()
 			except:
-				return
+				driver.close()
+				break
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjpa()
@@ -66,12 +71,18 @@ if __name__ == '__main__':
 	for a in c.lista_anos:
 		if int(a) > 2015:
 			print(a)
-			for m in range(len(c.lista_meses)):
-				try:
-					c.download_tj('01/'+c.lista_meses[m]+'/'+a,'14/'+c.lista_meses[m]+'/'+a)
-				except:
-					print(c.lista_meses[m])
-				try:
-					c.download_tj('15/'+c.lista_meses[m]+'/'+a,'28/'+c.lista_meses[m]+'/'+a)
-				except:
-					print(c.lista_meses[m])
+			try:
+				
+				for m in range(len(c.lista_meses)):
+					for i in range(1,8):
+						try:
+							c.download_tj('0'+str(i)+'/'+c.lista_meses[m]+'/'+a,'0'+str(i+1)+'/'+c.lista_meses[m]+'/'+a)
+						except Exception as e:
+							print(e)		
+					for i in range(10,27):
+						try:
+							c.download_tj(str(i)+'/'+c.lista_meses[m]+'/'+a,str(i+1)+'/'+c.lista_meses[m]+'/'+a)
+						except Exception as e:
+							print(e)
+			except Exception as e:
+				print(e)
