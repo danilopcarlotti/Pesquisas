@@ -4,9 +4,10 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from crawlerJus import crawlerJus
 from common.conexao_local import cursorConexao
+from common.login_stf import USER,SENHA
 
 
-class processosSTF(crawlerJus):
+class crawler_jurisprudencia_stf(crawlerJus):
 	"""Classe para download de informações sobre processos do STJ"""
 	def __init__(self):
 		super().__init__()
@@ -15,7 +16,6 @@ class processosSTF(crawlerJus):
 		self.numero_final = 6000000 #Este é o último número estimado de um processo válido no STF em 11/11/2017. Número deve ser atualizado
 		self.numero_inicial = 2000000
 
-		
 	def baixarDadosProcesso(self):
 		pass
 
@@ -50,17 +50,67 @@ class processosSTF(crawlerJus):
 			if i % 1000 == 0:
 				print(i)
 
-	def baixarDocumentos(self):
-		pass
-	
-	def loginSTF(self):
-		link = 'https://sistemas.stf.jus.br/cas/login?service=http%%3A%%2F%%2Fsistemas.stf.jus.br%%2Fpeticionamento%%2Fj_spring_cas_security_check'
-		username_xpath = '//*[@id="username"]'
-		senha_xpath = '//*[@id="password"]'
+	def baixar_documentos_stf(self):
+		print('**FAZENDO DOWNLOAD DOS DOCUMENTOS DE PROCESSOS DO STF**')
+		driver = self.login_stf()
+		link_mensagem_link = '//*[@id="example"]/tbody/tr/td[2]/span/a'
+		link_download = '//*[@id="idModalVisualizacaoConteudoComunicacao"]/div/div/div[2]/div/div/h4/div/p[2]/a'
+		time.sleep(5)
+		while True:
+			try:
+				driver.find_element_by_xpath(link_mensagem_link).click()
+				time.sleep(1)
+				driver.find_element_by_xpath(link_download).click()
+				time.sleep(1)
+				driver.switch_to.window(driver.window_handles[0])
+				driver.find_element_by_xpath('/html/body/a').click()
+				time.sleep(1)
+			except:
+				driver.refresh()
+				time.sleep(5)
 
+	def login_stf(self):
+		driver = webdriver.Chrome(self.chromedriver)
+		link = 'https://sistemas.stf.jus.br/peticionamento/'
+		driver.get(link)
+		try:
+			senha_xpath = '//*[@id="password"]'
+			submit_login_xpath = '//*[@id="fm1"]/div[3]/div[2]/input'
+			username_xpath = '//*[@id="username"]'
+			driver.find_element_by_xpath(username_xpath).send_keys(USER)
+			driver.find_element_by_xpath(senha_xpath).send_keys(SENHA)
+			driver.find_element_by_xpath(submit_login_xpath).click()
+		except:
+			pass
+		return driver
 
-# if __name__ == '__main__':
-# 	pass
+	def solicitar_link_download_documentos(self,ids_doc):
+		driver = self.login_stf()
+		aba_pecas_xpath = '//*[@id="abaPecas"]'
+		download_todas_pecas_xpath = '//*[@id="pecas"]/processo-pecas/div/div/div/div/div/button[3]'
+		processo_interesse_xpath = '//*[@id="txt-pesquisa-processo"]'
+		submit_processo_interesse_xpath = '//*[@id="container"]/div[3]/div[1]/div[2]/div[2]/div/div/div[4]/div/div[1]/div/span/button'
+		ver_mais_processo_interesse_xpath = '//*[@id="container"]/div[3]/div[1]/div[2]/div[2]/div/div/div[4]/div/div[2]/div/div/a'
+		time.sleep(2)
+		for i in ids_doc:
+			driver.find_element_by_xpath(processo_interesse_xpath).send_keys(i)
+			driver.find_element_by_xpath(submit_processo_interesse_xpath).click()
+			time.sleep(1)
+			driver.find_element_by_xpath(ver_mais_processo_interesse_xpath).click()
+			while True:
+				try:
+					driver.switch_to.window(driver.window_handles[1])
+					time.sleep(1)
+					driver.find_element_by_xpath(aba_pecas_xpath).click()
+					driver.find_element_by_xpath(download_todas_pecas_xpath).click()
+					break
+				except:
+					time.sleep(1)
+			driver.switch_to.window(driver.window_handles[0])
+		driver.close()
+
+if __name__ == '__main__':
+	c = crawler_jurisprudencia_stf()
 
 # cursor = cursorConexao()
 # cursor.execute('SELECT id, link_dados from stf.dados_processo limit 1000000;')
