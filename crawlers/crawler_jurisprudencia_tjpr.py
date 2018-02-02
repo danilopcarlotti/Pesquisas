@@ -41,6 +41,7 @@ class crawler_jurisprudencia_tjpr():
 				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
 				driver.find_element_by_xpath(self.botao_proximoXP).click()
 				time.sleep(2)
+				contador += 1
 			except:
 				if input('me ajude'):
 					texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))

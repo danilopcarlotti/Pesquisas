@@ -18,6 +18,9 @@ class crawler_jurisprudencia_tjsp():
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_sp (ementas)'
 		self.link_esaj = 'https://esaj.tjsp.jus.br/cjsg/getArquivo.do?cdAcordao=%s&cdForo=%s'
 
+	def download_acordao_sp(link,id_acordao):
+		self.download_pdf_acordao(link,'//*[@id="valorCaptcha"]','//*[@id="captchaInfo"]/ul/li[1]/a',id_acordao)
+
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjsp()
 	print('comecei ',c.__class__.__name__)

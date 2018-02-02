@@ -1,10 +1,11 @@
-from crawlerJus import crawlerJus
+import time, os, common.download_path, re, subprocess
 from bs4 import BeautifulSoup
+from common.audio_monitor import audio_monitor
+from common.conexao_local import cursorConexao
+from crawlerJus import crawlerJus
+from datetime import date
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from common.conexao_local import cursorConexao
-from datetime import date
-import time, os, common.download_path, re, subprocess
 
 class crawler_jurisprudencia_tj():
 	"""Generic class with methods for crawler_jurisprudencia_tj's"""
@@ -32,11 +33,9 @@ class crawler_jurisprudencia_tj():
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get_link(link)
 		try:
-			driver.find_element_by_xpath(input_captcha_xpath).click() #VERIFICAR SE ESTE É UM TESTE POSSÍVEL E/OU BOM
+			driver.find_element_by_xpath(input_captcha_xpath).send_keys('') #VERIFICAR SE ESTE É UM TESTE POSSÍVEL E/OU BOM
 			self.delete_audios()
-			# alterar o identificador do monitor de stereo
-			# https://www.funwithelectronics.com/?id=95
-			command = 'pacat --record -d alsa_output.pci-0000XXX.monitor | sox -t raw -r 44100 -s -L -b 16 -c 2 - "audio.wav" trim 0 5'
+			command = 'pacat --record -d %s | sox -t raw -r 44100 -s -L -b 16 -c 2 - "audio.wav" trim 0 5' % audio_monitor
 			proc = subprocess.Popen(command, shell=True)
 			driver.find_element_by_xpath(ouvir_captch_xpath).click()
 			try:
@@ -48,6 +47,7 @@ class crawler_jurisprudencia_tj():
 			self.delete_audios()
 		except:
 			pass
+		time.sleep(1)
 		pyautogui.hotkey('ctrl','s')
 		time.sleep(1)
 		pyautogui.typewrite('Acordao_'+id_acordao)

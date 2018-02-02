@@ -38,7 +38,7 @@ class crawlerJus():
 
 	def baixa_html_pdf(self,link,nome_arq):
 		response = urllib.request.urlopen(link,timeout=5)
-		file = open(self.dia+self.mes+self.ano+'_'+nome_arq+".pdf", 'wb')
+		file = open(nome_arq+".pdf", 'wb')
 		file.write(response.read())
 		time.sleep(1)
 		file.close()
