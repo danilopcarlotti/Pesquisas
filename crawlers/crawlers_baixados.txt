@@ -16,26 +16,26 @@ baixados texto - concluídos
 es - ok
 go - note confirmar
 ma - ok
-df - esc (talvez contenha processos da BAHIA. Verificar)
+df - ok
 mg (texto completo) - note confirmar
 pa (texto completo) - email
 pi (textos completo) - ok
-rn (texto completo) - esc 0 confirmar
-rr (texto completo) - email
-rs (links para html) - samba confirmar
+pr (texto completo) - esc 0 confirmar
+rn (texto completo) - email
+rr (texto completo) - ok
+rs (links para html) - samba
 STJ - ok
 trf1 (texto completo) - note confirmar
+trf4 (texto completo) - esc 1 confirmar
+trf5 (texto completo) - esc 2 confirmar
 
 falta baixar
 
 ba (texto completo)
 mt (texto completo)
-pr (texto completo)
 ro (texto completo)
 STF (documentos)
 trf3 (links para html) porque não está funcionando, apesar de funcionar manualmente?
-trf4 (links para html)
-trf5 (texto completo)
 
 falta completar e/ou impossível completar
 

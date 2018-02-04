@@ -37,7 +37,7 @@ class crawler_jurisprudencia_trf4():
 		texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source)).replace('"','')
 		cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
 		try:
-			driver.find_element_by_xpath(self.botao_prox)
+			driver.find_element_by_xpath(self.botao_prox).click()
 		except:
 			driver.close()
 			return
@@ -47,7 +47,7 @@ class crawler_jurisprudencia_trf4():
 				time.sleep(1)
 				texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source)).replace('"','')
 				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
-				driver.find_element_by_xpath(self.botao_prox % self.botao_prox_outros)
+				driver.find_element_by_xpath(self.botao_prox).click()
 				contador = 0
 			except Exception as e:
 				print(e)
