@@ -57,17 +57,17 @@ class processosSTF(crawlerJus):
 # if __name__ == '__main__':
 # 	pass
 
-cursor = cursorConexao()
-cursor.execute('SELECT id, link_dados from stf.dados_processo limit 1000000;')
-links_pai = cursor.fetchall()
-links_pai_d = {}
-for id_p,link in links_pai:
-	links_pai_d[int(link.split('incidente=')[1])] = int(id_p)
+# cursor = cursorConexao()
+# cursor.execute('SELECT id, link_dados from processos_stf.dados_processo limit 1000000;')
+# links_pai = cursor.fetchall()
+# links_pai_d = {}
+# for id_p,link in links_pai:
+# 	links_pai_d[int(link.split('incidente=')[1])] = int(id_p)
 
-cursor.execute('SELECT id, link_pagina from stf.texto_decisoes limit 1000000;')
-links = cursor.fetchall()
-for id_l,link_pag in links:
-	try:
-		cursor.execute('UPDATE stf.texto_decisoes set id_processo = ("%s") where id = ("%s")' % (links_pai_d[int(link_pag.split('incidente=')[1])],id_l))
-	except:
-		pass
+# cursor.execute('SELECT id, link_pagina from processos_stf.texto_decisoes limit 1000000;')
+# links = cursor.fetchall()
+# for id_l,link_pag in links:
+# 	try:
+# 		cursor.execute('UPDATE processos_stf.texto_decisoes set id_processo = ("%s") where id = ("%s")' % (links_pai_d[int(link_pag.split('incidente=')[1])],id_l))
+# 	except:
+# 		pass

@@ -28,7 +28,7 @@ class crawler_jurisprudencia_tjrr():
 			for l in links_inteiro_teor:
 				try:
 					if re.search(r'inteiroteor\.php',l.get_attribute('href')):
-						texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(l.get_attribute('href')).replace('"',''))
+						texto = l.get_attribute('href')
 						cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))		
 				except:
 					pass
@@ -41,7 +41,7 @@ class crawler_jurisprudencia_tjrr():
 				for l in links_inteiro_teor:
 					try:
 						if re.search(r'inteiroteor\.php',l.get_attribute('href')):
-							texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(l.get_attribute('href')).replace('"',''))
+							texto = l.get_attribute('href')
 							cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))		
 					except:
 						pass
@@ -50,9 +50,9 @@ class crawler_jurisprudencia_tjrr():
 			except:
 				loop_counter += 1
 				time.sleep(5)
-				if loop_counter > 3:
-					if input('me ajude'):
-						break
+				driver.refresh()
+				if loop_counter > 5:
+					break
 		driver.close()
 
 if __name__ == '__main__':

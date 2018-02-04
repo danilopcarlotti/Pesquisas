@@ -4,6 +4,8 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
+contador = 0
+
 class crawler_jurisprudencia_tjmt():
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância do Mato Grosso"""
 	def __init__(self):
@@ -15,6 +17,7 @@ class crawler_jurisprudencia_tjmt():
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_mt (ementas)' 
 
 	def download_tj(self):
+		global contador
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
 		driver.find_element_by_xpath(self.pesquisa_livre).send_keys('a')
@@ -26,17 +29,22 @@ class crawler_jurisprudencia_tjmt():
 		loop_counter = 0
 		while True:
 			try:
-				time.sleep(1)
+				time.sleep(3)
 				for i in range(1,11):
 					try:
 						driver.find_element_by_xpath('//*[@id="divDetalhesConsultaAcordao"]/div[%s]/div/table/thead[1]/tr/td[2]/button[1]' % str(i)).click()
 						driver.switch_to.window(driver.window_handles[-1])
+						contador += 1
 						time.sleep(1)
 						pyautogui.hotkey('ctrl','s')
 						time.sleep(1)
+						pyautogui.typewrite('Acordao_MT_'+str(contador))
+						time.sleep(1)
 						pyautogui.press('enter')
 						time.sleep(1)
-					except:
+						pyautogui.hotkey('ctrl','w')
+						driver.switch_to.window(driver.window_handles[0])
+					except Exception as e:
 						continue
 				driver.switch_to.window(driver.window_handles[0])
 				if contador_proximo < 4:

@@ -25,19 +25,25 @@ class crawler_jurisprudencia_tjba():
 		driver.find_element_by_id(self.botao_pesquisar).click()
 		time.sleep(15)
 		loop_counter = 0
+		contador
 		while True:
 			try:
 				links_inteiro_teor = driver.find_elements_by_link_text('Inteiro Teor')
 				for l in range(len(links_inteiro_teor)):
 					try:
 						links_inteiro_teor[l].click()
+						contador += 1
 					except:
 						continue
 					driver.switch_to.window(driver.window_handles[-1])
 					time.sleep(1)
 					pyautogui.hotkey('ctrl','s')
+					time.sleep(1)
+					pyautogui.typewrite('Acordao_BA_'+str(contador))
+					time.sleep(1)
 					pyautogui.press('enter')
 					time.sleep(1)
+					pyautogui.hotkey('ctrl','w')
 					driver.switch_to.window(driver.window_handles[0])
 				driver.switch_to.window(driver.window_handles[0])
 				driver.find_element_by_xpath(self.botao_proximoXP).click()
@@ -47,8 +53,8 @@ class crawler_jurisprudencia_tjba():
 				loop_counter += 1
 				time.sleep(5)
 				if loop_counter > 5:
-					break
-		driver.close()
+					driver.close()
+					return
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjba()

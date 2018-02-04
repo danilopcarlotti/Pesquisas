@@ -1,2 +1,3 @@
 crawlers/common/conexao_local.py
 crawlers/common/download_path.py
+crawlers/common/login_stf.py
