@@ -80,7 +80,7 @@ class crawler_jurisprudencia_tj(crawlerJus):
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)
 		def insert_links(pagina):
-			pag = BeautifulSoup(pagina,'lxml')
+			pag = BeautifulSoup(pagina,'html.parser')
 			links = pag.find_all('a', attrs={'title':'Visualizar Inteiro Teor'})
 			for l in links:
 				texto = self.link_esaj % (l.attrs['cdacordao'],l.attrs['cdforo'])

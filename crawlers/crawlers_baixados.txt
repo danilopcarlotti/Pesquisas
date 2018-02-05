@@ -1,9 +1,3 @@
-baixados - links
-
-al - ok (recaptcha)
-ce - ok (recaptcha)
-ms - ok (recaptcha)
-
 baixados texto - concluídos
 
 es - ok
@@ -32,10 +26,15 @@ to (links para pdf) - ok (-)
 
 falta baixar
 
-ac
+ac (texto completo) *
+rj (pdf's) *
+
+al - ok (recaptcha)
+ce - ok (recaptcha)
+ms - ok (recaptcha)
+
 ba (texto completo)
 mt (texto completo)
-rj (texto completo)
 ro (texto completo)
 STF (documentos)
 trf3 (links para html) porque não está funcionando, apesar de funcionar manualmente?
