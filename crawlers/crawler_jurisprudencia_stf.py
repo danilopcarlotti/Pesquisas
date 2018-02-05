@@ -120,10 +120,10 @@ class crawler_jurisprudencia_stf(crawlerJus):
 
 if __name__ == '__main__':
 	cursor = cursorConexao()
-	cursor.execute('SELECT id, link_dados from processos_stf.dados_processo limit 1000000;')
+	cursor.execute('SELECT id, link_dados from processos_stf.dados_processo where processo is NULL;')
 	links = cursor.fetchall()
 	c = crawler_jurisprudencia_stf()
-c	.baixarDadosProcesso(links)
+	c.baixarDadosProcesso(links)
 
 	
 	# cursor.execute('SELECT processo from processos_stf.dados_processo where limit 1000000;')

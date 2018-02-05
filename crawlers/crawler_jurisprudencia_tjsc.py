@@ -68,17 +68,28 @@ class crawler_jurisprudencia_tjsc():
 				return
 		driver.close()
 
-if __name__ == '__main__':
+	def download_acordao_sc(self,id_acordao,link):
+		crawler_jurisprudencia_tj.download_pdf_acordao(self,link,'','','','sc_2_inst_' + id_acordao)
+
+def main()
 	c = crawler_jurisprudencia_tjsc()
-	print('comecei ',c.__class__.__name__)
-	for a in c.lista_anos:
-		print(a)
-		for m in range(len(c.lista_meses)):
-			try:
-				c.download_tj('01/'+c.lista_meses[m]+'/'+a,'14/'+c.lista_meses[m]+'/'+a)
-			except Exception as e:
-				print(e,c.lista_meses[m])
-			try:
-				c.download_tj('15/'+c.lista_meses[m]+'/'+a,'28/'+c.lista_meses[m]+'/'+a)
-			except Exception as e:
-				print(e,c.lista_meses[m])
+	cursor = cursorConexao()
+	cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_sc limit 10000000;')
+	lista_links = cursor.fetchall()
+	for i,l in lista_links:
+		c.download_acordao_sc(i,l)
+	# print('comecei ',c.__class__.__name__)
+	# for a in c.lista_anos:
+	# 	print(a)
+	# 	for m in range(len(c.lista_meses)):
+	# 		try:
+	# 			c.download_tj('01/'+c.lista_meses[m]+'/'+a,'14/'+c.lista_meses[m]+'/'+a)
+	# 		except Exception as e:
+	# 			print(e,c.lista_meses[m])
+	# 		try:
+	# 			c.download_tj('15/'+c.lista_meses[m]+'/'+a,'28/'+c.lista_meses[m]+'/'+a)
+	# 		except Exception as e:
+	# 			print(e,c.lista_meses[m])
+
+if __name__ == '__main__':
+	main()

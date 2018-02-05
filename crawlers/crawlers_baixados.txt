@@ -1,15 +1,8 @@
 baixados - links
 
-ac - ok
-al - ok
-am - ok
-ce - ok
-ms - ok
-rj (links para pdf) - ok
-sc (links para html) - ok
-sp - ok
-pb (links para pdf) - ok
-to (links para pdf) - ok
+al - ok (recaptcha)
+ce - ok (recaptcha)
+ms - ok (recaptcha)
 
 baixados texto - concluídos
 
@@ -29,10 +22,20 @@ trf1 (texto completo) - note confirmar
 trf4 (texto completo) - esc 1 confirmar
 trf5 (texto completo) - esc 2 confirmar
 
+falta baixar - links baixados
+
+am - ok (captcha)
+sc (links para html) - ok (-)
+sp (links para pdf) - ok (captcha)
+pb (links para pdf) - ok (-)
+to (links para pdf) - ok (-)
+
 falta baixar
 
+ac
 ba (texto completo)
 mt (texto completo)
+rj (texto completo)
 ro (texto completo)
 STF (documentos)
 trf3 (links para html) porque não está funcionando, apesar de funcionar manualmente?

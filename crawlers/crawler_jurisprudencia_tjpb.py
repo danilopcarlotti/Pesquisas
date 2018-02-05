@@ -48,13 +48,24 @@ class crawler_jurisprudencia_tjpb():
 					break
 		driver.close()
 
-if __name__ == '__main__':
+	def download_acordao_pb(self,id_acordao,link):
+		crawler_jurisprudencia_tj.download_pdf_acordao(self,link,'','','','pb_2_inst_' + id_acordao)
+
+def main():
 	c = crawler_jurisprudencia_tjpb()
-	print('comecei ',c.__class__.__name__)
-	try:
-		for a in c.lista_anos:
-			for m in range(len(c.lista_meses)):
-				c.download_tj('01'+c.lista_meses[m]+a,'14'+c.lista_meses[m]+a)
-				c.download_tj('15'+c.lista_meses[m]+a,'28'+c.lista_meses[m]+a)
-	except Exception as e:
-		print('finalizei com erro ',e)
+	cursor = cursorConexao()
+	cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_pb limit 10000000;')
+	lista_links = cursor.fetchall()
+	for i,l in lista_links:
+		c.download_acordao_pb(i,l)
+	# print('comecei ',c.__class__.__name__)
+	# try:
+	# 	for a in c.lista_anos:
+	# 		for m in range(len(c.lista_meses)):
+	# 			c.download_tj('01'+c.lista_meses[m]+a,'14'+c.lista_meses[m]+a)
+	# 			c.download_tj('15'+c.lista_meses[m]+a,'28'+c.lista_meses[m]+a)
+	# except Exception as e:
+	# 	print('finalizei com erro ',e)
+
+if __name__ == '__main__':
+	main()
