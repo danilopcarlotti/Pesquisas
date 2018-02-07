@@ -135,22 +135,21 @@ class crawler_jurisprudencia_stf(crawlerJus):
 		time.sleep(3)
 		for i in ids_doc:
 			try:
-				time.sleep(5)
 				driver.refresh()
 				while True:
 					try:
 						driver.find_element_by_xpath(processo_interesse_xpath).send_keys(i)
-						for j in range(3):
-							driver.find_element_by_xpath(submit_processo_interesse_xpath).click()
-							time.sleep(1)
+						time.sleep(10)
+						driver.find_element_by_xpath(submit_processo_interesse_xpath).click()
+						time.sleep(2)
 						driver.find_element_by_xpath(ver_mais_processo_interesse_xpath).click()
 						break
 					except:
 						time.sleep(1)
-				contador = 0
 				while True:
 					try:
-						driver.switch_to.window(driver.window_handles[-1])
+						time.sleep(2)
+						driver.switch_to.window(driver.window_handles[1])
 						time.sleep(1)
 						driver.find_element_by_xpath(aba_pecas_xpath).click()
 						driver.find_element_by_xpath(download_todas_pecas_xpath).click()
@@ -158,7 +157,7 @@ class crawler_jurisprudencia_stf(crawlerJus):
 						pyautogui.hotkey('ctrl','w')
 						break
 					except:
-						break
+						time.sleep(1)
 				time.sleep(1)
 				driver.switch_to.window(driver.window_handles[0])
 			except:
@@ -180,14 +179,14 @@ if __name__ == '__main__':
 	# links_d = cursor.fetchall()
 	# c.solicitar_link_download_documentos(links_d)
 
-	# cursor.execute('SELECT processo from stf.dados_processo where id > 19900 limit 1000000;')
-	# ids_doc = cursor.fetchall()
-	# c.solicitar_link_download_documentos(ids_doc)
-	# c.baixar_documentos_stf()
+	cursor.execute('SELECT processo from stf.dados_processo limit 1000000;')
+	ids_doc = cursor.fetchall()
+	c.solicitar_link_download_documentos(ids_doc)
+	c.baixar_documentos_stf()
 	
-	cursor.execute('SELECT id, link_pagina from stf.decisoes limit 1000000;')
-	link_decisoes = cursor.fetchall()
-	c.baixarDadosProcesso(link_decisoes)
+	# cursor.execute('SELECT id, link_pagina from stf.decisoes limit 1000000;')
+	# link_decisoes = cursor.fetchall()
+	# c.baixarDadosProcesso(link_decisoes)
 
 
 
