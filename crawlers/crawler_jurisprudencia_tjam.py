@@ -18,16 +18,27 @@ class crawler_jurisprudencia_tjam():
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_am (ementas)'
 		self.link_esaj = 'http://consultasaj.tjam.jus.br/cjsg/getArquivo.do?cdAcordao=%s&cdForo=%s'
 
-if __name__ == '__main__':
+	def download_acordao_am(self,id_acordao,link):
+		crawler_jurisprudencia_tj.download_pdf_acordao(self,link,'//*[@id="valorCaptcha"]','//*[@id="captchaInfo"]/ul/li[1]/a','//*[@id="pbEnviar"]','am_2_inst_' + id_acordao)
+
+def main():
 	c = crawler_jurisprudencia_tjam()
-	print('comecei ',c.__class__.__name__)
-	try:
-		for l in range(3,len(c.lista_anos)):
-			print(c.lista_anos[l],'\n')
-			for m in range(len(c.lista_meses)):
-				try:
-					crawler_jurisprudencia_tj.download_tj_ESAJ(c,crawler_jurisprudencia_tj,'01'+c.lista_meses[m]+c.lista_anos[l],'28'+c.lista_meses[m]+c.lista_anos[l])
-				except Exception as e:
-					print(e)
-	except Exception as e:
-		print('finalizei o ano com erro ',e)
+	cursor = cursorConexao()
+	cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_am limit 10000000;')
+	lista_links = cursor.fetchall()
+	for i,l in lista_links:
+		c.download_acordao_am(i,l)
+	# print('comecei ',c.__class__.__name__)
+	# try:
+	# 	for l in range(3,len(c.lista_anos)):
+	# 		print(c.lista_anos[l],'\n')
+	# 		for m in range(len(c.lista_meses)):
+	# 			try:
+	# 				crawler_jurisprudencia_tj.download_tj_ESAJ(c,crawler_jurisprudencia_tj,'01'+c.lista_meses[m]+c.lista_anos[l],'28'+c.lista_meses[m]+c.lista_anos[l])
+	# 			except Exception as e:
+	# 				print(e)
+	# except Exception as e:
+	# 	print('finalizei o ano com erro ',e)
+
+if __name__ == '__main__':
+	main()

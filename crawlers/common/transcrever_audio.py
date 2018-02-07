@@ -16,7 +16,7 @@ class transcrever_audio():
 		with sr.AudioFile(AUDIO_FILE) as source:
 			audio = r.record(source)
 		try:
-			return r.recognize_google(audio,language='pt')
+			return ''.join([l for l in r.recognize_google(audio,language='pt').split(' ')])
 		except:
 		    return False
 

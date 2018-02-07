@@ -31,10 +31,21 @@ class crawler_jurisprudencia_tjto():
 			except Exception as e:
 				print('erro com ',i,' ',e)
 
-if __name__ == '__main__':
+	def download_acordao_to(self,id_acordao,link):
+		crawler_jurisprudencia_tj.download_pdf_acordao(self,link,'','','','to_2_inst_' + id_acordao)
+
+def main():
 	c = crawler_jurisprudencia_tjto()
-	print('comecei ',c.__class__.__name__)
-	try:
-		c.download_tj()
-	except Exception as e:
-		print('finalizei com erro ',e)
+	cursor = cursorConexao()
+	cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_to limit 10000000;')
+	lista_links = cursor.fetchall()
+	for i,l in lista_links:
+		c.download_acordao_to(i,l)
+	# print('comecei ',c.__class__.__name__)
+	# try:
+	# 	c.download_tj()
+	# except Exception as e:
+	# 	print('finalizei com erro ',e)
+
+if __name__ == '__main__':
+	main()

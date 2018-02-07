@@ -37,7 +37,7 @@ class crawlerJus():
 			driver.close()
 
 	def baixa_html_pdf(self,link,nome_arq):
-		response = urllib.request.urlopen(link,timeout=5)
+		response = urllib.request.urlopen(link,timeout=20)
 		file = open(nome_arq+".pdf", 'wb')
 		file.write(response.read())
 		time.sleep(1)
@@ -47,7 +47,7 @@ class crawlerJus():
 		for i in range(3):
 			try:
 				req = urllib.request.Request(link, headers={'User-Agent': 'Mozilla/5.0'})
-				html = urllib.request.urlopen(req,timeout=20).read()
+				html = urllib.request.urlopen(req,timeout=30).read()
 				return html
 			except:
 				pass

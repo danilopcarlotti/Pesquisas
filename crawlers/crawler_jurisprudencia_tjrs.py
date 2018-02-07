@@ -60,7 +60,7 @@ if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjrs()
 	print('comecei ',c.__class__.__name__)
 	try:
-		for l in range(len(c.lista_anos)):
+		for l in range(1,len(c.lista_anos)):
 			print(c.lista_anos[l],'\n')
 			for m in range(len(c.lista_meses)):
 				for i in range(1,8):

@@ -1,4 +1,4 @@
-import time, os, common.download_path, re, subprocess
+import time, os, common.download_path, re, subprocess, pyautogui
 from bs4 import BeautifulSoup
 from common.audio_monitor import audio_monitor
 from common.conexao_local import cursorConexao
@@ -6,8 +6,10 @@ from crawlerJus import crawlerJus
 from datetime import date
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+from common.transcrever_audio import transcrever_audio
 
-class crawler_jurisprudencia_tj():
+class crawler_jurisprudencia_tj(crawlerJus):
 	"""Generic class with methods for crawler_jurisprudencia_tj's"""
 	def __init__(self):
 		crawlerJus.__init__(self)
@@ -16,7 +18,6 @@ class crawler_jurisprudencia_tj():
 		self.lista_meses += ['10','11','12']
 
 	def captcha(self, path=None):
-		from common.transcrever_audio import transcrever_audio
 		t = transcrever_audio()
 		if path:
 			return t.transcrever(path)
@@ -29,28 +30,40 @@ class crawler_jurisprudencia_tj():
 			if re.search(r'wav',file):
 				os.remove(common.download_path.path+'/'+file)
 
-	def download_pdf_acordao(self,link,input_captcha_xpath,ouvir_captch_xpath,id_acordao):
-		driver = webdriver.Chrome(self.chromedriver)
-		driver.get_link(link)
+	def download_pdf_acordao(self,link,input_captcha_xpath,ouvir_captch_xpath,send_captcha,id_acordao):
+		binary = FirefoxBinary(common.download_path.path+'/firefox/firefox')
+		profile = webdriver.FirefoxProfile()
+		profile.set_preference("plugin.state.flash", 2)
+		driver = webdriver.Firefox(profile,firefox_binary=binary,executable_path=common.download_path.path+'/geckodriver')
+		driver.get(link)
 		try:
-			driver.find_element_by_xpath(input_captcha_xpath).send_keys('') #VERIFICAR SE ESTE É UM TESTE POSSÍVEL E/OU BOM
-			self.delete_audios()
-			command = 'pacat --record -d %s | sox -t raw -r 44100 -s -L -b 16 -c 2 - "audio.wav" trim 0 5' % audio_monitor
+			driver.find_element_by_xpath(input_captcha_xpath).send_keys('')
+			captcha_on = True
+		except:
+			captcha_on = False
+		while captcha_on:
+			command = 'pacat --record -d %s | sox -t raw -r 44100 -s -L -b 16 -c 2 - "audio.wav" trim 0 6' % audio_monitor
 			proc = subprocess.Popen(command, shell=True)
+			time.sleep(1)
 			driver.find_element_by_xpath(ouvir_captch_xpath).click()
+			time.sleep(6)
 			try:
-				outs, errs = proc.communicate(timeout=6)
+				outs, errs = proc.communicate(timeout=7)
 			except TimeoutExpired:
 				proc.kill()
 				outs, errs = proc.communicate()
-			driver.find_element_by_xpath(input_captcha_xpath).send_keys(self.captcha())
-			self.delete_audios()
-		except:
-			pass
+			driver.find_element_by_xpath(input_captcha_xpath).send_keys(self.captcha(path='audio.wav'))
+			driver.find_element_by_xpath(send_captcha).click()
+			time.sleep(2)
+			try:
+				driver.find_element_by_xpath(input_captcha_xpath).send_keys('')
+			except:
+				captcha_on = False
+		subprocess.Popen('rm audio.wav', shell=True)
 		time.sleep(1)
 		pyautogui.hotkey('ctrl','s')
 		time.sleep(1)
-		pyautogui.typewrite('Acordao_'+id_acordao)
+		pyautogui.typewrite(id_acordao)
 		time.sleep(1)
 		pyautogui.press('enter')
 		time.sleep(1)
@@ -67,7 +80,7 @@ class crawler_jurisprudencia_tj():
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)
 		def insert_links(pagina):
-			pag = BeautifulSoup(pagina,'lxml')
+			pag = BeautifulSoup(pagina,'html.parser')
 			links = pag.find_all('a', attrs={'title':'Visualizar Inteiro Teor'})
 			for l in links:
 				texto = self.link_esaj % (l.attrs['cdacordao'],l.attrs['cdforo'])
