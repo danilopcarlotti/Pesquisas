@@ -85,6 +85,7 @@ class crawler_jurisprudencia_tj():
 				driver.find_element_by_xpath(self.botao_proximo).click()
 				time.sleep(3)
 				insert_links(driver.page_source)
+				contador = 0
 			except Exception as e:
 				time.sleep(3)
 				print(e)
