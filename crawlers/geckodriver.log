@@ -4015,3 +4015,5 @@ JavaScript warning: https://esaj.tjsp.jus.br/cjsg/js/spw/spwConcatenado.js?n=170
 1517754067715	addons.productaddons	INFO	downloadXHR File download. status=200
 1517754067716	addons.productaddons	INFO	Downloaded file will be saved to /tmp/tmpaddon-158e5
 JavaScript warning: https://esaj.tjsp.jus.br/cjsg/js/spw/spwConcatenado.js?n=1708140917, line 7523: unreachable code after return statement
+1517942652171	geckodriver	INFO	geckodriver 0.19.1
+1517942652173	geckodriver	INFO	Listening on 127.0.0.1:41853
