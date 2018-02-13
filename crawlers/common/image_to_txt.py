@@ -8,7 +8,7 @@ class image_to_txt():
 	def __init__(self):
 		pass
 
-	def captcha_image_to_txt(self,img = None, colors = 1):
+	def captcha_image_to_txt(self,img = None, colors = 2):
 		if not img:
 			img = 'imagem.png'
 		img = cv.imread(img,0)
@@ -27,4 +27,4 @@ class image_to_txt():
 
 if __name__ == '__main__':
 	i = image_to_txt()
-	print(i.captcha_image_to_txt(img='teste.png'))
+	print(i.captcha_image_to_txt())

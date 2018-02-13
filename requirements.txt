@@ -19,3 +19,5 @@ pdfminer.six
 PyPDF2
 gensim
 autopep8
+pytesseract
+opencv-python

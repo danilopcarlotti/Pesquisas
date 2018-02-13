@@ -6,6 +6,7 @@ ma - ok
 df - ok
 mg (texto completo) - note confirmar
 pa (texto completo) - email
+pb (links para pdf) - ok samba
 pi (textos completo) - ok
 pr (texto completo) - esc 0 confirmar
 rn (texto completo) - email
@@ -21,7 +22,6 @@ falta baixar - links baixados
 am - ok (captcha)
 sc (links para html) - ok (-)
 sp (links para pdf) - ok (captcha)
-pb (links para pdf) - ok (-)
 to (links para pdf) - ok (-)
 
 falta baixar

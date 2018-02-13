@@ -33,7 +33,7 @@ class crawler_jurisprudencia_tjto():
 
 	def download_acordao_to(self,id_acordao,link):
 		crawler_jurisprudencia_tj.download_pdf_acordao_sem_captcha(self,link,'to_2_inst_' + id_acordao)
-		subprocess.Popen('mv /home/danilo/Downloads/to_2_inst_* /home/danilo/Downloads/acordaos_tj_to', shell=True)
+		subprocess.Popen('mv %s/to_2_inst_* %s/acordaos_tj_to' % (path,path), shell=True)
 
 def main():
 	c = crawler_jurisprudencia_tjto()

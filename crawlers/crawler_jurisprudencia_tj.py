@@ -2,12 +2,13 @@ import time, os, common.download_path, re, subprocess, pyautogui
 from bs4 import BeautifulSoup
 from common.audio_monitor import audio_monitor
 from common.conexao_local import cursorConexao
+from common.image_to_txt import image_to_txt
+from common.transcrever_audio import transcrever_audio
 from crawlerJus import crawlerJus
 from datetime import date
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
-from common.transcrever_audio import transcrever_audio
 
 class crawler_jurisprudencia_tj(crawlerJus):
 	"""Generic class with methods for crawler_jurisprudencia_tj's"""
@@ -67,6 +68,35 @@ class crawler_jurisprudencia_tj(crawlerJus):
 		pyautogui.press('enter')
 		time.sleep(1)
 		driver.close()
+
+	def download_pdf_acordao_captcha_image(self,link,input_captcha_xpath,send_captcha,id_acordao,capture_image):
+		driver = webdriver.Chrome(self.chromedriver)
+		img_to_txt = image_to_txt()
+		driver.get(link)
+		try:
+			driver.find_element_by_xpath(input_captcha_xpath).send_keys('')
+			captcha_on = True
+		except:
+			captcha_on = False
+		while captcha_on:
+			image_txt = capture_image(driver)
+			for r in image_txt:
+				if r != '':
+					driver.find_element_by_xpath(input_captcha_xpath).send_keys(r)
+					driver.find_element_by_xpath(send_captcha).click()
+					time.sleep(2)
+			try:
+				driver.find_element_by_xpath(input_captcha_xpath).send_keys('')
+			except:
+				captcha_on = False
+		time.sleep(1)
+		pyautogui.hotkey('ctrl','s')
+		time.sleep(1)
+		pyautogui.typewrite(id_acordao)
+		time.sleep(1)
+		pyautogui.press('enter')
+		time.sleep(1)
+
 
 	def download_pdf_acordao_sem_captcha(self,link,id_acordao):
 		driver = webdriver.Chrome(self.chromedriver)
