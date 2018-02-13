@@ -1,11 +1,11 @@
-import sys, re, time
+import sys, re, time, subprocess, urllib.request
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from common.conexao_local import cursorConexao
 
-class crawler_jurisprudencia_tjpb():
+class crawler_jurisprudencia_tjpb(crawler_jurisprudencia_tj):
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância da Paraíba"""
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
@@ -50,14 +50,18 @@ class crawler_jurisprudencia_tjpb():
 
 	def download_acordao_pb(self,id_acordao,link):
 		crawler_jurisprudencia_tj.download_pdf_acordao(self,link,'','','','pb_2_inst_' + id_acordao)
+		subprocess.Popen('mv /home/danilo/Downloads/pb_2_inst_* /home/danilo/Downloads/acordaos_tj_pb', shell=True)
 
 def main():
 	c = crawler_jurisprudencia_tjpb()
 	cursor = cursorConexao()
-	cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_pb limit 10000000;')
+	cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_pb where id > 37630 limit 10000000;')
 	lista_links = cursor.fetchall()
 	for i,l in lista_links:
-		c.download_acordao_pb(i,l)
+		try:
+			c.download_acordao_pb(str(i),l)
+		except Exception as e:
+			print(e,i)
 	# print('comecei ',c.__class__.__name__)
 	# try:
 	# 	for a in c.lista_anos:
