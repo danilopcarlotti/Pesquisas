@@ -5,3 +5,4 @@ crawlers/common/audio_monitor.py
 crawlers/common/__pycache__/*.pyc
 crawlers/__pycache__/*.pyc
 __pycache__/*.pyc
+crawlers/geckodriver.log

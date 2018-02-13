@@ -20,7 +20,7 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 		self.link_esaj = 'https://esaj.tjsp.jus.br/cjsg/getArquivo.do?cdAcordao=%s&cdForo=%s'
 
 	def download_acordao_sp(self,id_acordao,link):
-		crawler_jurisprudencia_tj.download_pdf_acordao(self,link,'//*[@id="valorCaptcha"]','//*[@id="captchaInfo"]/ul/li[1]/a','//*[@id="pbEnviar"]','sp_2_inst_' + id_acordao)
+		crawler_jurisprudencia_tj.download_pdf_acordao_captcha_audio(self,link,'//*[@id="valorCaptcha"]','//*[@id="captchaInfo"]/ul/li[1]/a','//*[@id="pbEnviar"]','sp_2_inst_' + id_acordao)
 
 def main():
 	c = crawler_jurisprudencia_tjsp()

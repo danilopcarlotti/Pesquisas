@@ -102,6 +102,11 @@ class crawler_jurisprudencia_stf(crawlerJus):
 				driver.find_element_by_xpath(link_mensagem_link).click()
 				time.sleep(1)
 				driver.find_element_by_xpath(link_download).click()
+				try:
+					driver.switch_to.window(driver.window_handles[-1])
+					pyautogui.hotkey('ctrl','w')
+				except:
+					pass
 				time.sleep(1)
 				driver.switch_to.window(driver.window_handles[0])
 				driver.find_element_by_xpath('/html/body/a').click()
@@ -168,8 +173,13 @@ class crawler_jurisprudencia_stf(crawlerJus):
 		driver.close()
 
 if __name__ == '__main__':
-	cursor = cursorConexao()
+	# cursor = cursorConexao()
+	# cursor.execute('SELECT id, link_dados from processos_stf.dados_processo where processo is NULL;')
+	# links = cursor.fetchall()
 	c = crawler_jurisprudencia_stf()
+	# c.baixarDadosProcesso(links)
+	# c.baixar_documentos_stf()
+	c.login_stf()
 
 	# lista_ids = []
 	# lista_ids = str(set(lista_ids)).replace('[','').replace(']','')

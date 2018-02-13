@@ -30,7 +30,7 @@ class crawler_jurisprudencia_tj(crawlerJus):
 			if re.search(r'wav',file):
 				os.remove(common.download_path.path+'/'+file)
 
-	def download_pdf_acordao(self,link,input_captcha_xpath,ouvir_captch_xpath,send_captcha,id_acordao):
+	def download_pdf_acordao_captcha_audio(self,link,input_captcha_xpath,ouvir_captch_xpath,send_captcha,id_acordao):
 		binary = FirefoxBinary(common.download_path.path+'/firefox/firefox')
 		profile = webdriver.FirefoxProfile()
 		profile.set_preference("plugin.state.flash", 2)
@@ -59,7 +59,6 @@ class crawler_jurisprudencia_tj(crawlerJus):
 				driver.find_element_by_xpath(input_captcha_xpath).send_keys('')
 			except:
 				captcha_on = False
-		subprocess.Popen('rm audio.wav', shell=True)
 		time.sleep(1)
 		pyautogui.hotkey('ctrl','s')
 		time.sleep(1)
@@ -69,6 +68,17 @@ class crawler_jurisprudencia_tj(crawlerJus):
 		time.sleep(1)
 		driver.close()
 
+	def download_pdf_acordao_sem_captcha(self,link,id_acordao):
+		driver = webdriver.Chrome(self.chromedriver)
+		driver.get(link)
+		time.sleep(1)
+		pyautogui.hotkey('ctrl','s')
+		time.sleep(1)
+		pyautogui.typewrite(id_acordao)
+		time.sleep(1)
+		pyautogui.press('enter')
+		time.sleep(1)
+		driver.close()
 
 	def download_jurisprudencia(self,driver,pesquisa_livre,data_julg_iniXP,data_julg_ini,data_julg_fimXP,data_julg_fim,botao_pesquisar,termo):
 		driver.find_element_by_xpath(pesquisa_livre).send_keys(termo)

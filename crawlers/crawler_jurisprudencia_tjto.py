@@ -3,8 +3,8 @@ import time, datetime, urllib.request,logging, click, os, sys
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import re
 from common.conexao_local import cursorConexao
+import re, subprocess, pyautogui
 
 class crawler_jurisprudencia_tjto():
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância do Tocantins"""
@@ -32,15 +32,19 @@ class crawler_jurisprudencia_tjto():
 				print('erro com ',i,' ',e)
 
 	def download_acordao_to(self,id_acordao,link):
-		crawler_jurisprudencia_tj.download_pdf_acordao(self,link,'','','','to_2_inst_' + id_acordao)
+		crawler_jurisprudencia_tj.download_pdf_acordao_sem_captcha(self,link,'to_2_inst_' + id_acordao)
+		subprocess.Popen('mv /home/danilo/Downloads/to_2_inst_* /home/danilo/Downloads/acordaos_tj_to', shell=True)
 
 def main():
 	c = crawler_jurisprudencia_tjto()
 	cursor = cursorConexao()
-	cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_to limit 10000000;')
+	cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_to where id > 10770 limit 10000000;')
 	lista_links = cursor.fetchall()
 	for i,l in lista_links:
-		c.download_acordao_to(i,l)
+		try:
+			c.download_acordao_to(str(i),l)
+		except Exception as e:
+			print(e,i)
 	# print('comecei ',c.__class__.__name__)
 	# try:
 	# 	c.download_tj()
