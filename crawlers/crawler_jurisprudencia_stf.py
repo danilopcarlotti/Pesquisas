@@ -1,4 +1,4 @@
-import re, os, sys, time, datetime, urllib.request, ssl,logging, click
+import re, os, sys, time, datetime, urllib.request, ssl,logging, pyautogui
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -21,17 +21,49 @@ class crawler_jurisprudencia_stf(crawlerJus):
 		id_processo_stf = ''
 		for id_p, link in link_processos:
 			try:
+				relator = ''
 				pag = self.baixa_pag(link)
 				soup = BeautifulSoup(pag,'html.parser')
+				div_andamento = [x for x in soup.find('div',{'id':'detalheProcesso'}).get_text().split('\n') if x != '']
+				for i in range(len(div_andamento)-1):
+					if div_andamento[i] == 'Relator atual':
+						relator = div_andamento[i+1]
+				link = link.replace('Andamento','Detalhe')
+				pag = self.baixa_pag(link)
+				soup = BeautifulSoup(pag,'html.parser')
+				div_detalhe = [x for x in soup.find('div',{'id':'conteudoAbasAcompanhamento'}).get_text().split('\n') if x != '']
 				id_processo_stf = soup.find('h3').text.split('-')[0].strip()
-				cursor.execute('UPDATE processos_stf.dados_processo set processo = "%s" where id = "%s"' % (id_processo_stf,id_p))
-			except:
-				pass
+				assunto = ''
+				autuacao = ''
+				numero_origem = ''
+				polo_ativo = ''
+				polo_passivo = ''
+				ramo_direito = ''
+				tribunal_origem = ''
+				for i in range(len(div_detalhe)-1):
+					if div_detalhe[i] == 'Orgão de Origem:':
+						tribunal_origem = div_detalhe[i+1].replace(')','').replace('(','').replace('\\','').replace('"','').replace('/','')
+					elif div_detalhe[i] == 'Números de Origem:':
+						numero_origem = div_detalhe[i+1].replace(')','').replace('(','').replace('\\','').replace('"','').replace('/','')
+					elif div_detalhe[i] == 'Ramo do Direito':
+						if div_detalhe[i+1] != 'Assunto':
+						 	ramo_direito = div_detalhe[i+1].replace(')','').replace('(','').replace('\\','').replace('"','').replace('/','')
+					elif div_detalhe[i] == 'Assunto':
+						assunto = div_detalhe[i+1].replace(')','').replace('(','').replace('\\','').replace('"','').replace('/','')
+					elif div_detalhe[i] == 'Data de Protocolo':
+						autuacao = div_detalhe[i+1].replace(')','').replace('(','').replace('\\','').replace('"','').replace('/','')
+					elif re.search(r'TE\.\(S\)',div_detalhe[i]):
+						polo_ativo = div_detalhe[i+1].replace(')','').replace('(','').replace('\\','').replace('"','').replace('/','')
+					elif re.search(r'DO\.\(A/S\)',div_detalhe[i]):
+						polo_passivo = div_detalhe[i+1].replace(')','').replace('(','').replace('\\','').replace('"','').replace('/','')
+				cursor.execute('INSERT INTO stf.dados_processo (processo, polo_ativo, polo_passivo, autuacao, numero_origem, relator, ramo_direito, assunto, tribunal_origem, link_dados) values ("%s","%s","%s","%s","%s","%s","%s","%s","%s","%s")' % (id_processo_stf, polo_ativo, polo_passivo, autuacao, numero_origem, relator, ramo_direito, assunto, tribunal_origem, link))
+			except Exception as e:
+				print(e)
 
 	def baixarVotos(self,link):
 		pagina = self.baixa_pag(link)
 		if pagina != '':
-			pagina = BeautifulSoup(pagina,'lxml')
+			pagina = BeautifulSoup(pagina,'lxml')		
 			validade = pagina.find("div", {"id": "detalheProcesso"})
 			if validade:
 				jurisprudencia = pagina.find('a', href=re.compile(r'.+/jurisprudencia/listarConso.+'))
@@ -50,7 +82,7 @@ class crawler_jurisprudencia_stf(crawlerJus):
 								texto_final = div_texto.get_text().replace('\"','')
 								if texto_final:
 									cursor = cursorConexao()
-									cursor.execute('INSERT INTO processos_stf.texto_decisoes (link_pagina, texto_decisao) values("%s","%s");' % (link,texto_final))
+									cursor.execute('INSERT INTO stf.texto_decisoes (link_pagina, texto_decisao) values("%s","%s");' % (link,texto_final))
 
 	def baixa_decisoes_proc(self):
 		contador = 0
@@ -105,22 +137,39 @@ class crawler_jurisprudencia_stf(crawlerJus):
 		processo_interesse_xpath = '//*[@id="txt-pesquisa-processo"]'
 		submit_processo_interesse_xpath = '//*[@id="container"]/div[3]/div[1]/div[2]/div[2]/div/div/div[4]/div/div[1]/div/span/button'
 		ver_mais_processo_interesse_xpath = '//*[@id="container"]/div[3]/div[1]/div[2]/div[2]/div/div/div[4]/div/div[2]/div/div/a'
-		time.sleep(2)
+		time.sleep(3)
 		for i in ids_doc:
-			driver.find_element_by_xpath(processo_interesse_xpath).send_keys(i)
-			driver.find_element_by_xpath(submit_processo_interesse_xpath).click()
-			time.sleep(1)
-			driver.find_element_by_xpath(ver_mais_processo_interesse_xpath).click()
-			while True:
-				try:
-					driver.switch_to.window(driver.window_handles[1])
-					time.sleep(1)
-					driver.find_element_by_xpath(aba_pecas_xpath).click()
-					driver.find_element_by_xpath(download_todas_pecas_xpath).click()
-					break
-				except:
-					time.sleep(1)
-			driver.switch_to.window(driver.window_handles[0])
+			try:
+				driver.refresh()
+				while True:
+					try:
+						driver.find_element_by_xpath(processo_interesse_xpath).send_keys(i)
+						time.sleep(10)
+						driver.find_element_by_xpath(submit_processo_interesse_xpath).click()
+						time.sleep(2)
+						driver.find_element_by_xpath(ver_mais_processo_interesse_xpath).click()
+						break
+					except:
+						time.sleep(1)
+				while True:
+					try:
+						time.sleep(2)
+						driver.switch_to.window(driver.window_handles[1])
+						time.sleep(1)
+						driver.find_element_by_xpath(aba_pecas_xpath).click()
+						driver.find_element_by_xpath(download_todas_pecas_xpath).click()
+						time.sleep(2)
+						pyautogui.hotkey('ctrl','w')
+						break
+					except:
+						time.sleep(1)
+				time.sleep(1)
+				driver.switch_to.window(driver.window_handles[0])
+			except:
+				if len(driver.window_handles) > 1:
+					driver.switch_to.window(driver.window_handles[-1])
+					pyautogui.hotkey('ctrl','w')
+				driver.switch_to.window(driver.window_handles[0])
 		driver.close()
 
 if __name__ == '__main__':
@@ -132,10 +181,22 @@ if __name__ == '__main__':
 	# c.baixar_documentos_stf()
 	c.login_stf()
 
+	# lista_ids = []
+	# lista_ids = str(set(lista_ids)).replace('[','').replace(']','')
+	# cursor.execute('SELECT processo from stf.dados_processo where id in (%s);' % lista_ids)
 	
-	# cursor.execute('SELECT processo from processos_stf.dados_processo where limit 1000000;')
+	# cursor.execute('SELECT processo from stf.dados_processo where limit 1000000;')
 	# links_d = cursor.fetchall()
 	# c.solicitar_link_download_documentos(links_d)
+
+	cursor.execute('SELECT processo from stf.dados_processo limit 1000000;')
+	ids_doc = cursor.fetchall()
+	c.solicitar_link_download_documentos(ids_doc)
+	c.baixar_documentos_stf()
+	
+	# cursor.execute('SELECT id, link_pagina from stf.decisoes limit 1000000;')
+	# link_decisoes = cursor.fetchall()
+	# c.baixarDadosProcesso(link_decisoes)
 
 
 

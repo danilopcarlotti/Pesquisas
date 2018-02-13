@@ -2,4 +2,6 @@ crawlers/common/conexao_local.py
 crawlers/common/download_path.py
 crawlers/common/login_stf.py
 crawlers/common/audio_monitor.py
+crawlers/common/__pycache__/*.pyc
+crawlers/__pycache__/*.pyc
 __pycache__/*.pyc
