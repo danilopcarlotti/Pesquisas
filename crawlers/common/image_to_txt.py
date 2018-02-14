@@ -8,7 +8,7 @@ class image_to_txt():
 	def __init__(self):
 		pass
 
-	def captcha_image_to_txt(self,img = None, colors = 2):
+	def captcha_image_to_txt(self,img = None, colors = 1):
 		if not img:
 			img = 'imagem.png'
 		img = cv.imread(img,0)
@@ -16,11 +16,12 @@ class image_to_txt():
 		thresh1 = cv.threshold(img,127,255,cv.THRESH_BINARY)[1]
 		cv.imwrite('imagem_processada_1.png', thresh1)
 		text1 = pytesseract.image_to_string(Image.open('imagem_processada_1.png')).replace(' ','').replace('\n','')
-		results.append(text1)
-		if colors > 1:
-			thresh2 = cv.threshold(img,80,200,cv.THRESH_TRUNC)[1]
-			cv.imwrite('imagem_processada_2.png', thresh2)
-			text2 = pytesseract.image_to_string(Image.open('imagem_processada_2.png')).replace(' ','').replace('\n','')
+		if text1 != '':
+			results.append(text1)
+		thresh2 = cv.threshold(img,80,200,cv.THRESH_TRUNC)[1]
+		cv.imwrite('imagem_processada_2.png', thresh2)
+		text2 = pytesseract.image_to_string(Image.open('imagem_processada_2.png')).replace(' ','').replace('\n','')
+		if text2 != '':
 			results.append(text2)
 		subprocess.Popen('rm imagem_processada*.png', shell=True)
 		return results
