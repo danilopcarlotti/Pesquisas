@@ -13,6 +13,7 @@ rn (texto completo) - email
 rr (texto completo) - ok
 rs (links para html) - samba
 STJ - ok
+to (links para pdf) - ok samba
 trf1 (texto completo) - note confirmar
 trf4 (texto completo) - esc 1 confirmar
 trf5 (texto completo) - esc 2 confirmar
@@ -22,7 +23,6 @@ falta baixar - links baixados
 am - ok (captcha)
 sc (links para html) - ok (-)
 sp (links para pdf) - ok (captcha)
-to (links para pdf) - ok (-)
 
 falta baixar
 
