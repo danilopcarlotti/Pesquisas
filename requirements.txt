@@ -21,3 +21,4 @@ gensim
 autopep8
 pytesseract
 opencv-python
+Flask
