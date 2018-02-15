@@ -50,7 +50,7 @@ def main():
 	reader = csv.reader(arq,quotechar='"')
 	next(reader)
 	for line in reader:
-		if int(line[0]) > 46060:
+		if int(line[0]) > 50967:
 			dados_baixar.append(('sp_2_inst_' + line[0],line[1]))
 	c.download_acordao_sp(dados_baixar)
 
