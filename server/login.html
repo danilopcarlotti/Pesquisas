@@ -1,13 +1,30 @@
-<html>
-   <body>
-      
-      <form action = "http://localhost:5000/login" method = "post">
-         <p>Enter Name:</p>
-         <p><input type = "text" name = "name" /></p>
-         <p>Enter password:</p>
-         <p><input type = "text" name = "senha" /></p>
-         <p><input type = "submit" value = "submit" /></p>
-      </form>
-      
-   </body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../../../favicon.ico">
+
+    <title>Signin Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap-4.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="bootstrap-4.0.0/docs/4.0/examples/sign-in/signin.css" rel="stylesheet">
+  </head>
+
+  <body class="text-center">
+    <form class="form-signin" action = "http://localhost:5000/login" method = "post">
+      <img class="mb-4" src="../logofinal-02.png" alt="" width="190" height="288">
+      <h1 class="h3 mb-3 font-weight-normal">Seja bem vindo</h1>
+      <label for="inputEmail" class="sr-only">Email</label>
+      <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus name = "name">
+      <label for="inputPassword" class="sr-only">Senha</label>
+      <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name = "senha">
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Entrar</button>
+    </form>
+  </body>
 </html>
