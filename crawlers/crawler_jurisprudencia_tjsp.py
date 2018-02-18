@@ -1,6 +1,7 @@
-import sys, re, os, time, urllib.request,common.download_path
+import sys, re, os, time, urllib.request, subprocess
 from bs4 import BeautifulSoup
 from common.image_to_txt import image_to_txt
+from common.download_path import path
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from common.conexao_local import cursorConexao
 from selenium import webdriver
@@ -32,19 +33,26 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 		except:
 			return False
 		
-	def download_acordao_sp(self,id_acordao,link):
+	def download_acordao_sp(self,dados_baixar):
 		# crawler_jurisprudencia_tj.download_pdf_acordao_captcha_audio(self,link,'//*[@id="valorCaptcha"]','//*[@id="captchaInfo"]/ul/li[1]/a','//*[@id="pbEnviar"]','sp_2_inst_' + id_acordao)
-		crawler_jurisprudencia_tj.download_pdf_acordao_captcha_image(self,link,'//*[@id="valorCaptcha"]','//*[@id="pbEnviar"]','sp_2_inst_teste' + id_acordao,self.capture_image)
-		subprocess.Popen('mv %s/to_2_inst_* %s/acordaos_tj_to' % (path,path), shell=True)
+		crawler_jurisprudencia_tj.download_pdf_acordao_captcha_image(self,dados_baixar,'//*[@id="valorCaptcha"]','//*[@id="pbEnviar"]',self.capture_image)
+		subprocess.Popen('mv %s/sp_2_inst_*.pdf %s/sp_2_inst' % (path,path), shell=True)
 	
 
 def main():
 	c = crawler_jurisprudencia_tjsp()
-	cursor = cursorConexao()
-	cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_sp where id > 45079 limit 10000000;')
-	lista_links = cursor.fetchall()
-	for i,l in lista_links:
-		c.download_acordao_sp(str(i),l)
+	# cursor = cursorConexao()
+	# cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_sp where id > 45079 limit 10000000;')
+	# lista_links = cursor.fetchall()
+	import csv
+	arq = open('extracao_societario.csv','r')
+	dados_baixar = []
+	reader = csv.reader(arq,quotechar='"')
+	next(reader)
+	for line in reader:
+		if int(line[0]) > 50967:
+			dados_baixar.append(('sp_2_inst_' + line[0],line[1]))
+	c.download_acordao_sp(dados_baixar)
 
 	# print('comecei ',c.__class__.__name__)
 	# try:

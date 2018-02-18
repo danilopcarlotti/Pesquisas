@@ -69,33 +69,34 @@ class crawler_jurisprudencia_tj(crawlerJus):
 		time.sleep(1)
 		driver.close()
 
-	def download_pdf_acordao_captcha_image(self,link,input_captcha_xpath,send_captcha,id_acordao,capture_image):
+	def download_pdf_acordao_captcha_image(self,dados_baixar,input_captcha_xpath,send_captcha,capture_image):
 		driver = webdriver.Chrome(self.chromedriver)
 		img_to_txt = image_to_txt()
-		driver.get(link)
-		try:
-			driver.find_element_by_xpath(input_captcha_xpath).send_keys('')
-			captcha_on = True
-		except:
-			captcha_on = False
-		while captcha_on:
-			image_txt = capture_image(driver)
-			for r in image_txt:
-				if r != '':
-					driver.find_element_by_xpath(input_captcha_xpath).send_keys(r)
-					driver.find_element_by_xpath(send_captcha).click()
-					time.sleep(2)
+		for id_acordao,link in dados_baixar:
+			driver.get(link)
 			try:
 				driver.find_element_by_xpath(input_captcha_xpath).send_keys('')
+				captcha_on = True
 			except:
 				captcha_on = False
-		time.sleep(1)
-		pyautogui.hotkey('ctrl','s')
-		time.sleep(1)
-		pyautogui.typewrite(id_acordao)
-		time.sleep(1)
-		pyautogui.press('enter')
-		time.sleep(1)
+			while captcha_on:
+				resultado = capture_image(driver)
+				if len(resultado) > 0:
+					driver.find_element_by_xpath(input_captcha_xpath).send_keys(resultado[0])
+					driver.find_element_by_xpath(send_captcha).click()
+					time.sleep(2)
+				try:
+					driver.find_element_by_xpath(input_captcha_xpath).send_keys('')
+				except:
+					captcha_on = False
+			time.sleep(3)
+			pyautogui.hotkey('ctrl','s')
+			time.sleep(1)
+			pyautogui.typewrite(id_acordao)
+			time.sleep(1)
+			pyautogui.press('enter')
+			time.sleep(1)
+		driver.close()
 
 
 	def download_pdf_acordao_sem_captcha(self,link,id_acordao):
