@@ -1,10 +1,10 @@
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
-import time, datetime, urllib.request,logging, click, os, sys
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from common.conexao_local import cursorConexao
-import re, subprocess, pyautogui
+from common.download_path import path
+import time, datetime, urllib.request,logging, click, os, sys, re, subprocess, pyautogui
 
 class crawler_jurisprudencia_tjto():
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância do Tocantins"""
@@ -38,7 +38,7 @@ class crawler_jurisprudencia_tjto():
 def main():
 	c = crawler_jurisprudencia_tjto()
 	cursor = cursorConexao()
-	cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_to where id > 10770 limit 10000000;')
+	cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_to where id > 67164 limit 10000000;')
 	lista_links = cursor.fetchall()
 	for i,l in lista_links:
 		try:
