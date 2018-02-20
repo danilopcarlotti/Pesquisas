@@ -76,20 +76,24 @@ class crawler_jurisprudencia_tj(crawlerJus):
 			driver.get(link)
 			try:
 				driver.find_element_by_xpath(input_captcha_xpath).send_keys('')
-				captcha_on = True
+				if input('Ajude me\n'):
+					pass
 			except:
-				captcha_on = False
-			while captcha_on:
-				resultado = capture_image(driver)
-				if len(resultado) > 0:
-					driver.find_element_by_xpath(input_captcha_xpath).send_keys(resultado[0])
-					driver.find_element_by_xpath(send_captcha).click()
-					time.sleep(2)
-				try:
-					driver.find_element_by_xpath(input_captcha_xpath).send_keys('')
-				except:
-					captcha_on = False
-			time.sleep(3)
+				pass
+			# 	captcha_on = True
+			# except:
+			# 	captcha_on = False
+			# while captcha_on:
+				# resultado = capture_image(driver)
+				# if resultado:
+				# 	driver.find_element_by_xpath(input_captcha_xpath).send_keys(resultado[0])
+				# 	driver.find_element_by_xpath(send_captcha).click()
+				# 	time.sleep(2)
+				# try:
+				# 	driver.find_element_by_xpath(input_captcha_xpath).send_keys('')
+				# except:
+				# 	captcha_on = False
+			time.sleep(1)
 			pyautogui.hotkey('ctrl','s')
 			time.sleep(1)
 			pyautogui.typewrite(id_acordao)
