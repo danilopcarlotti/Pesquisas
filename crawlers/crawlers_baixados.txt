@@ -1,21 +1,24 @@
 baixados texto - concluídos
 
+ac (texto completo) - samba confirmar
 es - ok
 go - note confirmar
 ma - ok
 df - ok
 mg (texto completo) - note confirmar
+mt (texto completo) - note confirmar
 pa (texto completo) - email
-pb (links para pdf) - ok samba
+pb (links para pdf) - ok
 pi (textos completo) - ok
 pr (texto completo) - esc 0 confirmar
 rj (pdf's) - esc confirmar
 rn (texto completo) - email
+ro (texto completo) - note confirmar
 rr (texto completo) - ok
 rs (links para html) - samba
 sc (links para html) - ok notebook
 STJ - ok
-to (links para pdf) - ok samba
+to (links para pdf) - ok
 trf1 (texto completo) - note confirmar
 trf4 (texto completo) - esc 1 confirmar
 trf5 (texto completo) - esc 2 confirmar
@@ -27,15 +30,10 @@ sp (links para pdf) - ok (captcha)
 
 falta baixar
 
-ac (texto completo) *
-
 al - ok (recaptcha)
 ce - ok (recaptcha)
 ms - ok (recaptcha)
-
-ba (texto completo - pdf)
-mt (texto completo - pdf)
-ro (texto completo - pdf)
+ba (texto completo)
 STF (documentos)
 trf3 (links para html) porque não está funcionando, apesar de funcionar manualmente?
 
