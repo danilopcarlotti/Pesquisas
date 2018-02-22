@@ -173,13 +173,12 @@ class crawler_jurisprudencia_stf(crawlerJus):
 		driver.close()
 
 if __name__ == '__main__':
-	# cursor = cursorConexao()
+	cursor = cursorConexao()
 	# cursor.execute('SELECT id, link_dados from processos_stf.dados_processo where processo is NULL;')
 	# links = cursor.fetchall()
 	c = crawler_jurisprudencia_stf()
 	# c.baixarDadosProcesso(links)
 	# c.baixar_documentos_stf()
-	c.login_stf()
 
 	# lista_ids = []
 	# lista_ids = str(set(lista_ids)).replace('[','').replace(']','')
@@ -189,9 +188,9 @@ if __name__ == '__main__':
 	# links_d = cursor.fetchall()
 	# c.solicitar_link_download_documentos(links_d)
 
-	cursor.execute('SELECT processo from stf.dados_processo limit 1000000;')
-	ids_doc = cursor.fetchall()
-	c.solicitar_link_download_documentos(ids_doc)
+	# cursor.execute('SELECT processo from stf.dados_processo limit 10;')
+	# ids_doc = cursor.fetchall()
+	# c.solicitar_link_download_documentos(ids_doc)
 	c.baixar_documentos_stf()
 	
 	# cursor.execute('SELECT id, link_pagina from stf.decisoes limit 1000000;')

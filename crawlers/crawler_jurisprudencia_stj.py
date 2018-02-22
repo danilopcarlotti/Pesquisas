@@ -38,59 +38,56 @@ class processosSTJ(crawlerJus):
 				driver.find_element_by_class_name('iconeProximaPagina').send_keys('\n')
 				i += 1
 			except:
-				try:
-					driver.back()
-					driver.find_element_by_class_name('iconeProximaPagina').send_keys('\n')
-				except:
-					if input('ajude-me\n'):
-						driver.find_element_by_class_name('iconeProximaPagina').send_keys('\n')
-		while self.contador < 59314:
+				driver.execute_script("window.history.go(-1)")
+				driver.find_element_by_class_name('iconeProximaPagina').send_keys('\n')
+		while self.contador < 60000:
 			cursor = cursorConexao()
 			try:
 				acompanhamentos = driver.find_elements_by_xpath('//*[@id="acoesdocumento"]/a[2]')
 				for a in acompanhamentos:
 					a.click()
-					marcador = 0
-					while marcador < 3:
+					try:
+						driver.switch_to.window(driver.window_handles[1])
 						try:
-							driver.switch_to.window(driver.window_handles[1])
 							driver.find_element_by_xpath('/html/body/a').click()
-							marcador = 3
 						except:
-							marcador += 1
+							time.sleep(0.5)
+							driver.find_element_by_xpath('/html/body/a').click()
+					except Exception as e:
+						print(e)
 					info = []
 					for d in self.lista_span_dados:
 						try:
 							info.append(driver.find_element_by_xpath(d).text)
 						except:
-							time.sleep(1)
-							try:
-								info.append(driver.find_element_by_xpath(d).text)
-							except:
-								# HÁ ALGUMA FORMA DE IDENTIFICAR OS CAMPOS FALTANTES??
-								pass
+							pass
 					if len(info) == 10:
 						html = driver.page_source
-						link_voto = re.search(r'/processo/revista/documento/mediado/\?componente=ATC.*?tipo=\d+',html)
-						if link_voto:
-							link_voto_download = 'https://ww2.stj.jus.br'+link_voto.group(0)+'&formato=html'
-							info.append(link_voto_download.replace('amp;',''))
+						link_voto = re.findall(r'/processo/revista/documento/mediado/\?componente=ATC.*?tipo=\d+',html)
+						if len(link_voto) > 0:
+							votos = ''
+							for decisao in link_voto:
+								link_voto_download = 'https://ww2.stj.jus.br'+decisao+'&formato=html'
+								link_voto_download = link_voto_download.replace('amp;','')
+								votos += link_voto_download+','
+							info.append(votos[:-1])
 							cursor.execute('INSERT INTO stj.dados_processo (processo, recorrente, recorrido, autuacao, numero_unico, relator, ramo_direito, assunto, tribunal_origem, numeros_origem,link_voto) values ("%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s")',(info[0],info[1],info[2],info[3],info[4],info[5],info[6],info[7],info[8],info[9],info[10]))
 					driver.switch_to.window(driver.window_handles[0])
 				try:
 					driver.find_element_by_class_name('iconeProximaPagina').send_keys('\n')
 					self.contador += 1
 				except:
-					if input('ajude-me'):
-						cursor = cursorConexao()
-					else:
-						print(str(self.contador))
-						driver.close()
-						self.baixarDadosProcesso()
-			except:
-				if input('ajude-me'):
-					cursor = cursorConexao()
-				else:
+					time.sleep(5)
+					driver.execute_script("window.history.go(-1)")
+					driver.find_element_by_class_name('iconeProximaPagina').send_keys('\n')
+			except Exception as e:
+				print(e)
+				try:
+					time.sleep(5)
+					driver.execute_script("window.history.go(-1)")
+					driver.find_element_by_class_name('iconeProximaPagina').send_keys('\n')
+				except Exception as e:
+					print(e)
 					print(str(self.contador))
 					driver.close()
 					self.baixarDadosProcesso()
@@ -117,5 +114,5 @@ class processosSTJ(crawlerJus):
 			contador += 1
 
 if __name__ == '__main__':
-	p = processosSTJ(6000)
-	p.baixarVotos()
+	p = processosSTJ(336)
+	p.baixarDadosProcesso()
