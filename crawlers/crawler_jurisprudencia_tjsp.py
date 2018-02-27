@@ -71,9 +71,10 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 
 def main():
 	c = crawler_jurisprudencia_tjsp()
-	# cursor = cursorConexao()
-	# cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_sp where id > 45079 limit 10000000;')
-	# lista_links = cursor.fetchall()
+	cursor = cursorConexao()
+	cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_sp limit 10;')
+	lista_links = cursor.fetchall()
+	c.download_acordao_sp(lista_links)
 
 	# print('comecei ',c.__class__.__name__)
 	# try:

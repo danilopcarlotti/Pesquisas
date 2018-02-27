@@ -18,7 +18,7 @@ class crawler_jurisprudencia_tj(crawlerJus):
 		self.lista_meses = ['0'+str(i) for i in range(1,10)]
 		self.lista_meses += ['10','11','12']
 
-	def captcha(self, path=None):
+	def captcha_audio(self, path=None):
 		t = transcrever_audio()
 		if path:
 			return t.transcrever(path)
@@ -53,7 +53,7 @@ class crawler_jurisprudencia_tj(crawlerJus):
 			except TimeoutExpired:
 				proc.kill()
 				outs, errs = proc.communicate()
-			driver.find_element_by_xpath(input_captcha_xpath).send_keys(self.captcha(path='audio.wav'))
+			driver.find_element_by_xpath(input_captcha_xpath).send_keys(self.captcha_audio(path='audio.wav'))
 			driver.find_element_by_xpath(send_captcha).click()
 			time.sleep(2)
 			try:
@@ -76,23 +76,19 @@ class crawler_jurisprudencia_tj(crawlerJus):
 			driver.get(link)
 			try:
 				driver.find_element_by_xpath(input_captcha_xpath).send_keys('')
-				if input('Ajude me\n'):
-					pass
+				captcha_on = True
 			except:
-				pass
-			# 	captcha_on = True
-			# except:
-			# 	captcha_on = False
-			# while captcha_on:
-				# resultado = capture_image(driver)
-				# if resultado:
-				# 	driver.find_element_by_xpath(input_captcha_xpath).send_keys(resultado[0])
-				# 	driver.find_element_by_xpath(send_captcha).click()
-				# 	time.sleep(2)
-				# try:
-				# 	driver.find_element_by_xpath(input_captcha_xpath).send_keys('')
-				# except:
-				# 	captcha_on = False
+				captcha_on = False
+			while captcha_on:
+				resultado = capture_image(driver)
+				if resultado:
+					driver.find_element_by_xpath(input_captcha_xpath).send_keys(resultado[0])
+					driver.find_element_by_xpath(send_captcha).click()
+					time.sleep(2)
+				try:
+					driver.find_element_by_xpath(input_captcha_xpath).send_keys('')
+				except:
+					captcha_on = False
 			time.sleep(1)
 			pyautogui.hotkey('ctrl','s')
 			time.sleep(1)
@@ -151,6 +147,32 @@ class crawler_jurisprudencia_tj(crawlerJus):
 				if contador > 2:
 					break
 		driver.close()
+
+	def download_tj_ESAJ_recaptcha(self,superC,data_julg_ini,data_julg_fim,termo='acordam'):
+		cursor = cursorConexao()
+		driver = webdriver.Chrome(self.chromedriver)
+		driver.get(self.link_inicial)
+		time.sleep(1)
+		superC.download_jurisprudencia(self,driver,self.pesquisa_livre,self.data_julgamento_inicialXP,data_julg_ini,self.data_julgamento_finalXP,data_julg_fim,self.botao_pesquisar,termo=termo)
+		texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
+		cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
+		time.sleep(2)
+		driver.find_element_by_xpath(self.botao_proximo_ini).click()
+		contador = 0
+		while True:
+			try:
+				driver.find_element_by_xpath(self.botao_proximo).click()
+				time.sleep(3)
+				texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
+				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
+				contador = 0
+			except Exception as e:
+				time.sleep(3)
+				print(e)
+				contador +=1
+				if contador > 3:
+					break
+		driver.close()		
 
 	def extrai_texto_html(self,pagina):
 		return crawlerJus.extrai_texto_html(self,pagina)
