@@ -11,7 +11,7 @@ pa (texto completo) - email
 pb (links para pdf) - ok
 pi (textos completo) - ok
 pr (texto completo) - esc 0 confirmar
-rj (pdf's) - esc confirmar
+rj (pdf's) - ok
 rn (texto completo) - email
 ro (texto completo) - note confirmar
 rr (texto completo) - ok
@@ -20,8 +20,8 @@ sc (links para html) - ok notebook
 STJ - ok
 to (links para pdf) - ok
 trf1 (texto completo) - note confirmar
-trf4 (texto completo) - esc 1 confirmar
-trf5 (texto completo) - esc 2 confirmar
+trf4 (texto completo) - ok
+trf5 (texto completo) - ok
 
 falta baixar - links baixados
 
