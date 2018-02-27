@@ -11,6 +11,7 @@ class crawler_jurisprudencia_tjdf(crawler_jurisprudencia_tj):
 		crawler_jurisprudencia_tj.__init__(self)
 		self.link_inicial = 'https://pesquisajuris.tjdft.jus.br/IndexadorAcordaos-web/sistj?visaoId=tjdf.sistj.acordaoeletronico.buscaindexada.apresentacao.VisaoBuscaAcordao&nomeDaPagina=buscaLivre2&buscaPorQuery=1&baseSelecionada=BASE_ACORDAOS&ramoJuridico=&baseDados=[BASE_ACORDAOS,%%20TURMAS_RECURSAIS]&argumentoDePesquisa=a&filtroSegredoDeJustica=false&desembargador=&indexacao=&tipoDeNumero=NumAcordao&tipoDeRelator=TODOS&camposSelecionados=[ESPELHO]&numero=&tipoDeData=DataPublicacao&dataFim=&dataInicio=&ementa=&orgaoJulgador=&filtroAcordaosPublicos=false&legislacao=&numeroDaPaginaAtual=%s&quantidadeDeRegistros=20&totalHits=799443'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_df (ementas)'
+		self.tabela_colunas_1_inst = 'justica_estadual.jurisprudencia_df_1_inst (sentencas)'
 		
 	def download_tj(self,ultima_pag):
 		cursor = cursorConexao()
@@ -36,11 +37,13 @@ class crawler_jurisprudencia_tjdf(crawler_jurisprudencia_tj):
 			except Exception as e:
 				print(e)
 
-
-if __name__ == '__main__':
+def main():
 	c = crawler_jurisprudencia_tjdf()
 	print('comecei ',c.__class__.__name__)
 	try:
 		c.download_tj(40000) #número atualizado em jan 2018
 	except Exception as e:
 		print(e)
+
+if __name__ == '__main__':
+	main()

@@ -21,6 +21,7 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 		self.botao_proximo_ini = '//*[@id="paginacaoSuperior-A"]/table/tbody/tr[1]/td[2]/div/a[5]'
 		self.botao_proximo = '//*[@id="paginacaoSuperior-A"]/table/tbody/tr[1]/td[2]/div/a[6]'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_sp (ementas)'
+		self.tabela_colunas_1_inst = 'justica_estadual.jurisprudencia_sp_1_inst (sentencas)'
 		self.link_esaj = 'https://esaj.tjsp.jus.br/cjsg/getArquivo.do?cdAcordao=%s&cdForo=%s'
 
 	def capture_image(self, driver):
@@ -35,7 +36,41 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 		except Exception as e:
 			print(e)
 			return False
-		
+	
+	def download_1_inst(self,data_ini, data_fim, termo = 'a'):
+		botao_proximo = '//*[@id="resultados"]/table[1]/tbody/tr[1]/td[2]/div/a[6]'
+		botao_proximo_ini = '//*[@id="resultados"]/table[1]/tbody/tr[1]/td[2]/div/a[5]'
+		data_ini_xpath = '//*[@id="iddadosConsulta.dtInicio"]'
+		data_fim_xpath = '//*[@id="iddadosConsulta.dtFim"]'
+		link = 'https://esaj.tjsp.jus.br/cjpg/pesquisar.do'
+		pesquisa_xpath = '//*[@id="iddadosConsulta.pesquisaLivre"]'
+		cursor = cursorConexao()
+		driver = webdriver.Chrome(self.chromedriver)
+		driver.get(link)
+		driver.find_element_by_xpath(pesquisa_xpath).send_keys('a')
+		driver.find_element_by_xpath(data_ini_xpath).send_keys(data_ini)
+		driver.find_element_by_xpath(data_fim_xpath).send_keys(data_fim)
+		driver.find_element_by_xpath(self.botao_pesquisar).click()
+		time.sleep(1)
+		texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source)).replace('"','')
+		cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas_1_inst,texto))
+		driver.find_element_by_xpath(botao_proximo_ini).click()
+		time.sleep(1)
+		texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source)).replace('"','')
+		cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas_1_inst,texto))
+		contador = 3
+		while contador:
+			try:
+				driver.find_element_by_xpath(botao_proximo).click()
+				time.sleep(1)
+				texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source)).replace('"','')
+				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas_1_inst,texto))
+				contador = 3
+			except:
+				time.sleep(2)
+				contador -= 1
+		driver.close()
+
 	def download_acordao_sp(self,dados_baixar):
 		crawler_jurisprudencia_tj.download_pdf_acordao_captcha_image(self,dados_baixar,'//*[@id="valorCaptcha"]','//*[@id="pbEnviar"]',self.capture_image)
 		subprocess.Popen('mv %s/sp_2_inst_*.pdf %s/sp_2_inst' % (path,path), shell=True)
@@ -71,6 +106,7 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 
 def main():
 	c = crawler_jurisprudencia_tjsp()
+	c.download_1_inst('01/01/2017','31/12/2017')
 
 	# cursor = cursorConexao()
 	# cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_sp limit 10;')

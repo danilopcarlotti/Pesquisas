@@ -1,4 +1,4 @@
-import sys, re, time, pyautogui,subprocess
+import sys, re, time, pyautogui,subprocess, urllib.request
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from bs4 import BeautifulSoup
 from common.download_path import path
@@ -70,10 +70,30 @@ class crawler_jurisprudencia_tjba():
 					driver.close()
 					return
 
-if __name__ == '__main__':
+	def download_1_inst(self):
+		link_1_inst = 'http://www5.tjba.jus.br/unicorp/index.php/publicacoes/banco-de-sentencas/19-publicacoes/banco-de-sentencas/95-banco-de-sentencas-tjba'
+		driver = webdriver.Chrome(self.chromedriver)
+		driver.get(link_1_inst)
+		pag = BeautifulSoup(driver.page_source,'lxml')
+		contador = 0
+		for l in pag.find_all('a', href=True):
+			if re.search(r'/unicorp/images/.*?pdf',l['href']):
+				try:
+					urllib.request.urlretrieve('http://www5.tjba.jus.br'+l['href'],'TJBA_1_inst_%s.pdf' % str(contador))
+					subprocess.Popen('mv TJBA_1_inst_*.pdf %s/ba_1_inst' % (path,), shell=True)
+					contador += 1
+				except Exception as e:
+					print(e)
+		driver.close()
+	
+def main():
 	c = crawler_jurisprudencia_tjba()
-	print('comecei ',c.__class__.__name__)
-	try:
-		c.download_tj()
-	except Exception as e:
-		print('finalizei com erro ',e)
+	c.download_1_inst()
+	# print('comecei ',c.__class__.__name__)
+	# try:
+	# 	c.download_tj()
+	# except Exception as e:
+	# 	print('finalizei com erro ',e)
+
+if __name__ == '__main__':
+	main()
