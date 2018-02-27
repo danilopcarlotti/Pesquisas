@@ -97,6 +97,7 @@ class crawler_jurisprudencia_tj(crawlerJus):
 			pyautogui.press('enter')
 			time.sleep(1)
 		driver.close()
+		subprocess.Popen('rm *.png', shell=True)
 
 
 	def download_pdf_acordao_sem_captcha(self,link,id_acordao):

@@ -32,7 +32,8 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 			urllib.request.urlretrieve(captcha_image,'imagem.png')
 			i = image_to_txt()
 			return i.captcha_image_to_txt()
-		except:
+		except Exception as e:
+			print(e)
 			return False
 		
 	def download_acordao_sp(self,dados_baixar):
@@ -57,7 +58,6 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 		dados = []
 		for arq in lista_arquivos:
 			try:
-				# if re.search(r'\.pdf',arq):
 				if re.search(r'\.pdf',arq):
 					id_arq = arq.split('sp_2_inst_')
 					id_arq = id_arq[1][:-4]
@@ -71,10 +71,11 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 
 def main():
 	c = crawler_jurisprudencia_tjsp()
-	cursor = cursorConexao()
-	cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_sp limit 10;')
-	lista_links = cursor.fetchall()
-	c.download_acordao_sp(lista_links)
+
+	# cursor = cursorConexao()
+	# cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_sp limit 10;')
+	# lista_links = cursor.fetchall()
+	# c.download_acordao_sp(lista_links)
 
 	# print('comecei ',c.__class__.__name__)
 	# try:
