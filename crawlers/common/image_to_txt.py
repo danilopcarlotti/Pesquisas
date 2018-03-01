@@ -12,17 +12,18 @@ class image_to_txt():
 		if not img:
 			img = 'imagem.png'
 		img = cv.imread(img,0)
-		results = []
+		results = ''
 		thresh1 = cv.threshold(img,127,255,cv.THRESH_BINARY)[1]
 		cv.imwrite('imagem_processada_1.png', thresh1)
 		text1 = pytesseract.image_to_string(Image.open('imagem_processada_1.png')).replace(' ','').replace('\n','')
 		if text1 != '':
-			results.append(text1)
-		thresh2 = cv.threshold(img,80,200,cv.THRESH_TRUNC)[1]
-		cv.imwrite('imagem_processada_2.png', thresh2)
-		text2 = pytesseract.image_to_string(Image.open('imagem_processada_2.png')).replace(' ','').replace('\n','')
-		if text2 != '':
-			results.append(text2)
+			results = text1
+		else:
+			thresh2 = cv.threshold(img,80,200,cv.THRESH_TRUNC)[1]
+			cv.imwrite('imagem_processada_2.png', thresh2)
+			text2 = pytesseract.image_to_string(Image.open('imagem_processada_2.png')).replace(' ','').replace('\n','')
+			if text2 != '':
+				results = text2
 		subprocess.Popen('rm imagem_processada*.png', shell=True)
 		return results
 

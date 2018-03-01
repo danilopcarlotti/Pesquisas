@@ -102,6 +102,7 @@ class crawler_jurisprudencia_stf(crawlerJus):
 				driver.find_element_by_xpath(link_mensagem_link).click()
 				time.sleep(1)
 				driver.find_element_by_xpath(link_download).click()
+				time.sleep(2)
 				try:
 					driver.switch_to.window(driver.window_handles[-1])
 					pyautogui.hotkey('ctrl','w')
@@ -131,20 +132,19 @@ class crawler_jurisprudencia_stf(crawlerJus):
 		return driver
 
 	def solicitar_link_download_documentos(self,ids_doc):
-		driver = self.login_stf()
 		aba_pecas_xpath = '//*[@id="abaPecas"]'
 		download_todas_pecas_xpath = '//*[@id="pecas"]/processo-pecas/div/div/div/div/div/button[3]'
 		processo_interesse_xpath = '//*[@id="txt-pesquisa-processo"]'
 		submit_processo_interesse_xpath = '//*[@id="container"]/div[3]/div[1]/div[2]/div[2]/div/div/div[4]/div/div[1]/div/span/button'
 		ver_mais_processo_interesse_xpath = '//*[@id="container"]/div[3]/div[1]/div[2]/div[2]/div/div/div[4]/div/div[2]/div/div/a'
-		time.sleep(3)
 		for i in ids_doc:
 			try:
-				driver.refresh()
+				driver = self.login_stf()
+				time.sleep(2)
 				while True:
 					try:
 						driver.find_element_by_xpath(processo_interesse_xpath).send_keys(i)
-						time.sleep(10)
+						time.sleep(8)
 						driver.find_element_by_xpath(submit_processo_interesse_xpath).click()
 						time.sleep(2)
 						driver.find_element_by_xpath(ver_mais_processo_interesse_xpath).click()
@@ -159,27 +159,21 @@ class crawler_jurisprudencia_stf(crawlerJus):
 						driver.find_element_by_xpath(aba_pecas_xpath).click()
 						driver.find_element_by_xpath(download_todas_pecas_xpath).click()
 						time.sleep(2)
-						pyautogui.hotkey('ctrl','w')
 						break
 					except:
-						time.sleep(1)
-				time.sleep(1)
-				driver.switch_to.window(driver.window_handles[0])
+						time.sleep(2)
+				driver.close()
 			except:
-				if len(driver.window_handles) > 1:
-					driver.switch_to.window(driver.window_handles[-1])
-					pyautogui.hotkey('ctrl','w')
-				driver.switch_to.window(driver.window_handles[0])
-		driver.close()
+				pass
 
 if __name__ == '__main__':
-	# cursor = cursorConexao()
+	cursor = cursorConexao()
 	# cursor.execute('SELECT id, link_dados from processos_stf.dados_processo where processo is NULL;')
 	# links = cursor.fetchall()
 	c = crawler_jurisprudencia_stf()
 	# c.baixarDadosProcesso(links)
 	# c.baixar_documentos_stf()
-	c.login_stf()
+	# c.login_stf()
 
 	# lista_ids = []
 	# lista_ids = str(set(lista_ids)).replace('[','').replace(']','')
@@ -189,9 +183,9 @@ if __name__ == '__main__':
 	# links_d = cursor.fetchall()
 	# c.solicitar_link_download_documentos(links_d)
 
-	cursor.execute('SELECT processo from stf.dados_processo limit 1000000;')
-	ids_doc = cursor.fetchall()
-	c.solicitar_link_download_documentos(ids_doc)
+	# cursor.execute('SELECT processo from processos_stf.dados_processo order by id desc limit 10;')
+	# ids_doc = cursor.fetchall()
+	# c.solicitar_link_download_documentos(ids_doc)
 	c.baixar_documentos_stf()
 	
 	# cursor.execute('SELECT id, link_pagina from stf.decisoes limit 1000000;')

@@ -1,7 +1,8 @@
-import time, os, common.download_path, re, subprocess, pyautogui
+import time, os, common.download_path, re, subprocess, pyautogui, urllib.request
 from bs4 import BeautifulSoup
 from common.audio_monitor import audio_monitor
 from common.conexao_local import cursorConexao
+from common.download_path import path
 from common.image_to_txt import image_to_txt
 from common.transcrever_audio import transcrever_audio
 from crawlerJus import crawlerJus
@@ -25,6 +26,17 @@ class crawler_jurisprudencia_tj(crawlerJus):
 		for file in os.listdir(common.download_path.path+'/'):
 			if re.search(r'wav',file):
 				return t.transcrever(audio=common.download_path.path+'/'+file)
+
+	def capture_image_ESAJ(self, driver):
+		source = driver.page_source
+		try:
+			captcha_image = re.search(r'url\(&quot\;(.*?)&quot',source,re.I | re.DOTALL).group(1)
+			urllib.request.urlretrieve(captcha_image,'imagem.png')
+			i = image_to_txt()
+			return i.captcha_image_to_txt()
+		except Exception as e:
+			print(e)
+			return ''
 
 	def delete_audios(self):
 		for file in os.listdir(common.download_path.path+'/'):
@@ -63,13 +75,13 @@ class crawler_jurisprudencia_tj(crawlerJus):
 		time.sleep(1)
 		pyautogui.hotkey('ctrl','s')
 		time.sleep(1)
-		pyautogui.typewrite(id_acordao)
+		pyautogui.typewrite(str(id_acordao))
 		time.sleep(1)
 		pyautogui.press('enter')
 		time.sleep(1)
 		driver.close()
 
-	def download_pdf_acordao_captcha_image(self,dados_baixar,input_captcha_xpath,send_captcha,capture_image):
+	def download_pdf_acordao_captcha_image(self,dados_baixar,input_captcha_xpath,send_captcha,prefix):
 		driver = webdriver.Chrome(self.chromedriver)
 		img_to_txt = image_to_txt()
 		for id_acordao,link in dados_baixar:
@@ -80,11 +92,10 @@ class crawler_jurisprudencia_tj(crawlerJus):
 			except:
 				captcha_on = False
 			while captcha_on:
-				resultado = capture_image(driver)
-				if len(resultado) > 0:
-					driver.find_element_by_xpath(input_captcha_xpath).send_keys(resultado[0])
-					driver.find_element_by_xpath(send_captcha).click()
-					time.sleep(2)
+				resultado = self.capture_image_ESAJ(driver)
+				driver.find_element_by_xpath(input_captcha_xpath).send_keys(resultado)
+				driver.find_element_by_xpath(send_captcha).click()
+				time.sleep(2)
 				try:
 					driver.find_element_by_xpath(input_captcha_xpath).send_keys('')
 				except:
@@ -92,10 +103,11 @@ class crawler_jurisprudencia_tj(crawlerJus):
 			time.sleep(3)
 			pyautogui.hotkey('ctrl','s')
 			time.sleep(1)
-			pyautogui.typewrite(id_acordao)
+			pyautogui.typewrite(prefix+'_'+str(id_acordao))
 			time.sleep(1)
 			pyautogui.press('enter')
 			time.sleep(1)
+			subprocess.Popen('mv %s/%s_*.pdf %s/%s' % (path,prefix,path,prefix), shell=True)
 		driver.close()
 
 
@@ -105,7 +117,7 @@ class crawler_jurisprudencia_tj(crawlerJus):
 		time.sleep(1)
 		pyautogui.hotkey('ctrl','s')
 		time.sleep(1)
-		pyautogui.typewrite(id_acordao)
+		pyautogui.typewrite(str(id_acordao))
 		time.sleep(1)
 		pyautogui.press('enter')
 		time.sleep(1)
