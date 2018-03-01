@@ -141,6 +141,7 @@ class crawler_jurisprudencia_stf(crawlerJus):
 			driver = self.login_stf()
 			while True:
 				try:
+					driver.switch_to.window(driver.window_handles[0])
 					driver.find_element_by_xpath(processo_interesse_xpath).send_keys(i)
 					time.sleep(2)
 					driver.find_element_by_xpath(submit_processo_interesse_xpath).click()
