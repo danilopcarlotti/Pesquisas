@@ -1,6 +1,7 @@
 baixados texto - concluídos
 
 ac (texto completo) - samba confirmar
+am - ok
 es - ok
 go - note confirmar
 ma - ok
@@ -11,21 +12,20 @@ pa (texto completo) - email
 pb (links para pdf) - ok
 pi (textos completo) - ok
 pr (texto completo) - esc 0 confirmar
-rj (pdf's) - esc confirmar
+rj (pdf's) - ok
 rn (texto completo) - email
 ro (texto completo) - note confirmar
 rr (texto completo) - ok
 rs (links para html) - samba
-sc (links para html) - ok note
+sc (links para html) - ok notebook
 STJ - ok
 to (links para pdf) - ok
 trf1 (texto completo) - note confirmar
-trf4 (texto completo) - esc 1 confirmar
-trf5 (texto completo) - esc 2 confirmar
+trf4 (texto completo) - ok
+trf5 (texto completo) - ok
 
 falta baixar - links baixados
 
-am - ok (captcha)
 sp (links para pdf) - ok (captcha)
 
 falta baixar
@@ -48,14 +48,8 @@ Sentenças de 1º grau disponível
 ac - https://www.tjac.jus.br/tribunal/administrativo/coger/banco-de-sentencas/
 al - http://www.tjal.jus.br/corregedoria/?pag=sentencas
 ba - http://www5.tjba.jus.br/unicorp/index.php/publicacoes/banco-de-sentencas/19-publicacoes/banco-de-sentencas/95-banco-de-sentencas-tjba
-ce - http://www.tjce.jus.br/banco-de-sentencas/ (login e senha)
-df - https://www.tjdft.jus.br/consultas/despachos-e-decisoes-do-tjdft
-es - https://sistemas.tjes.jus.br/ediario/index.php/pesquisa
-go - http://www.tjgo.jus.br/index.php/consulta-atosjudiciais
-mg - http://www.tjmg.jus.br/portal-tjmg/jurisprudencia/repositorio-de-sentencas/
 pa - http://www.tjpa.jus.br/PortalExterno/institucional/Central-de-Pesquisa-e-Apoio-a-Magistratura/1165-BANCO-DE-SENTENcAS.xhtml
 pe - http://www.tjpe.jus.br/web/juizados-especiais/banco-de-sentencas
-pr - https://www.tjpr.jus.br/despachos-e-decisoes-interlocutorias-do-1-grau
-rj - http://www.tjrj.jus.br/documents/10136/18187/banco-sentencas.pdf?=v00
-rs - https://www.tjrs.jus.br/site/processos/acoes_coletivas/banco_de_acoes/
+rs - https://www.tjrs.jus.br/site/processos/acoes_coletivas/banco_de_acoes/ (captcha inviável por ora)
+
 sp - https://esaj.tjsp.jus.br/cjpg/

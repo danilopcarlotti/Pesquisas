@@ -1,7 +1,9 @@
-import sys, re, time, pyautogui
+import sys, re, time, pyautogui,subprocess, urllib.request
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from bs4 import BeautifulSoup
+from common.download_path import path
 from selenium import webdriver
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 
 class crawler_jurisprudencia_tjba():
@@ -16,36 +18,48 @@ class crawler_jurisprudencia_tjba():
 		self.botao_proximoXP = '//*[@id="jurisprudenciaGridId_paginator_top"]/span[5]/span'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_ba (ementas)'
 
-	def download_tj(self,data_ini,data_fim):
+	def download_tj(self):
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
 		driver.find_element_by_id(self.pesquisa_livre).send_keys('acordam')
-		driver.find_element_by_id(self.data_julgamento_inicialID).send_keys(data_ini)
-		driver.find_element_by_id(self.data_julgamento_finalID).send_keys(data_fim)
 		driver.find_element_by_id(self.botao_pesquisar).click()
 		time.sleep(15)
 		loop_counter = 0
-		contador
+		contador = 10
+		aux = 0
+		while aux < 1427:
+			try:
+				driver.execute_script("return arguments[0].scrollIntoView();", driver.find_element_by_xpath(self.botao_proximoXP))
+				driver.find_element_by_xpath(self.botao_proximoXP).click()
+				aux += 1
+				contador += 10
+			except:
+				time.sleep(1)
 		while True:
 			try:
 				links_inteiro_teor = driver.find_elements_by_link_text('Inteiro Teor')
 				for l in range(len(links_inteiro_teor)):
 					try:
+						driver.execute_script("return arguments[0].scrollIntoView();", links_inteiro_teor[l])
+						time.sleep(0.5)
 						links_inteiro_teor[l].click()
 						contador += 1
-					except:
+					except Exception as e:
+						print(e)
 						continue
 					driver.switch_to.window(driver.window_handles[-1])
 					time.sleep(1)
 					pyautogui.hotkey('ctrl','s')
 					time.sleep(1)
-					pyautogui.typewrite('Acordao_BA_'+str(contador))
+					pyautogui.typewrite('ba_2_inst_'+str(contador))
 					time.sleep(1)
 					pyautogui.press('enter')
 					time.sleep(1)
 					pyautogui.hotkey('ctrl','w')
 					driver.switch_to.window(driver.window_handles[0])
+				subprocess.Popen('mv %s/ba_2_inst_*.pdf %s/ba_2_inst' % (path,path), shell=True)
 				driver.switch_to.window(driver.window_handles[0])
+				driver.execute_script("return arguments[0].scrollIntoView();", driver.find_element_by_xpath(self.botao_proximoXP))
 				driver.find_element_by_xpath(self.botao_proximoXP).click()
 				time.sleep(2)
 			except Exception as e:
@@ -56,12 +70,30 @@ class crawler_jurisprudencia_tjba():
 					driver.close()
 					return
 
-if __name__ == '__main__':
+	def download_1_inst(self):
+		link_1_inst = 'http://www5.tjba.jus.br/unicorp/index.php/publicacoes/banco-de-sentencas/19-publicacoes/banco-de-sentencas/95-banco-de-sentencas-tjba'
+		driver = webdriver.Chrome(self.chromedriver)
+		driver.get(link_1_inst)
+		pag = BeautifulSoup(driver.page_source,'lxml')
+		contador = 0
+		for l in pag.find_all('a', href=True):
+			if re.search(r'/unicorp/images/.*?pdf',l['href']):
+				try:
+					urllib.request.urlretrieve('http://www5.tjba.jus.br'+l['href'],'TJBA_1_inst_%s.pdf' % str(contador))
+					subprocess.Popen('mv TJBA_1_inst_*.pdf %s/ba_1_inst' % (path,), shell=True)
+					contador += 1
+				except Exception as e:
+					print(e)
+		driver.close()
+	
+def main():
 	c = crawler_jurisprudencia_tjba()
-	print('comecei ',c.__class__.__name__)
-	for l in c.lista_anos:
-		try:
-			print(l,'\n')
-			c.download_tj('01/01/'+l,'31/12/'+l)
-		except Exception as e:
-			print('finalizei com erro ',e)
+	c.download_1_inst()
+	# print('comecei ',c.__class__.__name__)
+	# try:
+	# 	c.download_tj()
+	# except Exception as e:
+	# 	print('finalizei com erro ',e)
+
+if __name__ == '__main__':
+	main()

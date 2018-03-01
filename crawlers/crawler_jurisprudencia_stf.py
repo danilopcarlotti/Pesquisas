@@ -138,33 +138,26 @@ class crawler_jurisprudencia_stf(crawlerJus):
 		submit_processo_interesse_xpath = '//*[@id="container"]/div[3]/div[1]/div[2]/div[2]/div/div/div[4]/div/div[1]/div/span/button'
 		ver_mais_processo_interesse_xpath = '//*[@id="container"]/div[3]/div[1]/div[2]/div[2]/div/div/div[4]/div/div[2]/div/div/a'
 		for i in ids_doc:
-			try:
-				driver = self.login_stf()
-				time.sleep(2)
-				while True:
+			driver = self.login_stf()
+			while True:
+				try:
+					driver.find_element_by_xpath(processo_interesse_xpath).send_keys(i)
+					time.sleep(2)
+					driver.find_element_by_xpath(submit_processo_interesse_xpath).click()
+					time.sleep(5)
+					driver.find_element_by_xpath(ver_mais_processo_interesse_xpath).click()
+					time.sleep(2)
+					driver.switch_to.window(driver.window_handles[1])
+					time.sleep(1)
+					driver.find_element_by_xpath(aba_pecas_xpath).click()
 					try:
-						driver.find_element_by_xpath(processo_interesse_xpath).send_keys(i)
-						time.sleep(8)
-						driver.find_element_by_xpath(submit_processo_interesse_xpath).click()
-						time.sleep(2)
-						driver.find_element_by_xpath(ver_mais_processo_interesse_xpath).click()
-						break
-					except:
-						time.sleep(1)
-				while True:
-					try:
-						time.sleep(2)
-						driver.switch_to.window(driver.window_handles[1])
-						time.sleep(1)
-						driver.find_element_by_xpath(aba_pecas_xpath).click()
 						driver.find_element_by_xpath(download_todas_pecas_xpath).click()
-						time.sleep(2)
 						break
 					except:
-						time.sleep(2)
-				driver.close()
-			except:
-				pass
+						break
+				except:
+					time.sleep(1)
+			driver.close()
 
 if __name__ == '__main__':
 	cursor = cursorConexao()
@@ -183,9 +176,9 @@ if __name__ == '__main__':
 	# links_d = cursor.fetchall()
 	# c.solicitar_link_download_documentos(links_d)
 
-	# cursor.execute('SELECT processo from processos_stf.dados_processo order by id desc limit 10;')
-	# ids_doc = cursor.fetchall()
-	# c.solicitar_link_download_documentos(ids_doc)
+	cursor.execute('SELECT processo from stf.dados_processo limit 5,10;')
+	ids_doc = cursor.fetchall()
+	c.solicitar_link_download_documentos(ids_doc)
 	c.baixar_documentos_stf()
 	
 	# cursor.execute('SELECT id, link_pagina from stf.decisoes limit 1000000;')

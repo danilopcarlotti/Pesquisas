@@ -14,10 +14,12 @@ class textNormalization():
 		arquivo = open(arq,'r')
 		return ''.join([line for line in arquivo])
 
-	def normalize_texts(self,texts):
+	def normalize_texts(self,texts,one_text = False):
 		normal_texts = []
 		tk = self.tokenizer()
 		stopwords = nltk.corpus.stopwords.words('portuguese')
+		if one_text:
+			texts = [texts]
 		for t in texts:
 			texto_bruto = t.lower()
 			tokens = tk.tokenize(texto_bruto)
@@ -26,4 +28,6 @@ class textNormalization():
 				if tkn not in stopwords:
 					texto_processado.append(tkn)
 			normal_texts.append(texto_processado)
+		if one_text:
+			return texto_processado
 		return normal_texts

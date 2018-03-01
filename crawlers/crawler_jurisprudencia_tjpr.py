@@ -32,21 +32,22 @@ class crawler_jurisprudencia_tjpr():
 		cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
 		self.botao_proximo_iniXP = '//*[@id="navigator"]/div[1]/a[6]'
 		driver.find_element_by_xpath(self.botao_proximo_iniXP).click()
-		loop_counter = 0
 		while True:
 			try:
-				if (contador % 10000 == 0):
-					print(contador)
 				texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
 				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
 				driver.find_element_by_xpath(self.botao_proximoXP).click()
 				time.sleep(2)
-				contador += 1
 			except:
-				if input('me ajude'):
-					texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
-					cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
-					driver.find_element_by_xpath(self.botao_proximoXP).click()
+				sucesso = False
+				while not sucesso:
+					try:
+						time.sleep(1)
+						driver.execute_script("window.history.go(-1)")
+						driver.find_element_by_xpath(self.botao_proximoXP).click()
+						sucesso = True
+					except:
+						pass
 		driver.close()
 
 if __name__ == '__main__':
