@@ -106,7 +106,7 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 
 def main():
 	c = crawler_jurisprudencia_tjsp()
-	c.download_1_inst('01/01/2017','31/12/2017')
+	c.download_1_inst('01/01/2016','31/12/2016')
 
 	# cursor = cursorConexao()
 	# cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_sp limit 10;')
