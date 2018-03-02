@@ -1,4 +1,4 @@
-import sys, re, os, time, urllib.request, subprocess
+import sys, re, os, time, subprocess
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from common.download_path import path

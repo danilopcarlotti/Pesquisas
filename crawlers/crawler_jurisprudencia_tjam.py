@@ -1,10 +1,12 @@
-import sys, re, os
+import sys, re, os, subprocess
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
+from common.download_path import path
+from common.conexao_local import cursorConexao
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-class crawler_jurisprudencia_tjam():
+class crawler_jurisprudencia_tjam(crawler_jurisprudencia_tj):
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância do Amazonas"""
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
@@ -18,16 +20,15 @@ class crawler_jurisprudencia_tjam():
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_am (ementas)'
 		self.link_esaj = 'http://consultasaj.tjam.jus.br/cjsg/getArquivo.do?cdAcordao=%s&cdForo=%s'
 
-	def download_acordao_am(self,id_acordao,link):
-		crawler_jurisprudencia_tj.download_pdf_acordao(self,link,'//*[@id="valorCaptcha"]','//*[@id="captchaInfo"]/ul/li[1]/a','//*[@id="pbEnviar"]','am_2_inst_' + id_acordao)
+	def download_acordao_am(self,dados_baixar):
+		self.download_pdf_acordao_captcha_image(dados_baixar,'//*[@id="valorCaptcha"]','//*[@id="pbEnviar"]','am_2_inst')
 
 def main():
 	c = crawler_jurisprudencia_tjam()
 	cursor = cursorConexao()
-	cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_am limit 10000000;')
+	cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_am where id > 29237 limit 10000000;')
 	lista_links = cursor.fetchall()
-	for i,l in lista_links:
-		c.download_acordao_am(i,l)
+	c.download_acordao_am(lista_links)
 	# print('comecei ',c.__class__.__name__)
 	# try:
 	# 	for l in range(3,len(c.lista_anos)):

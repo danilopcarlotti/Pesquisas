@@ -1,6 +1,7 @@
 baixados texto - concluídos
 
 ac (texto completo) - samba confirmar
+am - ok
 es - ok
 go - note confirmar
 ma - ok
@@ -25,7 +26,6 @@ trf5 (texto completo) - ok
 
 falta baixar - links baixados
 
-am - ok (captcha)
 sp (links para pdf) - ok (captcha)
 
 falta baixar
