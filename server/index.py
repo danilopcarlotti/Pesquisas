@@ -4,6 +4,8 @@
 from flask import *
 app = Flask(__name__)
 
+# @app.route()
+
 @app.route('/hello')
 def hello_world():
    return "Hello from the other side"
@@ -11,10 +13,6 @@ def hello_world():
 @app.route('/hello/<name>')
 def hello_name(name):
    return 'Hello %s!' % name
-
-@app.route('/index/<name>')
-def index(name):
-   return 'Bem vindo %s' % name
 
 @app.route('/failure')
 def failure():
@@ -24,17 +22,18 @@ def failure():
 def success():
    return render_template('success.html')
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        login_user(user)
-        flask.flash('Logged in successfully.')
-        next = flask.request.args.get('next')
-        if not is_safe_url(next):
-            return flask.abort(400)
-        return flask.redirect(next or flask.url_for('success'))
-    return flask.render_template('failure.html', form=form)
+@app.route('/foo', methods = ['POST', 'GET'])
+def foo():
+  if request.method == 'POST':
+    termos = request.form['query']
+    #
+    return 'Ola {}'.format(termos)
+  else:
+    return 'Oi'
+
+@app.route('/')
+def main_page():
+  return render_template('login.html')
 
 @app.route('/index',methods = ['POST', 'GET'])
 def index():
@@ -45,4 +44,4 @@ def index():
       return redirect(url_for('failure'))
 
 if __name__ == '__main__':
-   app.run(debug = True)
+  app.run(debug=True, host='0.0.0.0', port=8080)
