@@ -1,35 +1,35 @@
 # http://jinja.pocoo.org/docs/2.10/templates/
 # https://www.tutorialspoint.com/flask/flask_static_files.htm
 
+import csv
+import io
+
 from flask import *
+
+from conexao import cursorConexao
+
 app = Flask(__name__)
 
-# @app.route()
-
-@app.route('/hello')
-def hello_world():
-   return "Hello from the other side"
-
-@app.route('/hello/<name>')
-def hello_name(name):
-   return 'Hello %s!' % name
-
-@app.route('/failure')
-def failure():
-   return render_template('failure.html')
-
-@app.route('/success')
-def success():
-   return render_template('success.html')
-
-@app.route('/foo', methods = ['POST', 'GET'])
+@app.route('/pesquisa', methods = ['POST', 'GET'])
 def foo():
   if request.method == 'POST':
-    termos = request.form['query']
-    #
-    return 'Ola {}'.format(termos)
+    try:
+      termos = request.form['query'].lower()
+      cursor = cursorConexao()
+      cursor.execute('SELECT texto_decisao FROM stf.decisoes where lower(texto_decisao) like "%{}%" limit 10;'.format(termos))
+      dados = cursor.fetchall()
+      si = io.StringIO()
+      cw = csv.writer(si)
+      cw.writerows([['Texto decisão']])
+      cw.writerows(dados)
+      output = make_response(si.getvalue())
+      output.headers["Content-Disposition"] = "attachment; filename=relatorio_insper_cnj.csv"
+      output.headers["Content-type"] = "text/csv"
+      return output
+    except Exception as e:
+      return e
   else:
-    return 'Oi'
+    return 'Preencha o formulário corretamente, por favor.'
 
 @app.route('/')
 def main_page():
@@ -44,4 +44,4 @@ def index():
       return redirect(url_for('failure'))
 
 if __name__ == '__main__':
-  app.run(debug=True, host='0.0.0.0', port=8080)
+  app.run(debug=True)
