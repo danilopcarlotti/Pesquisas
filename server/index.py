@@ -1,40 +1,39 @@
 # http://jinja.pocoo.org/docs/2.10/templates/
 # https://www.tutorialspoint.com/flask/flask_static_files.htm
 
+import csv
+import io
+
 from flask import *
+
+from conexao import cursorConexao
+
 app = Flask(__name__)
 
-@app.route('/hello')
-def hello_world():
-   return "Hello from the other side"
+@app.route('/pesquisa', methods = ['POST', 'GET'])
+def foo():
+  if request.method == 'POST':
+    try:
+      termos = request.form['query'].lower()
+      cursor = cursorConexao()
+      cursor.execute('SELECT texto_decisao FROM stf.decisoes where lower(texto_decisao) like "%{}%" limit 10;'.format(termos))
+      dados = cursor.fetchall()
+      si = io.StringIO()
+      cw = csv.writer(si)
+      cw.writerows([['Texto decisão']])
+      cw.writerows(dados)
+      output = make_response(si.getvalue())
+      output.headers["Content-Disposition"] = "attachment; filename=relatorio_insper_cnj.csv"
+      output.headers["Content-type"] = "text/csv"
+      return output
+    except Exception as e:
+      return e
+  else:
+    return 'Preencha o formulário corretamente, por favor.'
 
-@app.route('/hello/<name>')
-def hello_name(name):
-   return 'Hello %s!' % name
-
-@app.route('/index/<name>')
-def index(name):
-   return 'Bem vindo %s' % name
-
-@app.route('/failure')
-def failure():
-   return render_template('failure.html')
-
-@app.route('/success')
-def success():
-   return render_template('success.html')
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        login_user(user)
-        flask.flash('Logged in successfully.')
-        next = flask.request.args.get('next')
-        if not is_safe_url(next):
-            return flask.abort(400)
-        return flask.redirect(next or flask.url_for('success'))
-    return flask.render_template('failure.html', form=form)
+@app.route('/')
+def main_page():
+  return render_template('login.html')
 
 @app.route('/index',methods = ['POST', 'GET'])
 def index():
@@ -45,4 +44,4 @@ def index():
       return redirect(url_for('failure'))
 
 if __name__ == '__main__':
-   app.run(debug = True)
+  app.run(debug=True)
