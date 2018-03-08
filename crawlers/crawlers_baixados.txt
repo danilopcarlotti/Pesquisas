@@ -1,47 +1,46 @@
 baixados texto - concluídos
 
-ac (texto completo) - samba confirmar
+ac (texto completo) - ok
+al - ok
 am - ok
+ba - ok
 es - ok
-go - note confirmar
+go - ok
 ma - ok
 df - ok
-mg (texto completo) - note confirmar
-mt (texto completo) - note confirmar
-pa (texto completo) - email
+mg (texto completo) - ok
+ms - esc 0 confirmar
+mt (texto completo) - ok
+pa (texto completo) - ok
 pb (links para pdf) - ok
 pi (textos completo) - ok
-pr (texto completo) - esc 0 confirmar
+pr (texto completo) - ok
 rj (pdf's) - ok
-rn (texto completo) - email
-ro (texto completo) - note confirmar
+rn (texto completo) - ok
+ro (texto completo) - ok
 rr (texto completo) - ok
 rs (links para html) - samba
-sc (links para html) - ok notebook
+sc (links para html) - ok
+sp 1 inst - esc 0
 STJ - ok
+STF - ok
 to (links para pdf) - ok
-trf1 (texto completo) - note confirmar
+trf1 (texto completo) - ok
 trf4 (texto completo) - ok
 trf5 (texto completo) - ok
 
 falta baixar - links baixados
 
+ce - revisar e verificar o correto download
 sp (links para pdf) - ok (captcha)
-
-falta baixar
-
-al - ok (recaptcha)
-ce - ok (recaptcha)
-ms - ok (recaptcha)
-ba (texto completo)
 STF (documentos)
-trf3 (links para html) porque não está funcionando, apesar de funcionar manualmente?
 
 falta completar e/ou impossível completar
 
 ap - não funciona o botão de "mais resultados"
 pe - Só há 500 acórdãos disponíveis nos processos do TJPE
 trf2 - não foi encontrado termo que gere uma pesquisa viável
+trf3 (links para html) porque não está funcionando, apesar de funcionar manualmente?
 
 Sentenças de 1º grau disponível
 
@@ -53,3 +52,36 @@ pe - http://www.tjpe.jus.br/web/juizados-especiais/banco-de-sentencas
 rs - https://www.tjrs.jus.br/site/processos/acoes_coletivas/banco_de_acoes/ (captcha inviável por ora)
 
 sp - https://esaj.tjsp.jus.br/cjpg/
+
+*** Parsers ***
+
+ac  - 
+al - ok
+am - 
+ba - 
+ce -
+es - 
+go - 
+ma - 
+df - 
+mg  - 
+ms -
+mt  - 
+pa  - 
+pb  - 
+pi  - 
+pr  - 
+rj  - 
+rn  - 
+ro  - 
+rr  - 
+rs  - 
+sc  - 
+sp 1 inst - ok
+sp 2 inst - rever ocr
+STJ - 
+STF - 
+to  - 
+trf1  - 
+trf4  - 
+trf5  - 

@@ -23,10 +23,9 @@ if __name__ == '__main__':
 	try:
 		for l in range(len(c.lista_anos)):
 			print(c.lista_anos[l],'\n')
-			for m in range(len(c.lista_meses)):
-				try:
-					crawler_jurisprudencia_tj.download_tj_ESAJ_recaptcha(c,crawler_jurisprudencia_tj,'01'+c.lista_meses[m]+c.lista_anos[l],'28'+c.lista_meses[m]+c.lista_anos[l])
-				except Exception as e:
-					print(e)
+			try:
+				crawler_jurisprudencia_tj.download_tj_ESAJ_recaptcha(c,crawler_jurisprudencia_tj,'0101'+c.lista_anos[l],'3112'+c.lista_anos[l])
+			except Exception as e:
+				print(e)
 	except Exception as e:
 		print('finalizei o ano com erro ',e)

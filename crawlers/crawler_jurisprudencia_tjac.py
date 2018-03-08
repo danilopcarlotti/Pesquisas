@@ -59,6 +59,8 @@ class crawler_jurisprudencia_tjac(crawler_jurisprudencia_tj):
 				except:
 					pass
 
+	
+
 def main():
 	c = crawler_jurisprudencia_tjac()
 

@@ -75,16 +75,51 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 		crawler_jurisprudencia_tj.download_pdf_acordao_captcha_image(self,dados_baixar,'//*[@id="valorCaptcha"]','//*[@id="pbEnviar"]',self.capture_image)
 		subprocess.Popen('mv %s/sp_2_inst_*.pdf %s/sp_2_inst' % (path,path), shell=True)
 
-	def parse_sp_dados(self,texto):
-		t = textNormalization()
-		numero = re.search(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}',texto, re.DOTALL)
-		numero = numero.group(0)
-		data_julgamento_bruta = re.search(r'São Paulo.{1,10}(\d{1,3}º? de \w+ de \d{4})',texto)
-		data_julgamento = data_julgamento_bruta.group(1).split(' de ')
-		dia = data_julgamento[0].replace('º','')
-		mes = t.month_name_number(data_julgamento[1]).strip()
-		ano = data_julgamento[2]
-		return (numero, dia+'/'+mes+'/'+ano)
+	def parse_sp_dados_1_inst(self,texto):
+		inicio = False
+		texto_sentenca = ''
+		for line in texto.split('\n'):
+			line += '\n'
+			if inicio:
+				if re.search(r'^\s*?\d+\s*?\-\s*?$',line):
+					# Novo início, finalizar o anterior
+					try:
+						dados_re = r'\s*?{}\:.*?\n(.*?)\n'
+						assunto = re.search(dados_re.format('Assunto'), texto_sentenca)
+						assunto = assunto.group(1)
+						classe = re.search(dados_re.format('Classe'), texto_sentenca)
+						classe = classe.group(1)
+						comarca = re.search(dados_re.format('Comarca'), texto_sentenca)
+						comarca = comarca.group(1)
+						data_disponibilizacao = re.search(r'\s*?Data de Disponibilização\:.*?\n(.*?)\n', texto_sentenca)
+						data_disponibilizacao = data_disponibilizacao.group(1)
+						foro = re.search(dados_re.format('Foro'), texto_sentenca)
+						foro = foro.group(1)
+						juiz = re.search(dados_re.format('Magistrad.'), texto_sentenca)
+						juiz = juiz.group(1)
+						numero = re.search(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', texto_sentenca, re.DOTALL)
+						numero = numero.group(0)
+						requerente = re.search(r'\s*?Requerent.*?\:.*?\n.*?\n(.*?)\n', texto_sentenca)
+						requerente = requerente.group(1)
+						requerido = re.search(r'\s*?Requerid.*?\:.*?\n.*?\n(.*?)\n', texto_sentenca)
+						requerido = requerido.group(1)
+						if re.search(r'Justiça Gratuita',texto_sentenca,re.I):
+							justica_gratuita = '1'
+						else:
+							justica_gratuita = '0'
+						# FALTA:
+							# PROCEDÊNCIA;
+							# PARTES DO TEXTO (relatório, fundamentação e dispositivo)
+						print(assunto.strip(),classe.strip(),comarca.strip(),data_disponibilizacao.strip(),foro.strip(),juiz.strip(),numero.strip(),requerente.strip(),requerido.strip(),print(justica_gratuita))
+						# INSERIR NA BASE DE DADOS
+					except Exception as e:
+						print(e)
+					texto_sentenca = ''
+				else:
+					texto_sentenca += line
+			else:
+				if re.search(r'^\s*?\d+\s*?\-\s*?$',line):
+					inicio = True
 
 	def parse_sp_pdf(self,lista_arquivos = None):
 		if not lista_arquivos:
@@ -97,7 +132,7 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 					id_arq = arq.split('sp_2_inst_')
 					id_arq = id_arq[1][:-4]
 					texto = p.convert_pdfminer(path+'/sp_2_inst/'+arq)
-					numero,data_julgamento = self.parse_sp_dados(texto)
+					# numero,data_julgamento = self.parse_sp_dados_1_inst(texto)
 					dados.append(texto,numero,data_julgamento)
 			except Exception as e:
 				print(arq)
@@ -106,7 +141,24 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 
 def main():
 	c = crawler_jurisprudencia_tjsp()
-	c.download_1_inst('01/01/2016','31/12/2016')
+
+	# arq = open('ex.txt','r')
+	# for line in arq:
+	# 	texto.append(line)
+	c.parse_sp_dados_1_inst(texto)
+
+
+	# print('comecei ',c.__class__.__name__)
+	# try:
+	# 	for l in range(len(c.lista_anos)):
+	# 		print(c.lista_anos[l],'\n')
+	# 		for m in range(len(c.lista_meses)):
+	# 			try:
+	# 				c.download_1_inst('01'+c.lista_meses[m]+c.lista_anos[l],'28'+c.lista_meses[m]+c.lista_anos[l])
+	# 			except Exception as e:
+	# 				print(e)
+	# except Exception as e:
+	# 	print(e)
 
 	# cursor = cursorConexao()
 	# cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_sp limit 10;')

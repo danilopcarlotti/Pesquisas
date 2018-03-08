@@ -166,12 +166,17 @@ class crawler_jurisprudencia_tj(crawlerJus):
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
 		time.sleep(1)
-		superC.download_jurisprudencia(self,driver,self.pesquisa_livre,self.data_julgamento_inicialXP,data_julg_ini,self.data_julgamento_finalXP,data_julg_fim,self.botao_pesquisar,termo=termo)
-		texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
-		cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
-		time.sleep(2)
-		driver.find_element_by_xpath(self.botao_proximo_ini).click()
-		contador = 0
+		try:
+			superC.download_jurisprudencia(self,driver,self.pesquisa_livre,self.data_julgamento_inicialXP,data_julg_ini,self.data_julgamento_finalXP,data_julg_fim,self.botao_pesquisar,termo=termo)
+			texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
+			cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
+			time.sleep(2)
+			driver.find_element_by_xpath(self.botao_proximo_ini).click()
+			contador = 0
+		except Exception as e:
+			print(e)
+			driver.close()
+			return
 		while True:
 			try:
 				driver.find_element_by_xpath(self.botao_proximo).click()

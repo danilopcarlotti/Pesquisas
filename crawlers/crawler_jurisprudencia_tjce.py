@@ -7,7 +7,7 @@ class crawler_jurisprudencia_tjce():
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
 		self.link_inicial = 'http://www.tjce.jus.br/institucional/consulta-de-acordao/'
-		self.pesquisa_livre = '/html/body/table[4]/tbody/tr/td/form/table[2]/tbody/tr/td[2]/input'
+		self.pesquisa_livre = '//*[@id="iddados.buscaInteiroTeor"]'
 		self.data_julgamento_inicialXP = '//*[@id="dtJulgamentoInicio"]/input'
 		self.data_julgamento_finalXP = '//*[@id="dtJulgamentoFim"]/input'
 		self.botao_pesquisar = '//*[@id="pbSubmit"]'
@@ -21,10 +21,9 @@ if __name__ == '__main__':
 	try:
 		for l in range(len(c.lista_anos)):
 			print(c.lista_anos[l],'\n')
-			for m in range(len(c.lista_meses)):
-				try:
-					crawler_jurisprudencia_tj.download_tj_ESAJ_recaptcha(c,crawler_jurisprudencia_tj,'01'+c.lista_meses[m]+c.lista_anos[l],'28'+c.lista_meses[m]+c.lista_anos[l],termo='direito')
-				except Exception as e:
-					print(e)
+			try:
+				crawler_jurisprudencia_tj.download_tj_ESAJ_recaptcha(c,crawler_jurisprudencia_tj,'0101'+c.lista_anos[l],'3112'+c.lista_anos[l],termo='processo')
+			except Exception as e:
+				print(e)
 	except Exception as e:
 		print('finalizei o ano com erro ',e)
