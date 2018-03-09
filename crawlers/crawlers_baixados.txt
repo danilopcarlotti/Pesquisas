@@ -18,7 +18,6 @@ pr (texto completo) - ok
 rj (pdf's) - ok
 rn (texto completo) - ok
 ro (texto completo) - ok
-rr (texto completo) - ok
 rs (links para html) - samba
 sc (links para html) - ok
 sp 1 inst - esc 0
@@ -32,6 +31,7 @@ trf5 (texto completo) - ok
 falta baixar - links baixados
 
 ce - revisar e verificar o correto download
+rr (texto completo) -
 sp (links para pdf) - ok (captcha)
 STF (documentos)
 
@@ -49,39 +49,93 @@ al - http://www.tjal.jus.br/corregedoria/?pag=sentencas
 ba - http://www5.tjba.jus.br/unicorp/index.php/publicacoes/banco-de-sentencas/19-publicacoes/banco-de-sentencas/95-banco-de-sentencas-tjba
 pa - http://www.tjpa.jus.br/PortalExterno/institucional/Central-de-Pesquisa-e-Apoio-a-Magistratura/1165-BANCO-DE-SENTENcAS.xhtml
 pe - http://www.tjpe.jus.br/web/juizados-especiais/banco-de-sentencas
-rs - https://www.tjrs.jus.br/site/processos/acoes_coletivas/banco_de_acoes/ (captcha inviável por ora)
 
+rs - https://www.tjrs.jus.br/site/processos/acoes_coletivas/banco_de_acoes/ (captcha inviável por ora)
 sp - https://esaj.tjsp.jus.br/cjpg/
 
 *** Parsers ***
 
-ac  - 
+Parser pronto
+
+ac - ok
 al - ok
-am - 
-ba - 
-ce -
+am - rever ocr
+ba - rever ocr
+ce - rever crawler
+df - rever ocr
 es - 
 go - 
-ma - 
-df - 
-mg  - 
-ms -
-mt  - 
-pa  - 
-pb  - 
-pi  - 
-pr  - 
-rj  - 
-rn  - 
-ro  - 
-rr  - 
-rs  - 
-sc  - 
+ma - ok
+mg - 
+ms - ok 
+mt - rever ocr
+pa - ok 
+pb - 
+pi - 
+pr - 
+rj - rever ocr
+rn - ok
+ro - 
+rr - 
+rs - 
+sc - rever ocr
+se - ok (modelo)
 sp 1 inst - ok
 sp 2 inst - rever ocr
-STJ - 
-STF - 
-to  - 
-trf1  - 
-trf4  - 
-trf5  - 
+STJ - ok
+STF - ok
+to - rever ocr
+trf1 - 
+trf4 - ok
+trf5 - 
+
+Parser rodado
+
+trf4  - esc 0
+
+** TABELAS JURISPRUDENCIA **
+
+1ª Instância
+
+CREATE TABLE `jurisprudencia_1_inst` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tribunal` varchar(45) DEFAULT NULL,
+  `numero` varchar(45) DEFAULT NULL,
+  `assunto` text,
+  `classe` text,
+  `data_decisao` text,
+  `orgao_julgador` text,
+  `julgador` text,
+  `texto_decisao` longtext,
+  `relatorio` longtext,
+  `fundamentacao` longtext,
+  `dispositivo` longtext,
+  `polo_ativo` text,
+  `polo_passivo` text,
+  `comarca` text,
+  `justica_gratuita` varchar(45) DEFAULT NULL,
+  `procedencia` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+2ª Instância
+
+CREATE TABLE `jurisprudencia_2_inst` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tribunal` varchar(45) DEFAULT NULL,
+  `numero` varchar(45) DEFAULT NULL,
+  `assunto` text,
+  `classe` text,
+  `data_decisao` varchar(45) DEFAULT NULL,
+  `orgao_julgador` text,
+  `julgador` text,
+  `texto_decisao` longtext,
+  `relatorio` longtext,
+  `fundamentacao` longtext,
+  `dispositivo` longtext,
+  `polo_ativo` text,
+  `polo_passivo` text,
+  `origem` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

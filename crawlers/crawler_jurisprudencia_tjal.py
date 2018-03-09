@@ -53,58 +53,16 @@ class crawler_jurisprudencia_tjal(crawler_jurisprudencia_tj):
 				print(e)
 
 	def parser_acordao(self,texto):
-		classe = False
-		inicio = False
-		numero = False
-		dados_decisao = {}
-		ementa_txt = ''
-		re_classe = r'Classe/Assunto:' # linha seguinte
-		re_ementa = r'^Ementa:' #depois de tudo o que já passou e até o próximo início
-		re_inicio = r'^\d*?\s*?\-\s*?$'
-		re_numero = r'^\s*?(\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4})\s*?$'
-		re_dados_ementa = r'\((.*?\(.*?)\(' # re.DOTALL
-		re_comarca = r'Comarca:(.*?);'
-		re_data_julgamento = r'Data do julgamento: (.*?);'
-		re_orgao_julgador = r'Órgão julgador:(.*?);'
-		re_relator = r'Relator \(a\)\:(.*?);'
-		for line in texto:
-			if re.search(re_inicio,line):
-				# fazer algo sobre decisão anterior
-				dados_decisao = {}
-				classe = False
-				inicio = True
-				numero = False
-				continue
-			if inicio:
-				if numero:
-					if classe:
-						if 'classe' not in dados_decisao:
-							if line != ':'
-								dados_decisao['classe'] = line
-					else:
-						if re.search(re_classe,line):
-							texto_ementa = re.search(r'.*?\(',ementa_txt)
-							dados_ementa = re.search(re_dados_ementa,ementa_txt)
-							if dados_ementa:
-								dados_ementa = dados_ementa.group(0)
-								comarca = re.search(re_comarca,dados_ementa).group(0)
-								data_julgamento = re.search(re_data_julgamento,dados_ementa).group(0)
-								orgao_julgador = re.search(re_orgao_julgador,dados_ementa).group(0)
-								relator = re.search(re_relator,dados_ementa).group(0)
-							dados_decisao['ementa'] = texto_ementa.group(0)
-							dados_decisao['comarca'] = comarca
-							dados_decisao['data_julgamento'] = data_julgamento
-							dados_decisao['orgao_julgador'] = orgao_julgador
-							dados_decisao['relator'] = relator
-							ementa_txt = ''
-							classe = True
-						else:
-							ementa_txt += line
-				else:
-					numero_txt = re.search(re_numero,line)
-					if numero_txt:
-						dados_decisao['numero'] = numero_txt.group(0)
-					numero = True
+		decisoes = re.split(r'\n\s*?\d*?\s*?\-\s*?\n',texto)
+		for d in range(1,len(decisoes)):
+			numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', decisoes[d],ngroup=0)
+			classe_assunto = busca(r'\n\s*?Classe/Assunto\:\n(.+)',decisoes[d])
+			classe = classe_assunto.split('/')[0]
+			assunto = classe_assunto.split('/')[1]
+			julgador = busca(r'Relator \(a\)\:(.*?)\;', decisoes[d])
+			orgao_julgador = busca(r'Órgão julgador\:(.*?)\;', decisoes[d])
+			data_disponibilizacao = busca(r'Data do julgamento\:\s*?(.*?)\;', decisoes[d])
+			cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, assunto, classe, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s","%s","%s","%s");' % ('al',numero, assunto, classe, data_disponibilizacao, orgao_julgador, julgador, texto))
 
 def main():
 	c = crawler_jurisprudencia_tjal()

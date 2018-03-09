@@ -39,6 +39,20 @@ class crawler_jurisprudencia_tjse():
 		driver.close()
 		time.sleep(1)
 
+	def parser_acordaos(self,texto,cursor):
+		decisoes = re.split(r' N. do processo\:',texto)
+		for d in range(1,len(decisoes)):
+			numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', decisoes[d],ngroup=0)
+			ementa = busca(r'^(.+)\nSessão\:', decisoes[d], args=re.DOTALL)
+			classe = busca(r'\nClasse\:\n\s*?(.+)', decisoes[d])
+			assunto = busca(r'\nAssuntos\:\n\s*?(.+)', decisoes[d])
+			julgador = busca(r'\n\s*?Relator.*?\:\n\s*?(.*?)\(', decisoes[d])
+			orgao_julgador = busca(r'\n\s*?.rgão julgador\:\n\s*?\n\s*?(.+)', decisoes[d])
+			data_disponibilizacao = busca(r'\n\s*?Data de julgamento\:\n\s*?(\d{2}/\d{2}/\d{4})', decisoes[d])
+			polo_ativo = busca(r'\n\s*?P.lo ativo\:\n\s*?(.+)', decisoes[d])
+			polo_passivo = busca(r'\n\s*?P.lo passivo\:\n\s*?(.+)', decisoes[d])
+			cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, assunto, classe, data_decisao, orgao_julgador, julgador, polo_ativo, polo_passivo, texto_decisao) values ("%s","%s","%s","%s","%s","%s","%s","%s","%s");' % ('se',numero, assunto, classe, data_disponibilizacao, orgao_julgador, julgador, polo_ativo, polo_passivo, ementa))
+
 def main():
 	pass
 

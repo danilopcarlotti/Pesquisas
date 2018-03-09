@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from common.download_path import path
 from common.image_to_txt import image_to_txt
+from common_nlp.parse_texto import busca
 from common_nlp.pdf_to_text import pdf_to_text
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
@@ -75,52 +76,42 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 		crawler_jurisprudencia_tj.download_pdf_acordao_captcha_image(self,dados_baixar,'//*[@id="valorCaptcha"]','//*[@id="pbEnviar"]',self.capture_image)
 		subprocess.Popen('mv %s/sp_2_inst_*.pdf %s/sp_2_inst' % (path,path), shell=True)
 
-	def parse_sp_dados_1_inst(self,texto):
+	def parse_sp_dados_1_inst(self,texto,cursor):
 		inicio = False
-		texto_sentenca = ''
-		for line in texto.split('\n'):
-			line += '\n'
+		texto_decisao = ''
+		def parse(texto_decisao,cursor):
+			dados_re = r'\s*?{}\:.*?\n(.*?)\n'
+			assunto = busca(dados_re.format('Assunto'), texto_decisao)
+			classe = busca(dados_re.format('Classe'), texto_decisao)
+			comarca = busca(dados_re.format('Comarca'), texto_decisao)
+			data_disponibilizacao = busca(r'\s*?Data de Disponibilização\:.*?\n(.*?)\n', texto_decisao)
+			foro = busca(dados_re.format('Foro'), texto_decisao)
+			juiz = busca(dados_re.format('Magistrad.'), texto_decisao)
+			numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', texto_decisao, ngroup=0, args=re.DOTALL)
+			requerente = busca(r'\s*?Requerent.*?\:.*?\n.*?\n(.*?)\n', texto_decisao)
+			requerido = busca(r'\s*?Requerid.*?\:.*?\n.*?\n(.*?)\n', texto_decisao)
+			if re.search(r'Justiça Gratuita',texto_decisao,re.I):
+				justica_gratuita = '1'
+			else:
+				justica_gratuita = '0'
+			cursor.execute('INSERT INTO jurisprudencia_1_inst.jurisprudencia_1_inst \
+				(tribunal, numero, assunto, classe, data_decisao, orgao_julgador, julgador, texto_decisao, polo_ativo, polo_passivo, comarca, justica_gratuita) values ("%s",' % ('SP', numero, assunto, classe, data_disponibilizacao, foro, juiz, decisao, requerente, requerido, comarca, justica_gratuita))
+		linhas = [l + '\n' for l in texto.split('\n')]
+		for line in linhas:
 			if inicio:
-				if re.search(r'^\s*?\d+\s*?\-\s*?$',line):
-					# Novo início, finalizar o anterior
+				if re.search(r'\n\s*?\d+\s*?\-\s*?\n',line):
 					try:
-						dados_re = r'\s*?{}\:.*?\n(.*?)\n'
-						assunto = re.search(dados_re.format('Assunto'), texto_sentenca)
-						assunto = assunto.group(1)
-						classe = re.search(dados_re.format('Classe'), texto_sentenca)
-						classe = classe.group(1)
-						comarca = re.search(dados_re.format('Comarca'), texto_sentenca)
-						comarca = comarca.group(1)
-						data_disponibilizacao = re.search(r'\s*?Data de Disponibilização\:.*?\n(.*?)\n', texto_sentenca)
-						data_disponibilizacao = data_disponibilizacao.group(1)
-						foro = re.search(dados_re.format('Foro'), texto_sentenca)
-						foro = foro.group(1)
-						juiz = re.search(dados_re.format('Magistrad.'), texto_sentenca)
-						juiz = juiz.group(1)
-						numero = re.search(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', texto_sentenca, re.DOTALL)
-						numero = numero.group(0)
-						requerente = re.search(r'\s*?Requerent.*?\:.*?\n.*?\n(.*?)\n', texto_sentenca)
-						requerente = requerente.group(1)
-						requerido = re.search(r'\s*?Requerid.*?\:.*?\n.*?\n(.*?)\n', texto_sentenca)
-						requerido = requerido.group(1)
-						if re.search(r'Justiça Gratuita',texto_sentenca,re.I):
-							justica_gratuita = '1'
-						else:
-							justica_gratuita = '0'
-						# FALTA:
-							# PROCEDÊNCIA;
-							# PARTES DO TEXTO (relatório, fundamentação e dispositivo)
-						print(assunto.strip(),classe.strip(),comarca.strip(),data_disponibilizacao.strip(),foro.strip(),juiz.strip(),numero.strip(),requerente.strip(),requerido.strip(),print(justica_gratuita))
-						# INSERIR NA BASE DE DADOS
+						parse(texto_decisao,cursor)
 					except Exception as e:
 						print(e)
-					texto_sentenca = ''
+					texto_decisao = ''
 				else:
-					texto_sentenca += line
+					texto_decisao += line
 			else:
-				if re.search(r'^\s*?\d+\s*?\-\s*?$',line):
+				if re.search(r'\n\s*?\d+\s*?\-\s*?\n',line):
 					inicio = True
-
+		parse(texto_decisao,cursor)
+		
 	def parse_sp_pdf(self,lista_arquivos = None):
 		if not lista_arquivos:
 			lista_arquivos = os.listdir(path+'/sp_2_inst')

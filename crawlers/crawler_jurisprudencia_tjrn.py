@@ -57,17 +57,25 @@ class crawler_jurisprudencia_tjrn():
 					break
 		driver.close()
 
+	def parser_acordaos(self,texto,cursor):
+		numero = busca(r'[\d\.\-]{11,28}', texto_decisao,ngroup=0)
+		data_disponibilizacao = busca(r'\n\s*?Julgamento\:\n\s*?\n\s*?(\d{2}/\d{2}/\d{4})', texto_decisao)
+		orgao_julgador = busca(r'\n\s*?.rgão julgador\:\n\s*?(.+)', texto_decisao)
+		classe = busca(r'\n\s*?Classe\:\n\s*?(.+)')
+		decisao = busca(r'\n\s*?Processo\:(.+)', texto_decisao, args=re.DOTALL)
+		julgador = busca(r'Relator.\s*?DESEMBARGADOR.([A-Z\s]{1,80})[a-z]', texto_decisao)		
+		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, classe, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s","%s");' % ('rn',numero, classe, data_disponibilizacao, orgao_julgador, julgador, texto))
 
-if __name__ == '__main__':
-	c = crawler_jurisprudencia_tjrn()
-	print('comecei ',c.__class__.__name__)
-	try:
-		for l in range(len(c.lista_anos)):
-			print(c.lista_anos[l],'\n')
-			for m in range(len(c.lista_meses)):
-				try:
-					c.download_tj('01'+c.lista_meses[m]+c.lista_anos[l],'28'+c.lista_meses[m]+c.lista_anos[l])
-				except Exception as e:
-					print(e)
-	except Exception as e:
-		print('finalizei o ano com erro ',e)
+# if __name__ == '__main__':
+# 	c = crawler_jurisprudencia_tjrn()
+# 	print('comecei ',c.__class__.__name__)
+# 	try:
+# 		for l in range(len(c.lista_anos)):
+# 			print(c.lista_anos[l],'\n')
+# 			for m in range(len(c.lista_meses)):
+# 				try:
+# 					c.download_tj('01'+c.lista_meses[m]+c.lista_anos[l],'28'+c.lista_meses[m]+c.lista_anos[l])
+# 				except Exception as e:
+# 					print(e)
+# 	except Exception as e:
+# 		print('finalizei o ano com erro ',e)

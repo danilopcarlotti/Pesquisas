@@ -1,4 +1,5 @@
 import sys, re, time, pyautogui
+from common_nlp.parse_texto import busca
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -65,24 +66,33 @@ class crawler_jurisprudencia_tjpa():
 				driver.close()
 				break
 
-if __name__ == '__main__':
-	c = crawler_jurisprudencia_tjpa()
-	print('comecei ',c.__class__.__name__)
-	for a in c.lista_anos:
-		if int(a) > 2015:
-			print(a)
-			try:
-				
-				for m in range(len(c.lista_meses)):
-					for i in range(1,8):
-						try:
-							c.download_tj('0'+str(i)+'/'+c.lista_meses[m]+'/'+a,'0'+str(i+1)+'/'+c.lista_meses[m]+'/'+a)
-						except Exception as e:
-							print(e)		
-					for i in range(10,27):
-						try:
-							c.download_tj(str(i)+'/'+c.lista_meses[m]+'/'+a,str(i+1)+'/'+c.lista_meses[m]+'/'+a)
-						except Exception as e:
-							print(e)
-			except Exception as e:
-				print(e)
+	def parser_acordaos(self, texto, cursor):
+		numero = busca(r'[\d\.\-]{11,25}', texto, ngroup = 0)
+		julgador = busca(r'\nRELATOR.*?\:(.*?)__', texto, args = re.DOTALL).replace('\n','')
+		orgao_julgador = busca(r'Turma Julgadora da (.*?)\,', texto)
+		data_disponibilizacao = busca(r'\d{2} de \w+ de \d{4}', texto, ngroup = 0)
+		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s", "%s", "%s", "%s", "%s", "%s");' % ('pa', numero, data_disponibilizacao, orgao_julgador, julgador, texto))
+
+
+# if __name__ == '__main__':
+# 	c = crawler_jurisprudencia_tjpa()
+# 	print('comecei ',c.__class__.__name__)
+# 	for a in c.lista_anos:
+# 		try:
+			
+# 			for m in range(len(c.lista_meses)):
+# 				for i in range(1,8):
+# 					try:
+# 						c.download_tj('0'+str(i)+'/'+c.lista_meses[m]+'/'+a,'0'+str(i+1)+'/'+c.lista_meses[m]+'/'+a)
+# 					except Exception as e:
+# 						print(e)		
+# 				for i in range(10,27):
+# 					try:
+# 						c.download_tj(str(i)+'/'+c.lista_meses[m]+'/'+a,str(i+1)+'/'+c.lista_meses[m]+'/'+a)
+# 					except Exception as e:
+# 						print(e)
+# 		except Exception as e:
+# 			print(e)
+
+c = crawler_jurisprudencia_tjpa()
+c.parser_acordaos(texto, 1)

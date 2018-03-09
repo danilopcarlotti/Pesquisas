@@ -1,9 +1,10 @@
-import time
+import time, re
 from bs4 import BeautifulSoup
+from common.conexao_local import cursorConexao
+from common_nlp.parse_texto import busca
+from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
-from common.conexao_local import cursorConexao
 
 class crawler_jurisprudencia_tjma():
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de Maranhão"""
@@ -42,11 +43,24 @@ class crawler_jurisprudencia_tjma():
 				print(e)
 				break
 
-if __name__ == '__main__':
-	c = crawler_jurisprudencia_tjma()
-	try:
-		for a in c.lista_anos:
-			for m in range(len(c.lista_meses)):
-				c.download_tj('01'+c.lista_meses[m]+a,'28'+c.lista_meses[m]+a)
-	except Exception as e:
-		print(e)
+	def parser_acordaos(self,texto,cursor):
+		decisao = texto.split('Documento Jurisprudência')[1]
+		decisao = decisao.split('Sobre o Sistema JurisConsult Versão 1.2')[0]
+		numero = busca(r'Número do acordão\:\s*?([\d\.\-]{1,21}) ',decisao,args=re.DOTALL)
+		data_disponibilizacao = busca(r'Data do registro do acordão\:\n(\d{2}/\d{2}/\d{4})',decisao)
+		julgador = busca(r'\nRelator.*?\:\n(.*?)\n',decisao)
+		orgao_julgador = busca(r'\n.rgão\:\n(.*?)\n',decisao)
+		texto_decisao = busca(r'\nEMENTA(.+)',decisao,args=re.DOTALL)
+		cursor.execute('INSERT INTO (tribunal, numero, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s");' % ('ma',numero, data_disponibilizacao, orgao_julgador, julgador, texto_decisao))
+
+# if __name__ == '__main__':
+# 	c = crawler_jurisprudencia_tjma()
+
+# 	cursor = cursorConexao()
+
+	# try:
+	# 	for a in c.lista_anos:
+	# 		for m in range(len(c.lista_meses)):
+	# 			c.download_tj('01'+c.lista_meses[m]+a,'28'+c.lista_meses[m]+a)
+	# except Exception as e:
+	# 	print(e)
