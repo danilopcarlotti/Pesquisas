@@ -99,11 +99,11 @@ pa -
 pi - 
 pr - 
 rn - 
-ro - esc 0
+ro - ok
 se - 
 STJ - ok
 STF - ok
-trf1 - esc 0
+trf1 - ok
 trf4  - ok
 
 ** TABELAS JURISPRUDENCIA **
