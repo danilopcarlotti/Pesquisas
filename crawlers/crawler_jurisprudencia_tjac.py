@@ -2,6 +2,7 @@ import sys, re, os, time, urllib.request, subprocess
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from common.download_path import path
+from common_nlp.parse_texto import busca
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -64,16 +65,21 @@ class crawler_jurisprudencia_tjac(crawler_jurisprudencia_tj):
 		for d in range(1,len(decisoes)):
 			numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', decisoes[d],ngroup=0)
 			ementa = busca(r'Dados sem formatação(.*?)\(Relator\(a\)\:', decisoes[d], args=re.DOTALL)
-			julgador = busca(r'\n\s*?Relator.*?\:\n\s*?(.*?)', decisoes[d])
+			julgador = busca(r'\n\s*?Relator.*?\:\n\s*?(.*?)\n', decisoes[d])
 			orgao_julgador = busca(r'\n\s*?.rgão julgador\:\n\s*?\n\s*?(.+)', decisoes[d])
 			data_disponibilizacao = busca(r'\n\s*?Data d[oe] julgamento\:\n\s*?\n\s*?(\d{2}/\d{2}/\d{4})', decisoes[d])
-			origem = buscabusca(r'\n\s*?Comarca\:\n\s*?\n\s*?(\d{2}/\d{2}/\d{4})', decisoes[d])
-			cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s","%s","%s","%s");' % ('ac',numero, data_disponibilizacao, orgao_julgador, julgador, ementa))
+			origem = busca(r'\n\s*?Comarca\:\n\s*?\n\s*?(\d{2}/\d{2}/\d{4})', decisoes[d])
+			cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s");' % ('ac',numero, data_disponibilizacao, orgao_julgador, julgador, ementa))
 
 def main():
 	c = crawler_jurisprudencia_tjac()
 
-	c.download_1_inst()	
+	cursor = cursorConexao()
+	cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_ac limit 100000;')
+	dados = cursor.fetchall()
+	print(len(dados))
+	for dado in dados:
+		c.parser_acordaos(dado[0])
 
 	# print('comecei ',c.__class__.__name__)
 	# try:

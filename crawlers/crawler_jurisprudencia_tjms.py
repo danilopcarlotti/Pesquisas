@@ -1,4 +1,5 @@
 import sys, re, os
+from common.conexao_local import cursorConexao
 from common_nlp.parse_texto import busca
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from bs4 import BeautifulSoup
@@ -21,22 +22,24 @@ class crawler_jurisprudencia_tjms():
 	def parser_acordaos(self,texto,cursor):
 		def parse(texto_decisao,cursor):
 			numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', texto_decisao,ngroup=0)
-			ementa = busca(r'\n\s*?E\s*?M\s*?E\s*?N\s*?T\s*?A\s*?\-(.+)', texto_decisao)
-			classe_assunto = busca(r'Classe/Assunto\:\n\s*?(.+)', texto_decisao)
+			classe_assunto = busca(r'Classe/Assunto\:\n\s*?(.*?)\n', texto_decisao)
 			classe = classe_assunto.split('/')[0]
 			assunto = classe_assunto.split('/')[1]
-			julgador = busca(r'\n\s*?Relator.*?\:\n\s*?(.+)', texto_decisao)
-			orgao_julgador = busca(r'\n\s*?.rgão julgador\:\n\s*?\n\s*?(.+)', texto_decisao)
-			origem = busca(r'\n\s*?Comarca\:\n\s*?\n\s*?(.+)',texto_decisao)
+			julgador = busca(r'\n\s*?Relator.*?\:\n\s*?(.*?)\n', texto_decisao)
+			orgao_julgador = busca(r'\n\s*?.rgão julgador\:\n\s*?\n\s*?(.*?)\n', texto_decisao)
+			origem = busca(r'\n\s*?Comarca\:\n\s*?\n\s*?(.*?)\n',texto_decisao)
 			data_disponibilizacao = busca(r'\n\s*?Data de publicação\:\n\s*?\n\s*?(\d{2}/\d{2}/\d{4})', texto_decisao)
-			cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, assunto, classe, data_decisao, orgao_julgador, julgador, texto_decisao, origem) values ("%s","%s","%s","%s","%s","%s","%s","%s","%s");' % ('ms',numero, assunto, classe, data_disponibilizacao, orgao_julgador, julgador, ementa, origem))
-		decisoes = re.split(r'\n\s*?\d\s*?\-\s*?\n',texto)
+			cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, assunto, classe, data_decisao, orgao_julgador, julgador, texto_decisao, origem) values ("%s","%s","%s","%s","%s","%s","%s","%s","%s");' % ('ms',numero, assunto, classe, data_disponibilizacao, orgao_julgador, julgador, texto_decisao, origem))
+		decisoes = re.split(r'\n\s*?\d+\s*?\-\s*?\n',texto)
 		for d in range(1,len(decisoes)):
-			parse(decisoes[d],cursor)
+			try:
+				parse(decisoes[d],cursor)
+			except:
+				pass
 
 
-# if __name__ == '__main__':
-# 	c = crawler_jurisprudencia_tjms()
+if __name__ == '__main__':
+	c = crawler_jurisprudencia_tjms()
 # 	print('comecei ',c.__class__.__name__)
 # 	try:
 # 		for l in range(len(c.lista_anos)):
@@ -48,99 +51,8 @@ class crawler_jurisprudencia_tjms():
 # 	except Exception as e:
 # 		print('finalizei o ano com erro ',e)
 
-texto = '''
-1 -
-
-
- 
-							
-								
-									
-
-
-
-										0078840-02.2009.8.12.0001
-									
- 
-										 
-
- 										
-										 
-
-
-		E M E N T A - EMBARGOS DE DECLARAÇÃO - APELAÇÃO CÍVEL - AUSÊNCIA DE OMISSÃO, CONTRADIÇÃO OU OBSCURIDADE - REDISCUSSÃO - VIA ELEITA IMPRÓPRIA - LIMITES DO ART. 535 DO CÓDIGO DE PROCESSO CIVIL, MESMO PARA FINS DE PREQUESTIONAMENTO - EMBARGOS REJEITADOS. Os embargos de declaração destinam-se a suprir omissão, afastar obscuridade ou eliminar contradição. Portanto, ainda que tenham o propósito expresso de prequestionar dispositivos infraconstitucionais, sua viabilidade se submete à existência dos apontados vícios.   (TJMS. Embargos de Declaração n. 0078840-02.2009.8.12.0001,  Campo Grande,  1ª Câmara Cível, Relator (a):  Des. Joenildo de Sousa Chaves, j: 13/04/2011, p:  23/06/2016)
-	
-
-
-(1 ocorrência encontrada no inteiro teor do documento)
-
-
-
-
-
-												Classe/Assunto:
-											 Embargos de Declaração / Previdência privada											
-										
-
-
-
-
-										Relator(a):
-									 Des. Joenildo de Sousa Chaves
-									
-								
-
-
-
-
-										Comarca:
-									 
-									Campo Grande
-								
-
-
-
-
-										Órgão julgador:
-									
-									1ª Câmara Cível
-								
-
-
-
-
-										Data do julgamento:
-									
-									13/04/2011
-								
-
-
-
-
-										Data de publicação:
-									
-									23/06/2016
-								
-
-
-
-
-										Outros números:
-									 
-									78840022009812000150000
-								
-
-
-
-
-Ementa: E M E N T A - EMBARGOS DE DECLARAÇÃO - APELAÇÃO CÍVEL - AUSÊNCIA DE OMISSÃO, CONTRADIÇÃO OU OBSCURIDADE - REDISCUSSÃO - VIA ELEITA IMPRÓPRIA - LIMITES DO ART. 535 DO CÓDIGO DE PROCESSO CIVIL, MESMO PARA FINS DE PREQUESTIONAMENTO - EMBARGOS REJEITADOS. Os embargos de declaração destinam-se a suprir omissão, afastar obscuridade ou eliminar contradição. Portanto, ainda que tenham o propósito
-											 	
-
-
-
-
-Ementa: E M E N T A - EMBARGOS DE DECLARAÇÃO - APELAÇÃO CÍVEL - AUSÊNCIA DE OMISSÃO, CONTRADIÇÃO OU OBSCURIDADE - REDISCUSSÃO - VIA ELEITA IMPRÓPRIA - LIMITES DO ART. 535 DO CÓDIGO DE PROCESSO CIVIL, MESMO PARA FINS DE PREQUESTIONAMENTO - EMBARGOS REJEITADOS. Os embargos de declaração destinam-se a suprir omissão, afastar obscuridade ou eliminar contradição. Portanto, ainda que tenham o propósito expresso de prequestionar dispositivos infraconstitucionais, sua viabilidade se submete à existência dos apontados vícios. 
-'''
-
-c = crawler_jurisprudencia_tjms()
-c.parser_acordaos(texto,1)
+	cursor = cursorConexao()
+	cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_ms limit 1000000')
+	dados = cursor.fetchall()
+	for dado in dados:
+		c.parser_acordaos(dado[0], cursor)

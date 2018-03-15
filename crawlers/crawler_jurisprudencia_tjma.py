@@ -44,19 +44,27 @@ class crawler_jurisprudencia_tjma():
 				break
 
 	def parser_acordaos(self,texto,cursor):
-		decisao = texto.split('Documento Jurisprudência')[1]
-		decisao = decisao.split('Sobre o Sistema JurisConsult Versão 1.2')[0]
-		numero = busca(r'Número do acordão\:\s*?([\d\.\-]{1,21}) ',decisao,args=re.DOTALL)
-		data_disponibilizacao = busca(r'Data do registro do acordão\:\n(\d{2}/\d{2}/\d{4})',decisao)
-		julgador = busca(r'\nRelator.*?\:\n(.*?)\n',decisao)
-		orgao_julgador = busca(r'\n.rgão\:\n(.*?)\n',decisao)
-		texto_decisao = busca(r'\nEMENTA(.+)',decisao,args=re.DOTALL)
-		cursor.execute('INSERT INTO (tribunal, numero, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s");' % ('ma',numero, data_disponibilizacao, orgao_julgador, julgador, texto_decisao))
+		numero = busca(r'Número do acordão\:\s*?([\d\.\-]{1,21}) ', texto, args=re.DOTALL)
+		data_disponibilizacao = busca(r'Data do registro do acordão\:\n(\d{2}/\d{2}/\d{4})',texto)
+		julgador = busca(r'\nRelator.*?\:\n(.*?)\n',texto)
+		orgao_julgador = busca(r'\n.rgão\:\n(.*?)\n',texto)
+		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s");' % ('ma',numero, data_disponibilizacao, orgao_julgador, julgador, texto.replace('"','').replace('/','').replace('\\','')))
 
-# if __name__ == '__main__':
-# 	c = crawler_jurisprudencia_tjma()
+if __name__ == '__main__':
+	c = crawler_jurisprudencia_tjma()
 
-# 	cursor = cursorConexao()
+	cursor = cursorConexao()
+	cursor.execute('SELECT id, ementas from justica_estadual.jurisprudencia_ma limit 10000;')
+	dados = cursor.fetchall()
+	for id_d, dado in dados:
+		try:
+			c.parser_acordaos(dado, cursor)
+		except Exception as e:
+			print(id_d, e)
+		# try:
+		# 	c.parser_acordaos(dado, cursor)
+		# except Exception as e:
+		# 	print(id_d,e)
 
 	# try:
 	# 	for a in c.lista_anos:

@@ -54,6 +54,15 @@ class crawler_jurisprudencia_tjmg():
 					return	
 		driver.close()
 
+	def parser_acordaos(self,texto):
+		cursor = cursorConexao()
+		numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', texto,ngroup=0)
+		julgador = busca(r'\n\s*?Relator.*?\:\n\s*?(.*?)', texto)
+		orgao_julgador = busca(r'\n\s*?.rgão julgador.*?\n\s*?(.*?)/', texto)
+		origem = busca(r'\nComarca de Origem\n(.+)', texto)
+		data_disponibilizacao = busca(r'\n\s*?Data d[oe] julgamento\:\n\s*?\n\s*?(\d{2}/\d{2}/\d{4})', texto)
+		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, origem, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s","%s");' % ('mg',numero, origem, data_disponibilizacao, orgao_julgador, julgador, texto))
+
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjmg()
 	print('comecei ',c.__class__.__name__)

@@ -1,5 +1,7 @@
 import time
 from bs4 import BeautifulSoup
+from common.conexao_local import cursorConexao
+from common_nlp.parse_texto import busca
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
@@ -37,9 +39,25 @@ class crawler_jurisprudencia_trf1():
 				if contador > 8:
 					driver.close()
 
+	def parser_acordaos(self,texto, cursor):
+		decisoes = re.split(r'\nDocumento\s*?\d+\s*?\-',texto)
+		for d in range(1,len(decisoes)):
+			numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', decisoes[d],ngroup=0)
+			julgador = busca(r'\n\s*?Relator.*?\n\n(.*?)\n', decisoes[d])
+			orgao_julgador = busca(r'\nÓrgão julgador\n\n(.+)\n', decisoes[d])
+			data_disponibilizacao = busca(r'\n\s*?Data da decisão\n\n(\d{6,10})', decisoes[d])
+			cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s");' % ('trf1',numero, data_disponibilizacao, orgao_julgador, julgador, decisoes[d]))
+
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_trf1()
-	try:
-		c.download_tj()
-	except Exception as e:
-		print(e)
+	# try:
+	# 	c.download_tj()
+	# except Exception as e:
+	# 	print(e)
+
+	cursor = cursorConexao()
+	cursor.execute('SELECT ementas from justica_federal.jurisprudencia_trf1 limit 100000;')
+	dados = cursor.fetchall()
+	print(len(dados))
+	for dado in dados:
+		c.parser_acordaos(dado[0])

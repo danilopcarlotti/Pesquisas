@@ -33,6 +33,18 @@ class crawler_jurisprudencia_tjpi():
 					break
 		driver.close()
 
+	def parser_acordaos(self,texto,cursor):
+		decisoes = re.split(r'\n\s*?Temporariamente indisponível.',texto)
+		for d in range(len(decisoes)):
+			numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', decisoes[d],ngroup=0)
+			ementa = busca(r'\nEMENTA\:(.+)', decisoes[d], args = re.DOTALL | re.IGNORECASE)
+			classe = busca(r'\nClasse\:(.+)', decisoes[d])
+			data_disponibilizacao = busca(r'\nJulgamento\:\s*?(\d{2}/\d{2}/\d{4})', decisoes[d])
+			orgao_julgador = busca(r'\n.rgão\:(.+)', decisoes[d])
+			julgador = busca(r'\nRelator.*?\:(.+)', decisoes[d])
+			cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, classe, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s","%s");' % ('pi',numero, classe, data_disponibilizacao, orgao_julgador, julgador, ementa))
+
+
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjpi()
 	print('comecei ',c.__class__.__name__)

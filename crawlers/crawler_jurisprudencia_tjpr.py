@@ -50,6 +50,15 @@ class crawler_jurisprudencia_tjpr():
 						pass
 		driver.close()
 
+	def parser_acordaos(self,texto,cursor):
+		decisoes = re.split(r'\n\d+\.\s*?\n',texto)
+		for d in range(1,len(decisoes)):
+			numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', decisoes[d],ngroup=0)
+			data_disponibilizacao = busca(r'\nData Publicação\:\s*?(\d{2}/\d{2}/\d{4})', decisoes[d])
+			orgao_julgador = busca(r'\n.rgão Julgador\:(.+)', decisoes[d])
+			julgador = busca(r'\nRelator.*?\:(.+)', decisoes[d])
+			cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s");' % ('pi',numero, data_disponibilizacao, orgao_julgador, julgador, decisoes[d]))
+
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjpr()
 	print('comecei ',c.__class__.__name__)

@@ -1,12 +1,10 @@
 baixados texto - concluídos
 
-ac (texto completo) - ok
-al - ok
+al - esc0
 am - ok
 ba - ok
 es - ok
 go - ok
-ma - ok
 df - ok
 mg (texto completo) - ok
 ms - esc 0 confirmar
@@ -30,7 +28,9 @@ trf5 (texto completo) - ok
 
 falta baixar - links baixados
 
+ac (texto completo) - revisar e verificar o correto download
 ce - revisar e verificar o correto download
+ma - revisar e verificar o correto download
 rr (texto completo) -
 sp (links para pdf) - ok (captcha)
 STF (documentos)
@@ -57,41 +57,55 @@ sp - https://esaj.tjsp.jus.br/cjpg/
 
 Parser pronto
 
-ac - ok
-al - ok
+al - rever download esc 0
+es - ok
+mg - ok
+ms - ok 
+pa - ok 
+pi - ok
+pr - ok
+rn - ok
+ro - ok
+se - ok 
+sp 1 inst - ok
+STJ - ok
+STF - ok
+trf1 - ok
+trf4 - ok
+trf5 - 
+
+Parser a fazer
+
+ac - rever julgador e texto decisão
 am - rever ocr
 ba - rever ocr
 ce - rever crawler
 df - rever ocr
-es - 
-go - 
-ma - ok
-mg - 
-ms - ok 
 mt - rever ocr
-pa - ok 
-pb - 
-pi - 
-pr - 
+go - rever download
+ma - rever download
+pb - rever ocr
 rj - rever ocr
-rn - ok
-ro - 
-rr - 
-rs - 
+rr - rever download
+rs - rever download
 sc - rever ocr
-se - ok (modelo)
-sp 1 inst - ok
 sp 2 inst - rever ocr
-STJ - ok
-STF - ok
 to - rever ocr
-trf1 - 
-trf4 - ok
-trf5 - 
 
 Parser rodado
 
-trf4  - esc 0
+al -
+ms - ok
+pa - 
+pi - 
+pr - 
+rn - 
+ro - esc 0
+se - 
+STJ - ok
+STF - ok
+trf1 - esc 0
+trf4  - ok
 
 ** TABELAS JURISPRUDENCIA **
 

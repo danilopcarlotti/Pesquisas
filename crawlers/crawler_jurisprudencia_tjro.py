@@ -1,6 +1,8 @@
 import sys, re, time, pyautogui
-from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from bs4 import BeautifulSoup
+from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
+from common.conexao_local import cursorConexao
+from common_nlp.parse_texto import busca
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from common.conexao_local import cursorConexao
@@ -48,15 +50,29 @@ class crawler_jurisprudencia_tjro():
 				break
 		driver.close()
 
+	def parser_acordaos(self,texto, cursor):
+		numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', texto, ngroup = 0)
+		julgador = busca(r'\nRelator.*?\:\s*?(.*?)\n', texto)
+		orgao_julgador = busca(r'\nOrigem\s*?\:\s*?(.*?)\n', texto)
+		data_disponibilizacao = busca(r'\nData do julgamento\s*?\:(.*?)\n', texto)
+		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s");' % ('ro',numero, data_disponibilizacao, orgao_julgador, julgador, texto))
+
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjro()
-	print('comecei ',c.__class__.__name__)
-	try:
-		for l in range(len(c.lista_anos)):
-			print(c.lista_anos[l])
-			try:
-				c.download_tj(c.lista_anos[l])
-			except Exception as e:
-				print(e)
-	except Exception as e:
-		print(e)
+
+	cursor = cursorConexao()
+	cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_ro limit 1000000')
+	dados = cursor.fetchall()
+	for dado in dados:
+		c.parser_acordaos(dado[0], cursor)
+
+	# print('comecei ',c.__class__.__name__)
+	# try:
+	# 	for l in range(len(c.lista_anos)):
+	# 		print(c.lista_anos[l])
+	# 		try:
+	# 			c.download_tj(c.lista_anos[l])
+	# 		except Exception as e:
+	# 			print(e)
+	# except Exception as e:
+	# 	print(e)

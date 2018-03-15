@@ -1,6 +1,7 @@
 import sys, re, os, urllib.request, time, subprocess
 from common.download_path import path
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
+from common.conexao_local import cursorConexao
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -52,7 +53,7 @@ class crawler_jurisprudencia_tjal(crawler_jurisprudencia_tj):
 				loop_counter += 1
 				print(e)
 
-	def parser_acordao(self,texto):
+	def parser_acordaos(self,texto):
 		decisoes = re.split(r'\n\s*?\d*?\s*?\-\s*?\n',texto)
 		for d in range(1,len(decisoes)):
 			numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', decisoes[d],ngroup=0)
@@ -66,7 +67,8 @@ class crawler_jurisprudencia_tjal(crawler_jurisprudencia_tj):
 
 def main():
 	c = crawler_jurisprudencia_tjal()
-	c.download_1_inst()
+	# c.download_1_inst()
+
 	# print('comecei ',c.__class__.__name__)
 	# for l in c.lista_anos:
 	# 	try:
@@ -75,6 +77,11 @@ def main():
 	# 	except Exception as e:
 	# 		print('finalizei o ano ',l)
 	# 		print(e)
+	cursor = cursorConexao()
+	cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_al limit 1000000')
+	dados = cursor.fetchall()
+	for dado in dados:
+		c.parser_acordaos(dado[0], cursor)
 
 if __name__ == '__main__':
 	main()

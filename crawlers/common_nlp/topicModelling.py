@@ -11,8 +11,7 @@ class topicModel(textNormalization):
 
 	def lda_Model(self, texts, num_topics=5, npasses=20, num_words=15):
 		'''O input precisa ser uma lista em que cada elemento da lista é uma string correspondendo a um texto'''
-		textos = self.processar_textos(texts)
+		textos = self.normalize_texts(texts)
 		dicionario = self.dicionario_corpora(textos)
 		corpus = [dicionario.doc2bow(text) for text in textos]
-		return gensim.models.ldamodel.LdaModel(corpus, num_topics=num_topics, id2word = dicionario, passes=npasses).print_topics(num_topics=num_topics,num_words=num_words)
-
+		return models.ldamodel.LdaModel(corpus, num_topics=num_topics, id2word = dicionario, passes=npasses).print_topics(num_topics=num_topics,num_words=num_words)
