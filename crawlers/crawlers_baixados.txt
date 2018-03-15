@@ -1,5 +1,6 @@
 baixados texto - concluídos
 
+ac - ok
 al - esc0
 am - ok
 ba - ok
@@ -28,12 +29,10 @@ trf5 (texto completo) - ok
 
 falta baixar - links baixados
 
-ac (texto completo) - revisar e verificar o correto download
 ce - revisar e verificar o correto download
 ma - revisar e verificar o correto download
 rr (texto completo) -
 sp (links para pdf) - ok (captcha)
-STF (documentos)
 
 falta completar e/ou impossível completar
 
@@ -57,7 +56,6 @@ sp - https://esaj.tjsp.jus.br/cjpg/
 
 Parser pronto
 
-al - rever download esc 0
 es - ok
 mg - ok
 ms - ok 
@@ -72,10 +70,10 @@ STJ - ok
 STF - ok
 trf1 - ok
 trf4 - ok
-trf5 - 
 
 Parser a fazer
 
+al - rever download esc 0
 ac - rever julgador e texto decisão
 am - rever ocr
 ba - rever ocr
@@ -91,6 +89,7 @@ rs - rever download
 sc - rever ocr
 sp 2 inst - rever ocr
 to - rever ocr
+trf5 - 
 
 Parser rodado
 

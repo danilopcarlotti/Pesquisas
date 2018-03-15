@@ -1,4 +1,4 @@
-import time
+import time, re
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from common_nlp.parse_texto import busca
@@ -60,4 +60,4 @@ if __name__ == '__main__':
 	dados = cursor.fetchall()
 	print(len(dados))
 	for dado in dados:
-		c.parser_acordaos(dado[0])
+		c.parser_acordaos(dado[0], cursor)
