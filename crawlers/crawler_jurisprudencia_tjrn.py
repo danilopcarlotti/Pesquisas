@@ -1,6 +1,8 @@
 import sys, re, time
-from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from bs4 import BeautifulSoup
+from common.conexao_local import cursorConexao
+from common_nlp.parse_texto import busca
+from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from common.conexao_local import cursorConexao
@@ -57,17 +59,17 @@ class crawler_jurisprudencia_tjrn():
 					break
 		driver.close()
 
-	def parser_acordaos(self,texto,cursor):
+	def parser_acordaos(self,texto_decisao,cursor):
 		numero = busca(r'[\d\.\-]{11,28}', texto_decisao,ngroup=0)
 		data_disponibilizacao = busca(r'\n\s*?Julgamento\:\n\s*?\n\s*?(\d{2}/\d{2}/\d{4})', texto_decisao)
 		orgao_julgador = busca(r'\n\s*?.rgão julgador\:\n\s*?(.+)', texto_decisao)
-		classe = busca(r'\n\s*?Classe\:\n\s*?(.+)')
+		classe = busca(r'\n\s*?Classe\:\n\s*?(.+)', texto_decisao)
 		decisao = busca(r'\n\s*?Processo\:(.+)', texto_decisao, args=re.DOTALL)
 		julgador = busca(r'Relator.\s*?DESEMBARGADOR.([A-Z\s]{1,80})[a-z]', texto_decisao)		
-		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, classe, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s","%s");' % ('rn',numero, classe, data_disponibilizacao, orgao_julgador, julgador, texto))
+		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, classe, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s","%s");' % ('rn',numero, classe, data_disponibilizacao, orgao_julgador, julgador, texto_decisao))
 
-# if __name__ == '__main__':
-# 	c = crawler_jurisprudencia_tjrn()
+if __name__ == '__main__':
+	c = crawler_jurisprudencia_tjrn()
 # 	print('comecei ',c.__class__.__name__)
 # 	try:
 # 		for l in range(len(c.lista_anos)):
@@ -79,3 +81,9 @@ class crawler_jurisprudencia_tjrn():
 # 					print(e)
 # 	except Exception as e:
 # 		print('finalizei o ano com erro ',e)
+
+	cursor = cursorConexao()
+	cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_rn limit 1000000')
+	dados = cursor.fetchall()
+	for dado in dados:
+		c.parser_acordaos(dado[0], cursor)

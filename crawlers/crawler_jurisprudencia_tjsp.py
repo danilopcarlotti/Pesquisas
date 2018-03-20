@@ -77,8 +77,6 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 		subprocess.Popen('mv %s/sp_2_inst_*.pdf %s/sp_2_inst' % (path,path), shell=True)
 
 	def parse_sp_dados_1_inst(self,texto,cursor):
-		inicio = False
-		texto_decisao = ''
 		def parse(texto_decisao,cursor):
 			dados_re = r'\s*?{}\:.*?\n(.*?)\n'
 			assunto = busca(dados_re.format('Assunto'), texto_decisao)
@@ -94,23 +92,13 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 				justica_gratuita = '1'
 			else:
 				justica_gratuita = '0'
-			cursor.execute('INSERT INTO jurisprudencia_1_inst.jurisprudencia_1_inst \
-				(tribunal, numero, assunto, classe, data_decisao, orgao_julgador, julgador, texto_decisao, polo_ativo, polo_passivo, comarca, justica_gratuita) values ("%s",' % ('SP', numero, assunto, classe, data_disponibilizacao, foro, juiz, decisao, requerente, requerido, comarca, justica_gratuita))
-		linhas = [l + '\n' for l in texto.split('\n')]
-		for line in linhas:
-			if inicio:
-				if re.search(r'\n\s*?\d+\s*?\-\s*?\n',line):
-					try:
-						parse(texto_decisao,cursor)
-					except Exception as e:
-						print(e)
-					texto_decisao = ''
-				else:
-					texto_decisao += line
-			else:
-				if re.search(r'\n\s*?\d+\s*?\-\s*?\n',line):
-					inicio = True
-		parse(texto_decisao,cursor)
+			cursor.execute('INSERT INTO jurisprudencia_1_inst.jurisprudencia_1_inst (tribunal, numero, assunto, classe, data_decisao, orgao_julgador, julgador, texto_decisao, polo_ativo, polo_passivo, comarca, justica_gratuita) values ("%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s")' % ('SP', numero, assunto, classe, data_disponibilizacao, foro, juiz, texto_decisao, requerente, requerido, comarca, justica_gratuita))
+		decisoes = re.split(r'\n\s*?\d+\s*?\-\s*?\n',texto)
+		for d in range(1,len(decisoes)):
+			try:
+				parse(decisoes[d],cursor)
+			except:
+				pass
 		
 	def parse_sp_pdf(self,lista_arquivos = None):
 		if not lista_arquivos:
@@ -132,11 +120,12 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 
 def main():
 	c = crawler_jurisprudencia_tjsp()
-
-	# arq = open('ex.txt','r')
-	# for line in arq:
-	# 	texto.append(line)
-	c.parse_sp_dados_1_inst(texto)
+	cursor = cursorConexao()
+	texto = ''
+	arq = open('ex.txt','r')
+	for line in arq:
+		texto += line
+	c.parse_sp_dados_1_inst(texto, cursor)
 
 
 	# print('comecei ',c.__class__.__name__)

@@ -1,7 +1,8 @@
 import sys, re, time, pyautogui
+from bs4 import BeautifulSoup
+from common.conexao_local import cursorConexao
 from common_nlp.parse_texto import busca
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
-from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from common.conexao_local import cursorConexao
@@ -74,8 +75,8 @@ class crawler_jurisprudencia_tjpa():
 		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s", "%s", "%s", "%s", "%s", "%s");' % ('pa', numero, data_disponibilizacao, orgao_julgador, julgador, texto))
 
 
-# if __name__ == '__main__':
-# 	c = crawler_jurisprudencia_tjpa()
+if __name__ == '__main__':
+	c = crawler_jurisprudencia_tjpa()
 # 	print('comecei ',c.__class__.__name__)
 # 	for a in c.lista_anos:
 # 		try:
@@ -93,6 +94,8 @@ class crawler_jurisprudencia_tjpa():
 # 						print(e)
 # 		except Exception as e:
 # 			print(e)
-
-c = crawler_jurisprudencia_tjpa()
-c.parser_acordaos(texto, 1)
+	cursor = cursorConexao()
+	cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_pa limit 1000000')
+	dados = cursor.fetchall()
+	for dado in dados:
+		c.parser_acordaos(dado[0], cursor)

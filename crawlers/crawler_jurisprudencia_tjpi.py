@@ -1,6 +1,8 @@
 import sys, re, time
-from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from bs4 import BeautifulSoup
+from common.conexao_local import cursorConexao
+from common_nlp.parse_texto import busca
+from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from common.conexao_local import cursorConexao
@@ -47,8 +49,14 @@ class crawler_jurisprudencia_tjpi():
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjpi()
-	print('comecei ',c.__class__.__name__)
-	try:
-		c.download_tj()
-	except:
-		print('finalizei com erro\n')
+	# print('comecei ',c.__class__.__name__)
+	# try:
+	# 	c.download_tj()
+	# except:
+	# 	print('finalizei com erro\n')
+
+	cursor = cursorConexao()
+	cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_pi limit 1000000')
+	dados = cursor.fetchall()
+	for dado in dados:
+		c.parser_acordaos(dado[0], cursor)

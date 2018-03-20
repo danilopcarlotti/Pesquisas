@@ -1,6 +1,8 @@
 import sys, re, time, common.download_path, os
-from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from bs4 import BeautifulSoup
+from common.conexao_local import cursorConexao
+from common_nlp.parse_texto import busca
+from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from common.conexao_local import cursorConexao
@@ -54,8 +56,7 @@ class crawler_jurisprudencia_tjmg():
 					return	
 		driver.close()
 
-	def parser_acordaos(self,texto):
-		cursor = cursorConexao()
+	def parser_acordaos(self,texto, cursor):
 		numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', texto,ngroup=0)
 		julgador = busca(r'\n\s*?Relator.*?\:\n\s*?(.*?)', texto)
 		orgao_julgador = busca(r'\n\s*?.rgão julgador.*?\n\s*?(.*?)/', texto)
@@ -65,11 +66,17 @@ class crawler_jurisprudencia_tjmg():
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjmg()
-	print('comecei ',c.__class__.__name__)
-	try:
-		for a in c.lista_anos:
-			for m in range(3,len(c.lista_meses)):
-				c.download_tj('01'+c.lista_meses[m]+a,'14'+c.lista_meses[m]+a)
-				c.download_tj('15'+c.lista_meses[m]+a,'28'+c.lista_meses[m]+a)
-	except Exception as e:
-		print('finalizei com erro ',e)
+	# print('comecei ',c.__class__.__name__)
+	# try:
+	# 	for a in c.lista_anos:
+	# 		for m in range(3,len(c.lista_meses)):
+	# 			c.download_tj('01'+c.lista_meses[m]+a,'14'+c.lista_meses[m]+a)
+	# 			c.download_tj('15'+c.lista_meses[m]+a,'28'+c.lista_meses[m]+a)
+	# except Exception as e:
+	# 	print('finalizei com erro ',e)
+
+	cursor = cursorConexao()
+	cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_mg limit 1000000')
+	dados = cursor.fetchall()
+	for dado in dados:
+		c.parser_acordaos(dado[0], cursor)

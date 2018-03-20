@@ -1,7 +1,8 @@
 import sys, re, os, urllib.request, time, subprocess
 from common.download_path import path
-from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from common.conexao_local import cursorConexao
+from common_nlp.parse_texto import busca
+from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -53,17 +54,17 @@ class crawler_jurisprudencia_tjal(crawler_jurisprudencia_tj):
 				loop_counter += 1
 				print(e)
 
-	def parser_acordaos(self,texto):
+	def parser_acordaos(self,texto, cursor):
 		decisoes = re.split(r'\n\s*?\d*?\s*?\-\s*?\n',texto)
 		for d in range(1,len(decisoes)):
 			numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', decisoes[d],ngroup=0)
 			classe_assunto = busca(r'\n\s*?Classe/Assunto\:\n(.+)',decisoes[d])
 			classe = classe_assunto.split('/')[0]
-			assunto = classe_assunto.split('/')[1]
+			assunto = classe_assunto.split('/')[-1]
 			julgador = busca(r'Relator \(a\)\:(.*?)\;', decisoes[d])
 			orgao_julgador = busca(r'Órgão julgador\:(.*?)\;', decisoes[d])
 			data_disponibilizacao = busca(r'Data do julgamento\:\s*?(.*?)\;', decisoes[d])
-			cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, assunto, classe, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s","%s","%s","%s");' % ('al',numero, assunto, classe, data_disponibilizacao, orgao_julgador, julgador, texto))
+			cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, assunto, classe, data_decisao, orgao_julgador, julgador, texto_decisao) 	values ("%s","%s","%s","%s","%s","%s","%s","%s");' % ('al',numero, assunto, classe, data_disponibilizacao, orgao_julgador, julgador, texto))
 
 def main():
 	c = crawler_jurisprudencia_tjal()
@@ -78,10 +79,13 @@ def main():
 	# 		print('finalizei o ano ',l)
 	# 		print(e)
 	cursor = cursorConexao()
-	cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_al limit 1000000')
+	cursor.execute('SELECT id, ementas from justica_estadual.jurisprudencia_al limit 1000000')
 	dados = cursor.fetchall()
-	for dado in dados:
-		c.parser_acordaos(dado[0], cursor)
+	for id_p, dado in dados:
+		try:
+			c.parser_acordaos(dado, cursor)
+		except:
+			print(id_p)
 
 if __name__ == '__main__':
 	main()

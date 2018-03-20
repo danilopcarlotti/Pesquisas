@@ -54,27 +54,27 @@ sp - https://esaj.tjsp.jus.br/cjpg/
 
 *** Parsers ***
 
-Parser pronto
+Parser pronto e rodado
 
-es - ok
-mg - ok
-ms - ok 
-pa - ok 
-pi - ok
-pr - ok
-rn - ok
+al - ok
+ac - ok
+es - esc0
+mg - esc0
+ms - ok
+pa - esc0
+pi - esc0
+pr - esc0
+rn - esc0
 ro - ok
-se - ok 
-sp 1 inst - ok
+se - ok
+sp 1 inst - 
 STJ - ok
 STF - ok
 trf1 - ok
-trf4 - ok
+trf4  - ok
 
 Parser a fazer
 
-al - rever download esc 0
-ac - rever julgador e texto decisão
 am - rever ocr
 ba - rever ocr
 ce - rever crawler
@@ -91,22 +91,7 @@ sp 2 inst - rever ocr
 to - rever ocr
 trf5 - 
 
-Parser rodado
-
-al -
-ms - ok
-pa - 
-pi - 
-pr - 
-rn - 
-ro - ok
-se - 
-STJ - ok
-STF - ok
-trf1 - ok
-trf4  - ok
-
-** TABELAS JURISPRUDENCIA **
+*** TABELAS JURISPRUDENCIA ***
 
 1ª Instância
 
@@ -152,3 +137,13 @@ CREATE TABLE `jurisprudencia_2_inst` (
   `origem` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+**** LOAD FILE
+
+LOAD DATA INFILE '/var/lib/mysql-files/trf4.csv' 
+INTO TABLE jurisprudencia_2_inst.jurisprudencia_2_inst
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(tribunal, numero, assunto, classe, data_decisao, orgao_julgador, julgador, texto_decisao, relatorio, fundamentacao, dispositivo, polo_ativo, polo_passivo, origem);
