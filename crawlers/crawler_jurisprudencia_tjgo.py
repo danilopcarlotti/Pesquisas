@@ -12,8 +12,10 @@ class crawler_jurisprudencia_tjgo():
 		self.link_inicial = 'http://www.tjgo.jus.br/jurisprudencia/juris.php'
 		self.pesquisa_livre = 'SearchText'
 		self.botao_pesquisar = 'button1'
-		self.botao_proximoXP = '//*[@id="button5"]'
+		self.botao_proximoXP = '//*[@id="posicao"]'
+		self.botao_proximo = '//*[@id="button3"]'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_go (ementas)'
+		self.contador_paginas = 2
 
 	def download_tj(self):
 		cursor = cursorConexao()
@@ -26,13 +28,20 @@ class crawler_jurisprudencia_tjgo():
 		loop_counter = 0
 		while True:
 			try:
-				driver.find_element_by_xpath(self.botao_proximoXP).click()
+				driver.find_element_by_xpath(self.botao_proximoXP).clear()
+				driver.find_element_by_xpath(self.botao_proximoXP).send_keys(str(self.contador_paginas))
+				driver.find_element_by_xpath(self.botao_proximo).click()
+				time.sleep(2)
+				self.contador_paginas += 1
 				texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
 				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
-				time.sleep(2)
 			except:
-				if input('ajude-me'):
-					pass
+
+				loop_counter +=1
+				if loop_counter > 3:
+					break
+				time.sleep(5)
+				driver.execute_script("window.history.go(-1)")
 		driver.close()
 
 if __name__ == '__main__':

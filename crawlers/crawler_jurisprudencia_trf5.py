@@ -1,8 +1,10 @@
-import time
+import time, re, os
 from bs4 import BeautifulSoup
+from common.conexao_local import cursorConexao
+from common_nlp.parse_texto import busca
+from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from common.conexao_local import cursorConexao
 
 class crawler_jurisprudencia_trf5():
@@ -64,21 +66,37 @@ class crawler_jurisprudencia_trf5():
 					break
 		driver.close()
 
+	def parser_acordaos(self,texto, cursor):
+		decisoes = re.split(r'\nDOCUMENTO\s*?\d+',texto)
+		for d in range(1,len(decisoes)):
+			numero = busca(r'\nNúmero do Processo\s*?\:\s*?(\d+)', decisoes[d])
+			classe = busca(r'\nClasse\s*?\:(.*?)\-', decisoes[d])
+			julgador = busca(r'\n\s*?Relator.*?\:(.*?)\n', decisoes[d])
+			orgao_julgador = busca(r'\nÓrgão julgador\s*?\:\s*?(.*?)\n', decisoes[d], args=re.I | re.DOTALL)
+			data_disponibilizacao = busca(r'\n\s*?Data do Julgamento\s*?\:\s*?(\d{2}/\d{2}/\d{4})', decisoes[d])
+			cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s");' % ('trf5',numero, data_disponibilizacao, orgao_julgador, julgador, decisoes[d].strip()))
+
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_trf5()
-	try:
-		for l in range(len(c.lista_anos)):
-			print(c.lista_anos[l],'\n')
-			for m in range(len(c.lista_meses)):
-				for i in range(1,9):
-					try:
-						c.download_trf5('0'+str(i)+c.lista_meses[m]+c.lista_anos[l],'0'+str(i+1)+c.lista_meses[m]+c.lista_anos[l])
-					except Exception as e:
-						print(e)		
-				for i in range(10,27):
-					try:
-						c.download_trf5(str(i)+c.lista_meses[m]+c.lista_anos[l],str(i+1)+c.lista_meses[m]+c.lista_anos[l])
-					except Exception as e:
-						print(e)
-	except Exception as e:
-		print(e)
+	# try:
+	# 	for l in range(len(c.lista_anos)):
+	# 		print(c.lista_anos[l],'\n')
+	# 		for m in range(len(c.lista_meses)):
+	# 			for i in range(1,9):
+	# 				try:
+	# 					c.download_trf5('0'+str(i)+c.lista_meses[m]+c.lista_anos[l],'0'+str(i+1)+c.lista_meses[m]+c.lista_anos[l])
+	# 				except Exception as e:
+	# 					print(e)		
+	# 			for i in range(10,27):
+	# 				try:
+	# 					c.download_trf5(str(i)+c.lista_meses[m]+c.lista_anos[l],str(i+1)+c.lista_meses[m]+c.lista_anos[l])
+	# 				except Exception as e:
+	# 					print(e)
+	# except Exception as e:
+	# 	print(e)
+
+	cursor = cursorConexao()
+	cursor.execute('SELECT ementas FROM justica_federal.jurisprudencia_trf5;')
+	dados = cursor.fetchall()
+	for ementa in dados:
+		c.parser_acordaos(ementa[0],cursor)

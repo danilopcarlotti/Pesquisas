@@ -1,9 +1,10 @@
 import sys, re, time
-from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from bs4 import BeautifulSoup
+from common.conexao_local import cursorConexao
+from crawlerJus import crawlerJus
+from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from common.conexao_local import cursorConexao
 
 class crawler_jurisprudencia_tjrr():
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de Roraima"""
@@ -18,6 +19,7 @@ class crawler_jurisprudencia_tjrr():
 
 	def download_tj(self):
 		cursor = cursorConexao()
+		crawler = crawlerJus()
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
 		driver.find_element_by_xpath(self.pesquisa_livre).send_keys('a')
@@ -28,10 +30,10 @@ class crawler_jurisprudencia_tjrr():
 			for l in links_inteiro_teor:
 				try:
 					if re.search(r'inteiroteor\.php',l.get_attribute('href')):
-						texto = l.get_attribute('href')
+						texto = crawler.baixa_texto_html(l.get_attribute('href')).replace('/','').replace('\\','').replace('"','')
 						cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))		
-				except:
-					pass
+				except Exception as e:
+					print(e)
 			driver.find_element_by_xpath(bota_p).click()
 		self.botao_proximoXP = '//*[@id="conteudo"]/table[1]/tbody/tr/td/a[11]/b'
 		loop_counter = 0
@@ -41,7 +43,7 @@ class crawler_jurisprudencia_tjrr():
 				for l in links_inteiro_teor:
 					try:
 						if re.search(r'inteiroteor\.php',l.get_attribute('href')):
-							texto = l.get_attribute('href')
+							texto = crawler.baixa_texto_html(l.get_attribute('href')).replace('/','').replace('\\','').replace('"','')
 							cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))		
 					except:
 						pass

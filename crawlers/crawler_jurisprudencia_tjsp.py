@@ -63,7 +63,7 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 		while contador:
 			try:
 				driver.find_element_by_xpath(botao_proximo).click()
-				time.sleep(1)
+				time.sleep(2.5)
 				texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source)).replace('"','')
 				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas_1_inst,texto))
 				contador = 3
@@ -88,7 +88,7 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 			numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', texto_decisao, ngroup=0, args=re.DOTALL)
 			requerente = busca(r'\s*?Requerent.*?\:.*?\n.*?\n(.*?)\n', texto_decisao)
 			requerido = busca(r'\s*?Requerid.*?\:.*?\n.*?\n(.*?)\n', texto_decisao)
-			if re.search(r'Justiça Gratuita',texto_decisao,re.I):
+			if re.search(r'\n\s*?Justiça Gratuita',texto_decisao,re.I):
 				justica_gratuita = '1'
 			else:
 				justica_gratuita = '0'
@@ -120,25 +120,23 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 
 def main():
 	c = crawler_jurisprudencia_tjsp()
-	cursor = cursorConexao()
-	texto = ''
-	arq = open('ex.txt','r')
-	for line in arq:
-		texto += line
-	c.parse_sp_dados_1_inst(texto, cursor)
 
-
-	# print('comecei ',c.__class__.__name__)
-	# try:
-	# 	for l in range(len(c.lista_anos)):
-	# 		print(c.lista_anos[l],'\n')
-	# 		for m in range(len(c.lista_meses)):
-	# 			try:
-	# 				c.download_1_inst('01'+c.lista_meses[m]+c.lista_anos[l],'28'+c.lista_meses[m]+c.lista_anos[l])
-	# 			except Exception as e:
-	# 				print(e)
-	# except Exception as e:
-	# 	print(e)
+	print('comecei ',c.__class__.__name__)
+	try:
+		for l in range(len(c.lista_anos)):
+			if int(c.lista_anos[l]) > 2015:
+				print(c.lista_anos[l],'\n')
+				for m in range(len(c.lista_meses)):
+					try:
+						if int(c.lista_anos[l]) == 2016:
+							if int(c.lista_meses[m]) > 9:
+								c.download_1_inst('01'+c.lista_meses[m]+c.lista_anos[l],'28'+c.lista_meses[m]+c.lista_anos[l])
+						else:
+							c.download_1_inst('01'+c.lista_meses[m]+c.lista_anos[l],'28'+c.lista_meses[m]+c.lista_anos[l])
+					except Exception as e:
+						print(e)
+	except Exception as e:
+		print(e)
 
 	# cursor = cursorConexao()
 	# cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_sp limit 10;')

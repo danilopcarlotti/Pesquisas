@@ -69,11 +69,10 @@ class crawler_jurisprudencia_tjpa():
 
 	def parser_acordaos(self, texto, cursor):
 		numero = busca(r'[\d\.\-]{11,25}', texto, ngroup = 0)
-		julgador = busca(r'\nRELATOR.*?\:(.*?)__', texto, args = re.DOTALL).replace('\n','')
+		julgador = busca(r'\nRELATOR.*?\:(.*?)\n', texto, args = re.DOTALL)
 		orgao_julgador = busca(r'Turma Julgadora da (.*?)\,', texto)
 		data_disponibilizacao = busca(r'\d{2} de \w+ de \d{4}', texto, ngroup = 0)
 		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s", "%s", "%s", "%s", "%s", "%s");' % ('pa', numero, data_disponibilizacao, orgao_julgador, julgador, texto))
-
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjpa()
