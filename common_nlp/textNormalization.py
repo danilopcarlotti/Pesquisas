@@ -31,3 +31,14 @@ class textNormalization():
 		if one_text:
 			return texto_processado
 		return normal_texts
+
+	def dicionario_invertido_id_texto(self,dados):
+		dicionario_i = {}
+		for id_,texto in dados:
+			dicionario_i_text = set(self.normalize_texts(texto,one_text=True))
+			for w in dicionario_i_text:
+				if w in dicionario_i:
+					dicionario_i[w].append(id_)
+				else:
+					dicionario_i[w] = [id_]
+		return dicionario_i

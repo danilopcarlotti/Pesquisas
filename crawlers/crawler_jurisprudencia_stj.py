@@ -95,8 +95,7 @@ class processosSTJ(crawlerJus):
 	def baixarVotos(self):
 		cursor = cursorConexao()
 		crawler = crawlerJus()
-		cursor.execute('SELECT id, link_voto from stj.dados_processo limit 1000000;')
-		# cursor.execute('SELECT id, link_voto FROM stj.dados_processo where id in (SELECT id_processo FROM stj.votos where voto = "") limit 10000;')
+		cursor.execute('SELECT id, link_voto from stj.dados_processo;')
 		link_votos = cursor.fetchall()
 		contador = 1
 		for id_voto, link in link_votos:
@@ -109,7 +108,6 @@ class processosSTJ(crawlerJus):
 			soup2 = BeautifulSoup(html_final,'html.parser')
 			texto = soup2.get_text()
 			cursor.execute('INSERT into stj.votos (id_processo,voto) values (%s,"%s")' % (str(id_voto),texto.replace('"','')))
-			# cursor.execute('UPDATE stj.votos set voto =  "%s" where id_processo = %s;' % (texto.replace('"',''),str(id_voto).replace('\'','')))
 			print(contador)
 			contador += 1
 

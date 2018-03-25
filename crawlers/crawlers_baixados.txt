@@ -60,17 +60,16 @@ al - ok
 ac - ok
 ce - ok
 es - ok
-go - rever download
 mg - ok
 ms - ok
-pa - 
+pa - ok
 pi - ok
 pr - ok
 rn - ok
-rr - 
 ro - ok
+rr - ok
 se - ok
-sp 1 inst - 
+sp 1 inst - esc0
 STJ - ok
 STF - ok
 trf1 - ok
@@ -81,6 +80,7 @@ Parser a fazer
 
 am - rever ocr
 ba - rever ocr
+go - rever download (esc0)
 df - rever ocr
 mt - rever ocr
 ma - rever download

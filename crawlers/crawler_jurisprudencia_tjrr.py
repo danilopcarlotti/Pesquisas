@@ -1,6 +1,7 @@
 import sys, re, time
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
+from common_nlp.parse_texto import busca
 from crawlerJus import crawlerJus
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
@@ -57,10 +58,25 @@ class crawler_jurisprudencia_tjrr():
 					break
 		driver.close()
 
+	def parser_acordaos(self,texto,cursor):
+		numero = busca(r'\nNúmero do processo\:\s*?(\d{1,45})\n', texto)
+		data_disponibilizacao = busca(r'\nPublicado em\s*?\:\s*?(\d{8})', texto)
+		julgador = busca(r'\n\s*?Relator.*?\:(.*?)\n', texto)
+		classe = busca(r'\n\s*?Classe\:(.*?)\)', texto)
+		orgao_julgador = busca(r'\nInteiro teor\:\n\s*?(.*?)\n', texto, args=re.I)
+		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, classe, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s","%s");' % ('rr',numero, classe, data_disponibilizacao, orgao_julgador, julgador, texto))
+
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjrr()
-	print('comecei ',c.__class__.__name__)
-	try:
-		c.download_tj()
-	except Exception as e:
-		print('finalizei com erro ',e)
+	
+	# print('comecei ',c.__class__.__name__)
+	# try:
+	# 	c.download_tj()
+	# except Exception as e:
+	# 	print('finalizei com erro ',e)
+
+	cursor = cursorConexao()
+	cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_rr;')
+	dados = cursor.fetchall()
+	for dado in dados:
+		c.parser_acordaos(dado[0], cursor)

@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from mpl_toolkits.mplot3d import Axes3D
 import pandas as pd
-from common.conexao_local import cursorConexao
 from sklearn.cluster import KMeans
 from nltk import word_tokenize
 from nltk.util import ngrams

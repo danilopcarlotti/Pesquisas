@@ -94,7 +94,7 @@ if __name__ == '__main__':
 # 		except Exception as e:
 # 			print(e)
 	cursor = cursorConexao()
-	cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_pa limit 1000000')
+	cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_pa;')
 	dados = cursor.fetchall()
 	for dado in dados:
 		c.parser_acordaos(dado[0], cursor)
