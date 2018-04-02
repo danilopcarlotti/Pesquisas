@@ -1,8 +1,12 @@
-import sys, re, time, os, pyautogui
-from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from bs4 import BeautifulSoup
+from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
+from common.conexao_local import cursorConexao
+from common.download_path import path
+from common_nlp.parse_texto import busca
+from common_nlp.pdf_to_text import pdf_to_text
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+import sys, re, time, os, pyautogui
 
 contador = 0
 
@@ -62,11 +66,24 @@ class crawler_jurisprudencia_tjmt():
 					break
 		driver.close()
 
+	def parser_acordaos(self, arquivo, cursor, pdf_class):
+		texto = pdf_class.convert_pdfminer(arquivo)
+		numero = busca(r'\n.*?N. (.*?) - CLASSE CNJ', texto)
+		julgador = busca(r'\n\s*?DESEMBARGADOR[A]?(.*?)- RELATOR', texto)		
+		data_decisao = busca(r'\n\s*?Data de Julgamento\:(.*?)\n', texto)
+		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, julgador, texto_decisao) values ("%s","%s","%s","%s","%s");' % ('mt',numero, data_decisao, orgao_julgador, julgador, texto))
+
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjmt()
-	print('comecei ',c.__class__.__name__)
-	try:
-		c.download_tj()
-	except Exception as e:
-		print(e)
-		print('finalizei com erro\n')
+	
+	cursor = cursorConexao()
+	p = pdf_to_text()
+	for arq in os.listdir(path+'/mt_2_inst'):
+		c.parser_acordaos(path+'/mt_2_inst/'+arq, cursor, p)
+
+	# print('comecei ',c.__class__.__name__)
+	# try:
+	# 	c.download_tj()
+	# except Exception as e:
+	# 	print(e)
+	# 	print('finalizei com erro\n')

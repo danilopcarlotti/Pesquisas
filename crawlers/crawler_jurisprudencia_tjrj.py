@@ -60,6 +60,13 @@ class crawler_jurisprudencia_tjrj(crawlerJus):
 					break
 		driver.close()
 
+	def parser_acordaos(self, texto, cursor, pdf_class):
+		texto = pdf_class.convert_pdfminer(arquivo)
+		numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', texto)
+		julgador = busca(r'\n\s*?RELATOR.*?\:(.*?)\n', texto)
+		data_decisao = busca(r'\n\s*?Rio de Janeiro, (.*?)\.', texto)
+		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, julgador, texto_decisao) values ("%s","%s","%s","%s","%s");' % ('rj',numero, data_decisao, julgador, texto))
+
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjrj()
 	print('comecei ',c.__class__.__name__)

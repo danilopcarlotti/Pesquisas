@@ -14,12 +14,27 @@
 
     <!-- Custom styles for this template -->
     <link href="bootstrap-4.0.0/docs/4.0/examples/sign-in/signin.css" rel="stylesheet">
+    <style type="text/css">
+      .div-central {
+        margin-right: auto;
+        margin-left: auto;
+        text-align: center;
+        padding-top: 15%;
+      }
+    </style>
   </head>
 
   <body>
-    <form action = "http://localhost:5000/foo" method = "post">
-      <input type="text" id="query" name="query">
-      <button type="submit">Salvar pesquisa</button>
-    </form>
+    <div class='div-central'>
+    <p>INSPER - CNJ</p>
+    <p>versão 2</p>
+      <form action = "http://localhost:5000/pesquisa" method = "post">
+        <input type="text" id="query" name="query">
+        <button type="submit">Salvar pesquisa</button>
+      </form>
+      <br><br>
+      <p>Termos disponíveis para auxiliar na pesquisa: 'ou', 'e'. Use um de cada vez.<p>
+      <p>Não é necessário usar aspas duplas (")</p>
+    </div>
   </body>
 </html>

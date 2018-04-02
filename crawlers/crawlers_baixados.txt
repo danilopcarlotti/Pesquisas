@@ -56,15 +56,20 @@ sp - https://esaj.tjsp.jus.br/cjpg/
 
 Parser pronto e rodado
 
-al - ok
 ac - ok
+al - ok
+am - 
+ba - 
 ce - ok
+df - 
 es - ok
 mg - ok
 ms - ok
+mt - 
 pa - ok
 pi - ok
 pr - ok
+rj - 
 rn - ok
 ro - ok
 rr - ok
@@ -72,24 +77,19 @@ se - ok
 sp 1 inst - esc0
 STJ - ok
 STF - ok
+to - 
 trf1 - ok
 trf4  - ok
 trf5 - ok
 
 Parser a fazer
 
-am - rever ocr
-ba - rever ocr
 go - rever download (esc0)
-df - rever ocr
-mt - rever ocr
 ma - rever download
 pb - rever ocr
-rj - rever ocr
 rs - rever download
 sc - rever ocr
 sp 2 inst - rever download e rever ocr
-to - rever ocr
 
 *** TABELAS JURISPRUDENCIA ***
 

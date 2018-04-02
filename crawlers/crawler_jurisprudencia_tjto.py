@@ -35,6 +35,14 @@ class crawler_jurisprudencia_tjto():
 		crawler_jurisprudencia_tj.download_pdf_acordao_sem_captcha(self,link,'to_2_inst_' + id_acordao)
 		subprocess.Popen('mv %s/to_2_inst_* %s/acordaos_tj_to' % (path,path), shell=True)
 
+	def parser_acordaos(self, texto, cursor, pdf_class):
+		texto = pdf_class.convert_pdfminer(arquivo)
+		numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', texto)
+		orgao_julgador = busca(r'\n\s*?Origem\:(.*?)\n', texto)
+		julgador = busca(r'\n\s*?Relator.*?\:(.*?)\n', texto)
+		data_decisao = busca(r'\n\s*?Palmas, (.*?)\.', texto)
+		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s");' % ('rj',numero, data_decisao, orgao_julgador, julgador, texto))
+
 def main():
 	c = crawler_jurisprudencia_tjto()
 	cursor = cursorConexao()

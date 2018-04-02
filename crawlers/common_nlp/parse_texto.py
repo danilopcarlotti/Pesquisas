@@ -6,7 +6,7 @@ def busca(re_exp,text,ngroup=1,args=None):
 	else:
 		result = re.search(re_exp,text)
 	if result:
-		result = result.group(ngroup).strip().replace('\n','').replace('\\','').replace('/','')
+		result = result.group(ngroup).strip().replace('\\','').replace('/','').replace('"','')
 	else:
 		result = ''
 	return result

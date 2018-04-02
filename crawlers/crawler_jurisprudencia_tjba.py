@@ -86,9 +86,25 @@ class crawler_jurisprudencia_tjba():
 					print(e)
 		driver.close()
 	
+	def parser_acordaos(self, texto, cursor, pdf_class):
+		texto = pdf_class.convert_pdfminer(arquivo)
+		numero = busca(r'\nClasse\s*?\:\s*?\w+\s*?nº (.*?)\n', texto)
+		julgador = busca(r'\nRelator\s*?\:(.*?)\n', texto)
+		assunto = busca(r'\nAssunto\s*?\:(.*?)\n', texto)
+		data_decisao = busca(r'\n\s*?Sala das Sessões\,(.*?)\.', texto)
+		orgao_julgador = busca(r'\s*?PODER JUDICIÁRIO DO ESTADO DA BAHIA\nTRIBUNAL DE JUSTIÇA\n(.*?)\n', texto)
+		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, assunto, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s","%s");' % ('ba',numero, assunto, data_decisao, orgao_julgador, julgador, texto))
+
 def main():
 	c = crawler_jurisprudencia_tjba()
-	c.download_1_inst()
+	
+	p = pdf_to_text()
+	for arq in os.listdir(path+'/ba_2_inst'):
+		c.parser_acordaos(path+'/ba_2_inst/'+arq, cursor, p)
+
+
+	# c.download_1_inst()
+
 	# print('comecei ',c.__class__.__name__)
 	# try:
 	# 	c.download_tj()
