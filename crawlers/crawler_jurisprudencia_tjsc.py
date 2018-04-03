@@ -1,5 +1,6 @@
 import sys, re, time
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
+from crawlerJus import crawlerJus
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -68,16 +69,21 @@ class crawler_jurisprudencia_tjsc():
 				return
 		driver.close()
 
-	def download_acordao_sc(self,id_acordao,link):
-		crawler_jurisprudencia_tj.download_pdf_acordao(self,link,'','','','sc_2_inst_' + id_acordao)
+	def download_acordao_sc(self,link, id_p, cursor, crawlerclass):
+		texto = crawlerclass.baixa_texto_html(link).replace('"','').replace('\\','').replace('/','')
+		cursor.execute('UPDATE justica_estadual.jurisprudencia_sc set texto_ementa = "%s" where id = "%s"' % (texto, id_p))
 
-def main()
+def main():
 	c = crawler_jurisprudencia_tjsc()
 	cursor = cursorConexao()
-	cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_sc limit 10000000;')
+
+	crawlerclass = crawlerJus()
+	cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_sc;')
 	lista_links = cursor.fetchall()
 	for i,l in lista_links:
-		c.download_acordao_sc(i,l)
+		c.download_acordao_sc(l, i, cursor, crawlerclass)
+
+
 	# print('comecei ',c.__class__.__name__)
 	# for a in c.lista_anos:
 	# 	print(a)

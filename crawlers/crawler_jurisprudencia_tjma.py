@@ -44,7 +44,7 @@ class crawler_jurisprudencia_tjma():
 				break
 
 	def parser_acordaos(self,texto,cursor):
-		numero = busca(r'Número do acordão\:\s*?([\d\.\-]{1,21}) ', texto, args=re.DOTALL)
+		numero = busca(r'\n(.*?)\(clique aqui para visualizar o processo\)', texto)
 		data_disponibilizacao = busca(r'Data do registro do acordão\:\n(\d{2}/\d{2}/\d{4})',texto)
 		julgador = busca(r'\nRelator.*?\:\n(.*?)\n',texto)
 		orgao_julgador = busca(r'\n.rgão\:\n(.*?)\n',texto)

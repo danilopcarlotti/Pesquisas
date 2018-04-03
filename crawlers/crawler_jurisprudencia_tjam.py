@@ -26,14 +26,14 @@ class crawler_jurisprudencia_tjam(crawler_jurisprudencia_tj):
 		self.download_pdf_acordao_captcha_image(dados_baixar,'//*[@id="valorCaptcha"]','//*[@id="pbEnviar"]','am_2_inst')
 
 	def parser_acordaos(self, arquivo, cursor, pdf_class):
-		texto = pdf_class.convert_pdfminer(arquivo)
-		numero = re.search(r'\nPROCESSO N.. (.*?)\n',texto)
+		texto = pdf_class.convert_pdfminer(arquivo).replace('"','').replace('/','').replace('\\','')
+		numero = re.search(r'\nPROCESSO N.. (.{1,44})',texto)
 		if numero:
 			numero = numero.group(1)
 			julgador = busca(r'\s*?Des\. (.*?)\n', texto)
 			cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, julgador, texto_decisao) values ("%s","%s","%s","%s");' % ('am',numero, julgador, texto))
 		else:
-			numero = busca(r'\nAutos n. (.*?)\.?\n', texto)
+			numero = busca(r'\nAutos n. (.{1,44})\.?', texto)
 			classe = busca(r'\nClasse\: (.*?)\.', texto)
 			julgador = busca(r'\nRelator\:(.*?)\n', texto)
 			orgao_julgador = busca(r'.rg.o Julgador\:(.*?)\n', texto)

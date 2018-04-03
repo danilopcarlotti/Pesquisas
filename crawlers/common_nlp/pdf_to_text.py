@@ -34,7 +34,7 @@ class pdf_to_text():
         text = ''
         for i in range(pdfReader.numPages):
             pageObj = pdfReader.getPage(i)
-            text += pageObj.extractText()
+            text += pageObj.extractText() + '\n'
         return text
 
 if __name__ == '__main__':

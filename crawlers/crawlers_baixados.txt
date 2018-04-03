@@ -58,15 +58,17 @@ Parser pronto e rodado
 
 ac - ok
 al - ok
-am - 
+am - esc 0 - 4
 ba - 
 ce - ok
 df - 
 es - ok
+ma - 
 mg - ok
 ms - ok
 mt - 
 pa - ok
+pb - ok
 pi - ok
 pr - ok
 rj - 
@@ -74,7 +76,7 @@ rn - ok
 ro - ok
 rr - ok
 se - ok
-sp 1 inst - esc0
+sp 1 inst - rever download (esc0 - 2)
 STJ - ok
 STF - ok
 to - 
@@ -84,11 +86,9 @@ trf5 - ok
 
 Parser a fazer
 
-go - rever download (esc0)
-ma - rever download
-pb - rever ocr
+go - rever download (esc0 - 3)
 rs - rever download
-sc - rever ocr
+sc - rever download (esc0 - 4)
 sp 2 inst - rever download e rever ocr
 
 *** TABELAS JURISPRUDENCIA ***

@@ -44,6 +44,18 @@ class crawler_jurisprudencia_tjgo():
 				driver.execute_script("window.history.go(-1)")
 		driver.close()
 
+	def parser_acordaos(self,texto,cursor):
+		numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', texto,ngroup=0)
+		data_disponibilizacao = busca(r'\d{2}/\d{2}/\d{4}', texto, ngroup=0)
+		polo_ativo = busca(r'\n\s*?SUSCITANTE\:\s*?(.*?)\n', texto)
+		polo_passivo = busca(r'\n\s*?SUSCITADO\:\s*?(.*?)\n', texto)
+
+		
+		julgador = busca(r'\n\s*?Relator.*?\:\n\s*?(.*?)\(', texto)
+		orgao_julgador = busca(r'\n\s*?.rgão julgador\:\n\s*?\n\s*?(.*?)\n', texto)
+		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, assunto, classe, data_decisao, orgao_julgador, julgador, polo_ativo, polo_passivo, texto_decisao) values ("%s","%s","%s","%s","%s","%s","%s","%s","%s","%s");' % ('se',numero, assunto, classe, data_disponibilizacao, orgao_julgador, julgador, polo_ativo, polo_passivo, texto))
+
+
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjgo()
 	print('comecei ',c.__class__.__name__)

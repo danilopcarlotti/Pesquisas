@@ -1,9 +1,12 @@
-import sys, re, time, subprocess, urllib.request
-from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from bs4 import BeautifulSoup
+from common.conexao_local import cursorConexao
+from common.download_path import path
+from common_nlp.parse_texto import busca
+from common_nlp.pdf_to_text import pdf_to_text
+from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from common.conexao_local import cursorConexao
+import sys, re, time, subprocess, urllib.request, os
 
 class crawler_jurisprudencia_tjpb(crawler_jurisprudencia_tj):
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância da Paraíba"""
@@ -52,16 +55,36 @@ class crawler_jurisprudencia_tjpb(crawler_jurisprudencia_tj):
 		crawler_jurisprudencia_tj.download_pdf_acordao(self,link,'','','','pb_2_inst_' + id_acordao)
 		subprocess.Popen('mv /home/danilo/Downloads/pb_2_inst_* /home/danilo/Downloads/acordaos_tj_pb', shell=True)
 
+	def parser_acordaos(self, arquivo, cursor, pdf_class):
+		texto = pdf_class.convert_PyPDF2(arquivo)
+		numero = busca(r'\d{3,7}\.\d{4}\.\d{6}\-\d{1}/\d{3}', texto, ngroup=0)
+		classe = busca(r'ACÓRDÃO(.*?)N.\s*?\d{3,7}\.\d{4}\.\d{6}\-\d{1}/\d{3}', texto)
+		julgador = busca(r'RELATOR.*?\:(.*?Des\..*?)\.', texto)
+		data_disponibilizacao = busca(r'\.\s*?João Pessoa(.*?)\.', texto)[:44]
+		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, classe, data_decisao, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s");' % ('pb',numero, classe, data_disponibilizacao, julgador, texto.replace('"','').replace('\\','').replace('/','')))
+
 def main():
 	c = crawler_jurisprudencia_tjpb()
 	cursor = cursorConexao()
-	cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_pb where id > 37630 limit 10000000;')
-	lista_links = cursor.fetchall()
-	for i,l in lista_links:
+
+	p = pdf_to_text()
+	for arq in os.listdir(path+'/pb_2_inst'):
 		try:
-			c.download_acordao_pb(str(i),l)
+			c.parser_acordaos(path+'/pb_2_inst/'+arq, cursor, p)
 		except Exception as e:
-			print(e,i)
+			print(arq)
+			print(e)
+
+	
+	# cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_pb where id > 37630 limit 10000000;')
+	# lista_links = cursor.fetchall()
+	# for i,l in lista_links:
+	# 	try:
+	# 		c.download_acordao_pb(str(i),l)
+	# 	except Exception as e:
+	# 		print(e,i)
+	
+
 	# print('comecei ',c.__class__.__name__)
 	# try:
 	# 	for a in c.lista_anos:
