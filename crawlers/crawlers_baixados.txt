@@ -1,39 +1,3 @@
-baixados texto - concluídos
-
-ac - ok
-al - esc0
-am - ok
-ba - ok
-es - ok
-go - ok
-df - ok
-mg (texto completo) - ok
-ms - esc 0 confirmar
-mt (texto completo) - ok
-pa (texto completo) - ok
-pb (links para pdf) - ok
-pi (textos completo) - ok
-pr (texto completo) - ok
-rj (pdf's) - ok
-rn (texto completo) - ok
-ro (texto completo) - ok
-rs (links para html) - samba
-sc (links para html) - ok
-sp 1 inst - esc 0
-STJ - ok
-STF - ok
-to (links para pdf) - ok
-trf1 (texto completo) - ok
-trf4 (texto completo) - ok
-trf5 (texto completo) - ok
-
-falta baixar - links baixados
-
-ce - revisar e verificar o correto download
-ma - revisar e verificar o correto download
-rr (texto completo) -
-sp (links para pdf) - ok (captcha)
-
 falta completar e/ou impossível completar
 
 ap - não funciona o botão de "mais resultados"
@@ -58,11 +22,12 @@ Parser pronto e rodado
 
 ac - ok
 al - ok
-am - esc 0 - 4
-ba - 
+am - ok
+ba - esc0 - 4
 ce - ok
 df - 
 es - ok
+go - ok
 ma - 
 mg - ok
 ms - ok
@@ -76,7 +41,8 @@ rn - ok
 ro - ok
 rr - ok
 se - ok
-sp 1 inst - rever download (esc0 - 2)
+sc - ok
+sp 1 inst - esc0 - 4
 STJ - ok
 STF - ok
 to - 
@@ -86,9 +52,7 @@ trf5 - ok
 
 Parser a fazer
 
-go - rever download (esc0 - 3)
 rs - rever download
-sc - rever download (esc0 - 4)
 sp 2 inst - rever download e rever ocr
 
 *** TABELAS JURISPRUDENCIA ***

@@ -1,10 +1,11 @@
-import sys, re, time
+from bs4 import BeautifulSoup
+from common.conexao_local import cursorConexao
+from common_nlp.parse_texto import busca
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from crawlerJus import crawlerJus
-from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from common.conexao_local import cursorConexao
+import sys, re, time
 
 class crawler_jurisprudencia_tjsc():
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de Santa Catarina"""
@@ -72,16 +73,31 @@ class crawler_jurisprudencia_tjsc():
 	def download_acordao_sc(self,link, id_p, cursor, crawlerclass):
 		texto = crawlerclass.baixa_texto_html(link).replace('"','').replace('\\','').replace('/','')
 		cursor.execute('UPDATE justica_estadual.jurisprudencia_sc set texto_ementa = "%s" where id = "%s"' % (texto, id_p))
+		
+	def parser_acordaos(self,texto,cursor):
+		numero = busca(r'\d{4}\.\d{6}\-\d', texto,ngroup=0)
+		classe = busca(r'Classe\:\s*?(.*?)\n', texto)
+		julgador = busca(r'\n\s*?Juiz Prolator.*?\:(.*?)\n', texto)
+		orgao_julgador = busca(r'\n.rgão Julgador\:(.*?)\n', texto)
+		data_disponibilizacao = busca(r'\n\s*?Julgado em\s*?\:(.*?)\n', texto)
+		origem = busca(r'\n\s*?Origem\s*?\:(.*?)\n', texto)
+		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, classe, data_decisao, orgao_julgador, julgador, origem, texto_decisao) values ("%s","%s","%s","%s","%s","%s","%s","%s");' % ('sc',numero, classe, data_disponibilizacao, orgao_julgador, julgador, origem, texto))
+
 
 def main():
 	c = crawler_jurisprudencia_tjsc()
 	cursor = cursorConexao()
 
-	crawlerclass = crawlerJus()
-	cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_sc;')
-	lista_links = cursor.fetchall()
-	for i,l in lista_links:
-		c.download_acordao_sc(l, i, cursor, crawlerclass)
+	cursor.execute('SELECT texto_ementa from justica_estadual.jurisprudencia_sc;')
+	dados = cursor.fetchall()
+	for dado in dados:
+		c.parser_acordaos(dado[0], cursor)
+
+	# crawlerclass = crawlerJus()
+	# cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_sc;')
+	# lista_links = cursor.fetchall()
+	# for i,l in lista_links:
+	# 	c.download_acordao_sc(l, i, cursor, crawlerclass)
 
 
 	# print('comecei ',c.__class__.__name__)

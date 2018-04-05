@@ -1,10 +1,13 @@
-import sys, re, time, pyautogui,subprocess, urllib.request
-from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from bs4 import BeautifulSoup
+from common.conexao_local import cursorConexao
 from common.download_path import path
+from common_nlp.parse_texto import busca
+from common_nlp.pdf_to_text import pdf_to_text
+from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
+import sys, re, time, pyautogui,subprocess, urllib.request, os
 
 class crawler_jurisprudencia_tjba():
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância da Bahia"""
@@ -86,18 +89,22 @@ class crawler_jurisprudencia_tjba():
 					print(e)
 		driver.close()
 	
-	def parser_acordaos(self, texto, cursor, pdf_class):
-		texto = pdf_class.convert_pdfminer(arquivo)
-		numero = busca(r'\nClasse\s*?\:\s*?\w+\s*?nº (.*?)\n', texto)
+	def parser_acordaos(self, arquivo, cursor, pdf_class):
+		texto = pdf_class.convert_pdfminer(arquivo).replace('\\','').replace('/','').replace('"','')
+		numero = busca(r'\nClasse\s*?\:\s*?\w+\s*?nº (.{1,40})', texto)
 		julgador = busca(r'\nRelator\s*?\:(.*?)\n', texto)
 		assunto = busca(r'\nAssunto\s*?\:(.*?)\n', texto)
 		data_decisao = busca(r'\n\s*?Sala das Sessões\,(.*?)\.', texto)
 		orgao_julgador = busca(r'\s*?PODER JUDICIÁRIO DO ESTADO DA BAHIA\nTRIBUNAL DE JUSTIÇA\n(.*?)\n', texto)
-		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, assunto, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s","%s");' % ('ba',numero, assunto, data_decisao, orgao_julgador, julgador, texto))
+		try:
+			cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, assunto, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s","%s");' % ('ba',numero, assunto, data_decisao, orgao_julgador, julgador, texto))
+		except:
+			pass
 
 def main():
 	c = crawler_jurisprudencia_tjba()
 	
+	cursor = cursorConexao()
 	p = pdf_to_text()
 	for arq in os.listdir(path+'/ba_2_inst'):
 		c.parser_acordaos(path+'/ba_2_inst/'+arq, cursor, p)

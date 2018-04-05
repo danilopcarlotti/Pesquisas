@@ -121,22 +121,30 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 def main():
 	c = crawler_jurisprudencia_tjsp()
 
-	print('comecei ',c.__class__.__name__)
-	try:
-		for l in range(len(c.lista_anos)):
-			if int(c.lista_anos[l]) > 2015:
-				print(c.lista_anos[l],'\n')
-				for m in range(len(c.lista_meses)):
-					try:
-						if int(c.lista_anos[l]) == 2016:
-							if int(c.lista_meses[m]) > 9:
-								c.download_1_inst('01'+c.lista_meses[m]+c.lista_anos[l],'28'+c.lista_meses[m]+c.lista_anos[l])
-						else:
-							c.download_1_inst('01'+c.lista_meses[m]+c.lista_anos[l],'28'+c.lista_meses[m]+c.lista_anos[l])
-					except Exception as e:
-						print(e)
-	except Exception as e:
-		print(e)
+	# print('comecei ',c.__class__.__name__)
+	# try:
+	# 	for l in range(len(c.lista_anos)):
+	# 		if int(c.lista_anos[l]) > 2015:
+	# 			print(c.lista_anos[l],'\n')
+	# 			for m in range(len(c.lista_meses)):
+	# 				try:
+	# 					if int(c.lista_anos[l]) == 2016:
+	# 						if int(c.lista_meses[m]) > 9:
+	# 							c.download_1_inst('01'+c.lista_meses[m]+c.lista_anos[l],'28'+c.lista_meses[m]+c.lista_anos[l])
+	# 					else:
+	# 						c.download_1_inst('01'+c.lista_meses[m]+c.lista_anos[l],'28'+c.lista_meses[m]+c.lista_anos[l])
+	# 				except Exception as e:
+	# 					print(e)
+	# except Exception as e:
+	# 	print(e)
+
+	cursor = cursorConexao()
+	for i in range(0,1500000,1000):
+		print(1500000-i)
+		cursor.execute('SELECT sentencas FROM justica_estadual.jurisprudencia_sp_1_inst limit %s,1000;' % str(i))
+		dados = cursor.fetchall()
+		for dado in dados:
+			c.parse_sp_dados_1_inst(dado[0], cursor)
 
 	# cursor = cursorConexao()
 	# cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_sp limit 10;')

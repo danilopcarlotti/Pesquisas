@@ -1,6 +1,7 @@
 import sys, re, time
-from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from bs4 import BeautifulSoup
+from common_nlp.parse_texto import busca
+from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from common.conexao_local import cursorConexao
@@ -47,19 +48,22 @@ class crawler_jurisprudencia_tjgo():
 	def parser_acordaos(self,texto,cursor):
 		numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', texto,ngroup=0)
 		data_disponibilizacao = busca(r'\d{2}/\d{2}/\d{4}', texto, ngroup=0)
-		polo_ativo = busca(r'\n\s*?SUSCITANTE\:\s*?(.*?)\n', texto)
-		polo_passivo = busca(r'\n\s*?SUSCITADO\:\s*?(.*?)\n', texto)
-
-		
-		julgador = busca(r'\n\s*?Relator.*?\:\n\s*?(.*?)\(', texto)
-		orgao_julgador = busca(r'\n\s*?.rgão julgador\:\n\s*?\n\s*?(.*?)\n', texto)
-		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, assunto, classe, data_decisao, orgao_julgador, julgador, polo_ativo, polo_passivo, texto_decisao) values ("%s","%s","%s","%s","%s","%s","%s","%s","%s","%s");' % ('se',numero, assunto, classe, data_disponibilizacao, orgao_julgador, julgador, polo_ativo, polo_passivo, texto))
-
+		polo_ativo = busca(r'Reclamante\:(.*?)\n', texto, args=re.I)
+		polo_passivo = busca(r'Reclamado\:(.*?)\n', texto, args=re.I)
+		julgador = busca(r'\n\s*?Relator.*?\:\n\s*?\n\s*?\n\s*?(.*?)\n', texto, args = re.I)
+		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, julgador, polo_ativo, polo_passivo, texto_decisao) values ("%s","%s","%s","%s","%s","%s","%s");' % ('go',numero, data_disponibilizacao, julgador, polo_ativo, polo_passivo, texto))
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjgo()
-	print('comecei ',c.__class__.__name__)
-	try:
-		c.download_tj()
-	except:
-		print('finalizei')
+
+	cursor = cursorConexao()
+	cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_go;')
+	dados = cursor.fetchall()
+	for dado in dados:
+		c.parser_acordaos(dado[0], cursor)
+
+	# print('comecei ',c.__class__.__name__)
+	# try:
+	# 	c.download_tj()
+	# except:
+	# 	print('finalizei')

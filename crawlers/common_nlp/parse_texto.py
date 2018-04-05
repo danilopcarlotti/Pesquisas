@@ -5,8 +5,8 @@ def busca(re_exp,text,ngroup=1,args=None):
 		result = re.search(re_exp,text,flags=args)
 	else:
 		result = re.search(re_exp,text)
-	if result:
+	try:
 		result = result.group(ngroup).strip().replace('\\','').replace('/','').replace('"','')
-	else:
+	except:
 		result = ''
 	return result
