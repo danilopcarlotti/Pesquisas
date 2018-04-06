@@ -23,15 +23,15 @@ Parser pronto e rodado
 ac - ok
 al - ok
 am - ok
-ba - esc0 - 4
+ba - ok
 ce - ok
-df - 
+df - esc0 - 4
 es - ok
 go - ok
-ma - 
+ma - ok
 mg - ok
 ms - ok
-mt - 
+mt - esc0 - 4
 pa - ok
 pb - ok
 pi - ok
@@ -45,7 +45,7 @@ sc - ok
 sp 1 inst - esc0 - 4
 STJ - ok
 STF - ok
-to - 
+to - encontrar download!
 trf1 - ok
 trf4  - ok
 trf5 - ok

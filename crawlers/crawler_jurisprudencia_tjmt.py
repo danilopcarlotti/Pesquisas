@@ -67,11 +67,11 @@ class crawler_jurisprudencia_tjmt():
 		driver.close()
 
 	def parser_acordaos(self, arquivo, cursor, pdf_class):
-		texto = pdf_class.convert_pdfminer(arquivo)
+		texto = pdf_class.convert_pdfminer(arquivo).replace('\\','').replace('/','').replace('"','')
 		numero = busca(r'\n.*?N. (.*?) - CLASSE CNJ', texto)
 		julgador = busca(r'\n\s*?DESEMBARGADOR[A]?(.*?)- RELATOR', texto)		
 		data_decisao = busca(r'\n\s*?Data de Julgamento\:(.*?)\n', texto)
-		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, julgador, texto_decisao) values ("%s","%s","%s","%s","%s");' % ('mt',numero, data_decisao, orgao_julgador, julgador, texto))
+		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, julgador, texto_decisao) values ("%s","%s","%s","%s","%s");' % ('mt',numero, data_decisao, julgador, texto))
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjmt()
@@ -79,7 +79,10 @@ if __name__ == '__main__':
 	cursor = cursorConexao()
 	p = pdf_to_text()
 	for arq in os.listdir(path+'/mt_2_inst'):
-		c.parser_acordaos(path+'/mt_2_inst/'+arq, cursor, p)
+		try:
+			c.parser_acordaos(path+'/mt_2_inst/'+arq, cursor, p)
+		except Exception as e:
+			print(e)
 
 	# print('comecei ',c.__class__.__name__)
 	# try:

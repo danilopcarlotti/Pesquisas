@@ -37,22 +37,26 @@ class crawler_jurisprudencia_tjdf(crawler_jurisprudencia_tj):
 			except Exception as e:
 				print(e)
 
-	def parser_acordaos(self, arquivo, cursor, pdf_class):
-		text = docx2txt.process(arquivo)
+	def parser_acordaos(self, arquivo, cursor):
+		text = docx2txt.process(arquivo).replace('\\','').replace('/','').replace('"','')
 		numero = busca(r'\n\s*?N.\s*?Processo\s*?\:(.*?)\n', texto)
 		julgador = busca(r'\n\s*?Relator Des.\s*?\:(.*?)\n', texto)		
 		data_decisao = busca(r'\n\s*?Brasília \(DF\)\, (.*?)\.', texto)
 		orgao_julgador = busca(r'\n\s*?Órgãos\s*?\:(.*?)\n', texto)
+		print(numero)
+		print(julgador)
+		print(data_decisao)
+		print(orgao_julgador)
+		return
 		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s");' % ('df',numero, data_decisao, orgao_julgador, julgador, texto))
 
 def main():
 	c = crawler_jurisprudencia_tjdf()
 
 	cursor = cursorConexao()
-	p = pdf_to_text()
 	for arq in os.listdir(path+'/df_2_inst'):
-		c.parser_acordaos(path+'/df_2_inst/'+arq, cursor, p)
-	
+		c.parser_acordaos(path+'/df_2_inst/'+arq, cursor)
+		break
 
 	# print('comecei ',c.__class__.__name__)
 	# try:
@@ -62,3 +66,9 @@ def main():
 
 if __name__ == '__main__':
 	main()
+
+# for A in *.doc; do libreoffice --headless --convert-to docx $A; done
+# libreoffice --headless --convert-to docx *.doc
+# rm *.doc
+
+# rm *.docx

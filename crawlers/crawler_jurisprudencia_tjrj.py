@@ -61,7 +61,7 @@ class crawler_jurisprudencia_tjrj(crawlerJus):
 		driver.close()
 
 	def parser_acordaos(self, texto, cursor, pdf_class):
-		texto = pdf_class.convert_pdfminer(arquivo)
+		texto = pdf_class.convert_pdfminer(arquivo).replace('\\','').replace('/','').replace('"','')
 		numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', texto)
 		julgador = busca(r'\n\s*?RELATOR.*?\:(.*?)\n', texto)
 		data_decisao = busca(r'\n\s*?Rio de Janeiro, (.*?)\.', texto)

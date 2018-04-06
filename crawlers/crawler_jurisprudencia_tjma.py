@@ -48,13 +48,14 @@ class crawler_jurisprudencia_tjma():
 		data_disponibilizacao = busca(r'Data do registro do acordão\:\n(\d{2}/\d{2}/\d{4})',texto)
 		julgador = busca(r'\nRelator.*?\:\n(.*?)\n',texto)
 		orgao_julgador = busca(r'\n.rgão\:\n(.*?)\n',texto)
-		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s");' % ('ma',numero, data_disponibilizacao, orgao_julgador, julgador, texto.replace('"','').replace('/','').replace('\\','')))
+		if numero != '':
+			cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s");' % ('ma',numero, data_disponibilizacao, orgao_julgador, julgador, texto.replace('"','').replace('/','').replace('\\','')))
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjma()
 
 	cursor = cursorConexao()
-	cursor.execute('SELECT id, ementas from justica_estadual.jurisprudencia_ma limit 10000;')
+	cursor.execute('SELECT id, ementas from justica_estadual.jurisprudencia_ma;')
 	dados = cursor.fetchall()
 	for id_d, dado in dados:
 		try:
