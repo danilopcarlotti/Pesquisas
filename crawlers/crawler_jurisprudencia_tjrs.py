@@ -68,11 +68,17 @@ class crawler_jurisprudencia_tjrs():
 	def parser_acordaos(self,links):
 		cursor = cursorConexao()
 		crawler = crawlerJus()
-		for link in links:
-			texto = crawler.baixa_texto_html(link).strip().replace('\\','').replace('/','').replace('"','')
-			if texto != '':
-				numero = busca(r'\n?Nº\s*?(.*?)\n', texto)
-				cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (numero, texto_decisao) values ("%s","%s");' % (numero, texto))
+		contador = 1
+		for id_p, link in links:
+			try:
+				texto = crawler.baixa_texto_html(link).strip().replace('\\','').replace('/','').replace('"','')
+				if texto != '':
+					numero = busca(r'\n?Nº\s*?(.*?)\n', texto)
+					cursor.execute('INSERT INTO justica_estadual.jurisprudencia_rs_2 (numero, texto_decisao) values ("%s","%s");' % (numero, texto))
+				print(contador)
+				contador += 1
+			except Exception as e:
+				print(id_p,e)
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjrs()
