@@ -25,18 +25,18 @@ al - ok
 am - ok
 ba - ok
 ce - ok
-df - esc0 - 4
+df - ok
 es - ok
 go - ok
 ma - ok
 mg - ok
 ms - ok
-mt - esc0 - 4
+mt - ok
 pa - ok
 pb - ok
 pi - ok
 pr - ok
-rj - 
+rj - ok
 rn - ok
 ro - ok
 rr - ok
