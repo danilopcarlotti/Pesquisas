@@ -7,4 +7,5 @@ crawlers/common/__pycache__/
 crawlers/__pycache__/
 __pycache__/
 crawlers/geckodriver.log
+crawlers/diarios.sh
 server/conexao.py
