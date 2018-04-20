@@ -9,3 +9,4 @@ __pycache__/
 crawlers/geckodriver.log
 crawlers/diarios.sh
 server/conexao.py
+rascunhos.py
