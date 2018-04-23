@@ -21,23 +21,10 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 		self.botao_pesquisar = '//*[@id="pbSubmit"]'
 		self.botao_proximo_ini = '//*[@id="paginacaoSuperior-A"]/table/tbody/tr[1]/td[2]/div/a[5]'
 		self.botao_proximo = '//*[@id="paginacaoSuperior-A"]/table/tbody/tr[1]/td[2]/div/a[6]'
-		self.tabela_colunas = 'justica_estadual.jurisprudencia_sp (ementas)'
+		self.tabela_colunas = 'justica_estadual.jurisprudencia_sp_juri (ementas)'
 		self.tabela_colunas_1_inst = 'justica_estadual.jurisprudencia_sp_1_inst (sentencas)'
 		self.link_esaj = 'https://esaj.tjsp.jus.br/cjsg/getArquivo.do?cdAcordao=%s&cdForo=%s'
 
-	def capture_image(self, driver):
-		driver.get('https://esaj.tjsp.jus.br/cjsg/getArquivo.do?cdAcordao=5177907&cdForo=0')
-		time.sleep(2)
-		source = driver.page_source
-		try:
-			captcha_image = re.search(r'url\(&quot\;(.*?)&quot',source,re.I | re.DOTALL).group(1)
-			urllib.request.urlretrieve(captcha_image,'imagem.png')
-			i = image_to_txt()
-			return i.captcha_image_to_txt()
-		except Exception as e:
-			print(e)
-			return False
-	
 	def download_1_inst(self,data_ini, data_fim, termo = 'a'):
 		botao_proximo = '//*[@id="resultados"]/table[1]/tbody/tr[1]/td[2]/div/a[6]'
 		botao_proximo_ini = '//*[@id="resultados"]/table[1]/tbody/tr[1]/td[2]/div/a[5]'
@@ -73,7 +60,7 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 		driver.close()
 
 	def download_acordao_sp(self,dados_baixar):
-		crawler_jurisprudencia_tj.download_pdf_acordao_captcha_image(self,dados_baixar,'//*[@id="valorCaptcha"]','//*[@id="pbEnviar"]',self.capture_image)
+		crawler_jurisprudencia_tj.download_pdf_acordao_captcha_image(self,dados_baixar,'//*[@id="valorCaptcha"]','//*[@id="pbEnviar"]','sp_2_inst')
 		subprocess.Popen('mv %s/sp_2_inst_*.pdf %s/sp_2_inst' % (path,path), shell=True)
 
 	def parse_sp_dados_1_inst(self,texto,cursor):
@@ -100,26 +87,29 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 			except:
 				pass
 		
-	def parse_sp_pdf(self,lista_arquivos = None):
+	def parse_sp_dados_2_inst(self, cursor, lista_arquivos = None):
 		if not lista_arquivos:
 			lista_arquivos = os.listdir(path+'/sp_2_inst')
 		p = pdf_to_text()
-		dados = []
 		for arq in lista_arquivos:
 			try:
 				if re.search(r'\.pdf',arq):
-					id_arq = arq.split('sp_2_inst_')
-					id_arq = id_arq[1][:-4]
-					texto = p.convert_pdfminer(path+'/sp_2_inst/'+arq)
-					# numero,data_julgamento = self.parse_sp_dados_1_inst(texto)
-					dados.append(texto,numero,data_julgamento)
+					texto = p.convert_pdfminer(path+'/sp_2_inst/'+arq).strip().replace('\\','').replace('/','').replace('"','')
+					tribunal = 'sp'
+					numero = busca(r'[\d\.-]{15,25}',texto,ngroup=0)
+					polo_ativo = busca(r'apelante\s*?\:(.*?)\n',texto, args=re.I)
+					polo_passivo = busca(r'apelado\s*?\:(.*?)\n',texto, args=re.I)
+					if polo_ativo != '' and polo_passivo != '':
+						cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst_juri (tribunal, numero, texto_decisao, polo_ativo, polo_passivo) values ("%s","%s","%s","%s","%s");' % (tribunal, numero, texto, polo_ativo, polo_passivo))
 			except Exception as e:
 				print(arq)
 				print(e)
-		return dados
+				# print(numero)
 
 def main():
 	c = crawler_jurisprudencia_tjsp()
+	cursor = cursorConexao()
+	c.parse_sp_dados_2_inst(cursor)
 
 	# print('comecei ',c.__class__.__name__)
 	# try:
@@ -138,13 +128,13 @@ def main():
 	# except Exception as e:
 	# 	print(e)
 
-	cursor = cursorConexao()
-	for i in range(0,1500000,1000):
-		print(1500000-i)
-		cursor.execute('SELECT sentencas FROM justica_estadual.jurisprudencia_sp_1_inst limit %s,1000;' % str(i))
-		dados = cursor.fetchall()
-		for dado in dados:
-			c.parse_sp_dados_1_inst(dado[0], cursor)
+	# cursor = cursorConexao()
+	# for i in range(0,1500000,1000):
+	# 	print(1500000-i)
+	# 	cursor.execute('SELECT sentencas FROM justica_estadual.jurisprudencia_sp_1_inst limit %s,1000;' % str(i))
+	# 	dados = cursor.fetchall()
+	# 	for dado in dados:
+	# 		c.parse_sp_dados_1_inst(dado[0], cursor)
 
 	# cursor = cursorConexao()
 	# cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_sp limit 10;')
