@@ -1,10 +1,13 @@
-import sys, re, time, urllib.request
-from crawlerJus import crawlerJus
 from bs4 import BeautifulSoup
+from common.conexao_local import cursorConexao
+from common.download_path import path
+from common_nlp.parse_texto import busca
+from common_nlp.pdf_to_text import pdf_to_text
+from crawlerJus import crawlerJus
 from datetime import date
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from common.conexao_local import cursorConexao
+import sys, re, time, urllib.request, os
 
 class crawler_jurisprudencia_tjrj(crawlerJus):
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância do Rio de Janeiro"""
@@ -60,19 +63,28 @@ class crawler_jurisprudencia_tjrj(crawlerJus):
 					break
 		driver.close()
 
-	def parser_acordaos(self, texto, cursor, pdf_class):
+	def parser_acordaos(self, arquivo, cursor, pdf_class):
 		texto = pdf_class.convert_pdfminer(arquivo).replace('\\','').replace('/','').replace('"','')
-		numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', texto)
-		julgador = busca(r'\n\s*?RELATOR.*?\:(.*?)\n', texto)
+		numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', texto, ngroup=0)
+		julgador = busca(r'\n\s*?RELATOR.*?\:(.*?)\n', texto, args=re.I)
 		data_decisao = busca(r'\n\s*?Rio de Janeiro, (.*?)\.', texto)
 		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, julgador, texto_decisao) values ("%s","%s","%s","%s","%s");' % ('rj',numero, data_decisao, julgador, texto))
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjrj()
-	print('comecei ',c.__class__.__name__)
-	try:
-		for l in c.lista_anos:
-			print(l,'\n')
-			c.download_tj(l,l)
-	except Exception as e:
-		print(e)
+
+	cursor = cursorConexao()
+	p = pdf_to_text()
+	for arq in os.listdir(path+'/rj_2_inst'):
+		try:
+			c.parser_acordaos(path+'/rj_2_inst/'+arq, cursor, p)
+		except:
+			print(arq)
+
+	# print('comecei ',c.__class__.__name__)
+	# try:
+	# 	for l in c.lista_anos:
+	# 		print(l,'\n')
+	# 		c.download_tj(l,l)
+	# except Exception as e:
+	# 	print(e)

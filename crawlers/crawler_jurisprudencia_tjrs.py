@@ -1,9 +1,11 @@
-import sys, re, time
-from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from bs4 import BeautifulSoup
+from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
+from crawlerJus import crawlerJus
+from common_nlp.parse_texto import busca
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from common.conexao_local import cursorConexao
+import sys, re, time
 
 class crawler_jurisprudencia_tjrs():
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância do Rio Grande do Sul"""
@@ -56,25 +58,53 @@ class crawler_jurisprudencia_tjrs():
 				driver.close()
 				return
 
+
+	def download_2_inst(self, links):
+		crawler = crawlerJus()
+		for link in links:
+			texto = crawler.baixa_texto_html(link).strip().replace('\\','').replace('/','').replace('"','')
+
+	
+	def parser_acordaos(self,links):
+		cursor = cursorConexao()
+		crawler = crawlerJus()
+		contador = 1
+		for id_p, link in links:
+			try:
+				texto = crawler.baixa_texto_html(link).strip().replace('\\','').replace('/','').replace('"','')
+				if texto != '':
+					numero = busca(r'\n?Nº\s*?(.*?)\n', texto)
+					cursor.execute('INSERT INTO justica_estadual.jurisprudencia_rs_2 (numero, texto_decisao) values ("%s","%s");' % (numero, texto))
+				print(contador)
+				contador += 1
+			except Exception as e:
+				print(id_p,e)
+
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjrs()
-	print('comecei ',c.__class__.__name__)
-	try:
-		for l in range(1,len(c.lista_anos)):
-			print(c.lista_anos[l],'\n')
-			for m in range(len(c.lista_meses)):
-				for i in range(1,8):
-					try:
-						c.download_tj('0'+str(i)+c.lista_meses[m]+c.lista_anos[l],'0'+str(i+1)+c.lista_meses[m]+c.lista_anos[l])
-					except Exception as e:
-						print(e)		
-				for i in range(10,27):
-					try:
-						c.download_tj(str(i)+c.lista_meses[m]+c.lista_anos[l],str(i+1)+c.lista_meses[m]+c.lista_anos[l])
-					except Exception as e:
-						print(e)
-	except Exception as e:
-		print('finalizei o ano com erro ',e)
+
+	cursor = cursorConexao()
+	cursor.execute('SELECT id, ementas from justica_estadual.jurisprudencia_rs;')
+	links = cursor.fetchall()
+	c.parser_acordaos(links)
+
+	# print('comecei ',c.__class__.__name__)
+	# try:
+	# 	for l in range(1,len(c.lista_anos)):
+	# 		print(c.lista_anos[l],'\n')
+	# 		for m in range(len(c.lista_meses)):
+	# 			for i in range(1,8):
+	# 				try:
+	# 					c.download_tj('0'+str(i)+c.lista_meses[m]+c.lista_anos[l],'0'+str(i+1)+c.lista_meses[m]+c.lista_anos[l])
+	# 				except Exception as e:
+	# 					print(e)		
+	# 			for i in range(10,27):
+	# 				try:
+	# 					c.download_tj(str(i)+c.lista_meses[m]+c.lista_anos[l],str(i+1)+c.lista_meses[m]+c.lista_anos[l])
+	# 				except Exception as e:
+	# 					print(e)
+	# except Exception as e:
+	# 	print('finalizei o ano com erro ',e)
 
 		
 

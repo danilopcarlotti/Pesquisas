@@ -46,13 +46,16 @@ class crawler_jurisprudencia_tjto():
 def main():
 	c = crawler_jurisprudencia_tjto()
 	cursor = cursorConexao()
-	cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_to where id > 67164 limit 10000000;')
-	lista_links = cursor.fetchall()
-	for i,l in lista_links:
-		try:
-			c.download_acordao_to(str(i),l)
-		except Exception as e:
-			print(e,i)
+
+	
+
+	# cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_to where id > 67164 limit 10000000;')
+	# lista_links = cursor.fetchall()
+	# for i,l in lista_links:
+	# 	try:
+	# 		c.download_acordao_to(str(i),l)
+	# 	except Exception as e:
+	# 		print(e,i)
 	# print('comecei ',c.__class__.__name__)
 	# try:
 	# 	c.download_tj()

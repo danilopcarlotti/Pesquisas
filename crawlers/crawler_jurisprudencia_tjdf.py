@@ -2,6 +2,8 @@ from bs4 import BeautifulSoup
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from crawlerJus import crawlerJus
 from common.conexao_local import cursorConexao
+from common.download_path import path
+from common_nlp.parse_texto import busca
 from selenium import webdriver
 import sys, re, os, time, docx2txt
 
@@ -38,16 +40,13 @@ class crawler_jurisprudencia_tjdf(crawler_jurisprudencia_tj):
 				print(e)
 
 	def parser_acordaos(self, arquivo, cursor):
-		text = docx2txt.process(arquivo).replace('\\','').replace('/','').replace('"','')
+		texto = docx2txt.process(arquivo).replace('\\','').replace('/','').replace('"','')
 		numero = busca(r'\n\s*?N.\s*?Processo\s*?\:(.*?)\n', texto)
-		julgador = busca(r'\n\s*?Relator Des.\s*?\:(.*?)\n', texto)		
-		data_decisao = busca(r'\n\s*?Brasília \(DF\)\, (.*?)\.', texto)
-		orgao_julgador = busca(r'\n\s*?Órgãos\s*?\:(.*?)\n', texto)
-		print(numero)
-		print(julgador)
-		print(data_decisao)
-		print(orgao_julgador)
-		return
+		if numero == '':
+			numero = busca(r'\n\s*?Processo N.\s*?\n\n.*?(\d{10,30})', texto)
+		julgador = busca(r'\n\s*?Desembargador(.*?)\n', texto)		
+		data_decisao = busca(r'\n\s*?Brasília \(DF\)\, (.*?)\n', texto)
+		orgao_julgador = busca(r'\n\s*?Órgão.*?\n\n(.*?)\n', texto) 
 		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s");' % ('df',numero, data_decisao, orgao_julgador, julgador, texto))
 
 def main():
@@ -55,8 +54,11 @@ def main():
 
 	cursor = cursorConexao()
 	for arq in os.listdir(path+'/df_2_inst'):
-		c.parser_acordaos(path+'/df_2_inst/'+arq, cursor)
-		break
+		if re.search(r'docx',arq):
+			try:
+				c.parser_acordaos(path+'/df_2_inst/'+arq, cursor)
+			except Exception as e:
+				print(arq, e)
 
 	# print('comecei ',c.__class__.__name__)
 	# try:

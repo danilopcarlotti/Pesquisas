@@ -11,9 +11,9 @@ class label_maker():
 		self.fileName = fileName
 		self.output = output
 
-	def csv_iterator(self):
+	def csv_iterator(self, delimiter=',', quotechar='"'):
 		csvfile = open(self.fileName)
-		csvIterator = csv.reader(csvfile, delimiter=',', quotechar='"')
+		csvIterator = csv.reader(csvfile, delimiter=delimiter, quotechar=quotechar)
 		return csvIterator
 
 	def output_labels(self):
