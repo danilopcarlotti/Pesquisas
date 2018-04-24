@@ -4,53 +4,7 @@
 import csv, io, sys
 from conexao import cursorConexao
 from flask import *
-
-class Queries():
-  def __init__(self):
-    self.stf_query = 'SELECT processo, polo_ativo, polo_passivo, autuacao, numero_origem, relator, ramo_direito, assunto, tribunal_origem, texto_decisao FROM stf.dados_processo inner join stf.decisoes on dados_processo.id = decisoes.id_processo where lower(texto_decisao) like "%{}%" limit 10000;'
-    self.stf_campos = [['processo','polo_ativo','polo_passivo','autuacao','numero_origem','relator','ramo_direito','assunto','tribunal_origem','texto_decisao']]
-    self.stj_query = 'SELECT texto_decisao FROM stf.decisoes where lower(texto_decisao) like "%{}%" limit 10000;'
-    self.justica_estadual = 'SELECT texto FROM justica_estadual.{} where lower(texto) like "%{}%" limit 10000;'
-    self.dicionario_tribunais = {'stf':[self.stf_query,self.stf_campos]}
-
-  def query(self,termos,tribunais=None,tribunal=None):
-    if tribunal:
-      dados = []
-      cursor = cursorConexao()
-      si = io.StringIO()
-      cw = csv.writer(si)
-      termos_parsed = self.parse_query(termos)
-      if termos_parsed:
-        cursor.execute(self.dicionario_tribunais[tribunal][0].split(' where ')[0]+termos_parsed)
-      else:
-        cursor.execute(self.dicionario_tribunais[tribunal][0].format(termos))
-      dados.extend(list(cursor.fetchall()))
-      cw.writerows(self.dicionario_tribunais[tribunal][1])
-      cw.writerows(dados)
-      output = make_response(si.getvalue())
-      output.headers["Content-Disposition"] = "attachment; filename=relatorio_insper_cnj.csv"
-      output.headers["Content-type"] = "text/csv"
-      return output
-
-  def parse_query(self, texto, field='texto_decisao'):
-    text = texto.lower()
-    if len(text.split(' e ')) > 1 or len(text.split(' ou ')) > 1:
-      texto_e = text.split(' e ')
-      if len(texto_e) > 1:
-        texto_final = ' where ('
-        for i in range(len(texto_e)-1):
-          texto_final += 'lower({}) like "%{}%" and '.format(field,texto_e[i])
-        texto_final += 'lower({}) like "%{}%") limit 10000;'.format(field,texto_e[-1])
-        return texto_final
-      texto_ou = text.split(' ou ')
-      if len(texto_ou) > 1:
-        texto_final = ' where ('
-        for i in range(len(texto_ou)-1):
-          texto_final += 'lower({}) like "%{}%" or '.format(field,texto_ou[i])
-        texto_final += 'lower({}) like "%{}%") limit 10000;'.format(field,texto_ou[-1])
-        return texto_final
-    else:
-      return False
+from queries import Queries
 
 app = Flask(__name__)
 
@@ -60,15 +14,38 @@ def pesquisa():
     try:
       termos = request.form['query'].lower()
       q = Queries()
-      return q.query(termos,tribunal='stf')
+      return q.query_operadores(termos,tribunal='stf')
     except Exception as e:
       return e
   else:
     return 'Preencha o formulário corretamente, por favor.'
 
+@app.route('/classificacao',methods = ['POST', 'GET'])
+def classificacao():
+    q = Queries()
+    dados = q.query_padrao()
+    session['id_p'] = dados[0][0]
+    id_p = dados[0][0]
+    tribunal = dados[0][1]
+    texto_decisao = dados[0][2]
+    return render_template('classificacao.html', texto_decisao = texto_decisao, id_p = id_p, tribunal = tribunal)
+
+@app.route('/classificacao_texto',methods = ['POST'])
+def classificacao_texto():
+   if request.method == 'POST':
+      id_p = session.get('id_p', None)
+      classificacao = request.form['classe']
+      cursor = cursorConexao()
+      cursor.execute('UPDATE jurisprudencia_2_inst.jurisprudencia_2_inst set classificacao = "%s" where id = "%s"' % (classificacao, id_p))
+      return redirect(url_for('classificacao'))
+      # return render_template('classificacao_texto.html', classe = classificacao, id_p = id_p)
+   else:
+      return redirect(url_for('failure'))
+
 @app.route('/')
 def main_page():
-  return render_template('login.html')
+  return redirect(url_for('classificacao'))
+  # return render_template('login.html')
 
 @app.route('/index',methods = ['POST', 'GET'])
 def index():
@@ -79,4 +56,6 @@ def index():
       return redirect(url_for('failure'))
 
 if __name__ == '__main__':
+  app.secret_key = 'super secret key'
+  app.config['SESSION_TYPE'] = 'filesystem'
   app.run(debug=True)

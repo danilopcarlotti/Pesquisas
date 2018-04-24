@@ -128,6 +128,8 @@ class crawler_jurisprudencia_tj(crawlerJus):
 		driver.find_element_by_xpath(pesquisa_livre).send_keys(termo)
 		driver.find_element_by_xpath(data_julg_iniXP).send_keys(data_julg_ini)
 		driver.find_element_by_xpath(data_julg_fimXP).send_keys(data_julg_fim)
+		if input('Faça a sua mágica:'):
+			pass
 		driver.find_element_by_xpath(botao_pesquisar).click()
 
 	def download_tj_ESAJ(self,superC,data_julg_ini,data_julg_fim,termo='acordam'):
