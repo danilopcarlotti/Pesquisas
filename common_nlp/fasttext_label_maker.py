@@ -11,7 +11,7 @@ class label_maker():
 		self.fileName = fileName
 		self.output = output
 
-	def csv_iterator(self, delimiter=',', quotechar='"'):
+	def csv_iterator(self, delimiter=';', quotechar='"'):
 		csvfile = open(self.fileName)
 		csvIterator = csv.reader(csvfile, delimiter=delimiter, quotechar=quotechar)
 		return csvIterator
@@ -21,11 +21,12 @@ class label_maker():
 		csv_iterator = self.csv_iterator()
 		next(csv_iterator)
 		for row in csv_iterator:
-			labels_list = row[0].split(',')
-			labels_row = ''
-			for l in labels_list:
-				labels_row += '__label__'+l+' '
-			labels.write(labels_row+row[1]+'\n')
+			if row[0] != '':
+				labels_list = row[0].split(',')
+				labels_row = ''
+				for l in labels_list:
+					labels_row += '__label__'+l.replace(' ','')+' '
+				labels.write(labels_row+row[1]+'\n')
 		labels.close()
 
 if __name__ == '__main__':
