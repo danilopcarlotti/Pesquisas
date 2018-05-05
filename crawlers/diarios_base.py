@@ -21,53 +21,53 @@ re_num_stf_stj = r'\d.*?( -)'
 re_num_trf_trt =r'\d{7}\s*?-\d{2}\s*?\.\d{4}\s*?\.\d{1}\s*?\.\d{2}\s*?\.\d{4}|\d{7}\s*?-\d{2}\s*?\.\d{4}\s*?\.\d{3}\s*?\.\d{4}|\d{15}'
 
 diarios = {
-      'ac':[r'{}(.*?){}'.format(re_final_pb,re_final_pb),re_num_cnj],
-      'al':[r'\nADV:(.*?)\nADV:',re_num_cnj],
+	'ac':[r'{}(.*?){}'.format(re_final_pb,re_final_pb),re_num_cnj],
+	'al':[r'\nADV:(.*?)\nADV:',re_num_cnj],
 	'am':[r'{}(.*?){}'.format(re_final_am,re_final_am),re_num_cnj],
-      'ap':[r'(\nDISTRIBUIÇÃO|\nN. do processo\:|\nVARA\:)(.*?)(\nDISTRIBUIÇÃO|\nN. do processo\:|\nVARA\:)',re_num_cnj],
+	'ap':[r'(\nDISTRIBUIÇÃO|\nN. do processo\:|\nVARA\:)(.*?)(\nDISTRIBUIÇÃO|\nN. do processo\:|\nVARA\:)',re_num_cnj],
 	'ba':[r'(DIREITO (?=\d{7}-\d{2}\.)|\nIntimação)(.*?)(DIREITO (?=\d{7}-\d{2}\.)|\nIntimação)',re_num_cnj],
-      'ce':[r'{}(.*?){}'.format(re_final_ce,re_final_ce),re_num_cnj],
-      'df':[r'\n\d{3}\. (?=\d{4})(.*?)\d{3}\. (?=\d{4})',re_num_cnj],
-      'go':[r'(\n\s*?PROTOCOLO\s*?\:|\nNR\. PROTOCOLO|\n\s*?PROCESSO\s*?\:)(.*?)(\n\s*?PROTOCOLO\s*?\:|\nNR\. PROTOCOLO|\n\s*?PROCESSO\s*?\:)',re_num_cnj],
-      'ma':[r'{}(.*?){}'.format(re_final_ma,re_final_ma),re_num_cnj],
-      'mg':[r'\n\d{5} - (?=\d{7})(.*?)\n\d{5} - (?=\d{7})',re_num_cnj],
-      'ms':[r'\nProcesso (?=\d+)(.*?)\nProcesso (?=\d+)',re_num_cnj],
-      'mt':[r'(\nProtocolo|\nIntimação)(.*?)(\nProtocolo|\nIntimação)',re_num_cnj],
-      'pa':[r'\nPROCESSO:(.*?)\nPROCESSO:',re_num_cnj],
-      'pb':[r'{}(.*?){}'.format(re_final_pb,re_final_pb),re_num_cnj],
-      'pe':[r'(\nProtocolo|\nProcesso)(.*?)(\nProtocolo|\nProcesso)',re_num_cnj],
-      'pi':[r'{}(.*?){}'.format(re_final_pi,re_final_pi),re_num_cnj],
-      'pr':[r'\n\d{1,4} \. Processo[\:/](.*?)\n\d{1,4} \. Processo[\:/]',re_num_cnj],
-      'rj':[r'\nProc\.(.*?)\nProc\.',re_num_cnj],
-      'rn':[r'{}(.*?){}'.format(re_final_rn,re_final_rn),re_num_cnj],
-      'ro':[r'{}(.*?){}'.format(re_final_ro,re_final_ro),re_num_cnj],
-      'rr':[r'\n\d{3} - (?=\d{7})(.*?)\n\d{3} - (?=\d{7})',re_num_cnj],
-      'rs':[r'(\nEDITAL DE|\n(?=\d{7})-|\n.*?CNJ.*?\d{5,7}-?)(.*?)(\nEDITAL DE|\n(?=\d{7})-|\n.*?CNJ.*?\d{5,7}-?)',re_num_cnj],
-      'sc':[r'{}(.*?){}'.format(re_final_sc,re_final_sc),re_num_cnj],
-      'se':[r'(\nNO\. PROCESSO|\nNO\. ACORDÃO|\nPROC\.\:)(.*?)(\nNO\. PROCESSO|\nNO\. ACORDÃO|\nPROC\.\:)',re_num_cnj],
-      'sp':[r'(\n\s*Processo|\n\s*?N.\s*(?=\d{7}|\n(?=.*)Processo D\s*ig\s*i\s*ta\s*l))(.*?)(\n\s*Processo|\n\s*?N.\s*(?=\d{7}|\n(?=.*)Processo D\s*ig\s*i\s*ta\s*l))',re_num_cnj],
-      'stf':[r'{}(.*?){}'.format(re_final_stf,re_final_stf),re_num_stf_stj],
-      'stj':[r'{}(.*?){}'.format(re_final_stj,re_final_stj),re_num_stf_stj],
-      'to':[r'{}(.*?){}'.format(re_final_to,re_final_to),re_num_cnj],
-      'trf1':[r'{}(.*?){}'.format(re_final_trf4,re_final_trf4),re_num_trf_trt],
-      'trf2':[r'{}(.*?){}'.format(re_final_trf4,re_final_trf4),re_num_trf_trt],
-      'trf3':[r'{}(.*?){}'.format(re_final_trf4,re_final_trf4),re_num_trf_trt],
-      'trf4':[r'{}(.*?){}'.format(re_final_trf4,re_final_trf4),re_num_trf_trt],
-      'trf5':[r'(\nPROTOCOLO N|\n\d{4}\s*?\.\s*Processo)(.*?)(\nPROTOCOLO N|\n\d{4}\s*?\.\s*Processo)',re_num_trf_trt],
-      'trt':[r'(\nProcesso Nº|\nPROCESSO Nº|\nProcesso RO|\nPROCESSO N\.)(.*?)(\nProcesso Nº|\nPROCESSO Nº|\nProcesso RO|\nPROCESSO N\.)',re_num_trf_trt]
+	'ce':[r'{}(.*?){}'.format(re_final_ce,re_final_ce),re_num_cnj],
+	'df':[r'\n\d{3}\. (?=\d{4})(.*?)\d{3}\. (?=\d{4})',re_num_cnj],
+	'go':[r'(\n\s*?PROTOCOLO\s*?\:|\nNR\. PROTOCOLO|\n\s*?PROCESSO\s*?\:)(.*?)(\n\s*?PROTOCOLO\s*?\:|\nNR\. PROTOCOLO|\n\s*?PROCESSO\s*?\:)',re_num_cnj],
+	'ma':[r'{}(.*?){}'.format(re_final_ma,re_final_ma),re_num_cnj],
+	'mg':[r'\n\d{5} - (?=\d{7})(.*?)\n\d{5} - (?=\d{7})',re_num_cnj],
+	'ms':[r'\nProcesso (?=\d+)(.*?)\nProcesso (?=\d+)',re_num_cnj],
+	'mt':[r'(\nProtocolo|\nIntimação)(.*?)(\nProtocolo|\nIntimação)',re_num_cnj],
+	'pa':[r'\nPROCESSO:(.*?)\nPROCESSO:',re_num_cnj],
+	'pb':[r'{}(.*?){}'.format(re_final_pb,re_final_pb),re_num_cnj],
+	'pe':[r'(\nProtocolo|\nProcesso)(.*?)(\nProtocolo|\nProcesso)',re_num_cnj],
+	'pi':[r'{}(.*?){}'.format(re_final_pi,re_final_pi),re_num_cnj],
+	'pr':[r'\n\d{1,4} \. Processo[\:/](.*?)\n\d{1,4} \. Processo[\:/]',re_num_cnj],
+	'rj':[r'\nProc\.(.*?)\nProc\.',re_num_cnj],
+	'rn':[r'{}(.*?){}'.format(re_final_rn,re_final_rn),re_num_cnj],
+	'ro':[r'{}(.*?){}'.format(re_final_ro,re_final_ro),re_num_cnj],
+	'rr':[r'\n\d{3} - (?=\d{7})(.*?)\n\d{3} - (?=\d{7})',re_num_cnj],
+	'rs':[r'(\nEDITAL DE|\n(?=\d{7})-|\n.*?CNJ.*?\d{5,7}-?)(.*?)(\nEDITAL DE|\n(?=\d{7})-|\n.*?CNJ.*?\d{5,7}-?)',re_num_cnj],
+	'sc':[r'{}(.*?){}'.format(re_final_sc,re_final_sc),re_num_cnj],
+	'se':[r'(\nNO\. PROCESSO|\nNO\. ACORDÃO|\nPROC\.\:)(.*?)(\nNO\. PROCESSO|\nNO\. ACORDÃO|\nPROC\.\:)',re_num_cnj],
+	'sp':[r'(\n\s*Processo|\n\s*?N.\s*(?=\d{7}|\n(?=.*)Processo D\s*ig\s*i\s*ta\s*l))(.*?)(\n\s*Processo|\n\s*?N.\s*(?=\d{7}|\n(?=.*)Processo D\s*ig\s*i\s*ta\s*l))',re_num_cnj],
+	'stf':[r'{}(.*?){}'.format(re_final_stf,re_final_stf),re_num_stf_stj],
+	'stj':[r'{}(.*?){}'.format(re_final_stj,re_final_stj),re_num_stf_stj],
+	'to':[r'{}(.*?){}'.format(re_final_to,re_final_to),re_num_cnj],
+	'trf1':[r'{}(.*?){}'.format(re_final_trf4,re_final_trf4),re_num_trf_trt],
+	'trf2':[r'{}(.*?){}'.format(re_final_trf4,re_final_trf4),re_num_trf_trt],
+	'trf3':[r'{}(.*?){}'.format(re_final_trf4,re_final_trf4),re_num_trf_trt],
+	'trf4':[r'{}(.*?){}'.format(re_final_trf4,re_final_trf4),re_num_trf_trt],
+	'trf5':[r'(\nPROTOCOLO N|\n\d{4}\s*?\.\s*Processo)(.*?)(\nPROTOCOLO N|\n\d{4}\s*?\.\s*Processo)',re_num_trf_trt],
+	'trt':[r'(\nProcesso Nº|\nPROCESSO Nº|\nProcesso RO|\nPROCESSO N\.)(.*?)(\nProcesso Nº|\nPROCESSO Nº|\nProcesso RO|\nPROCESSO N\.)',re_num_trf_trt]
 	}
 
 if __name__ == '__main__':
-      cursor = cursorConexao()
-      for a in os.listdir(path):
-      	for k,v in diarios.items():
-                  if re.search(k+r"\d+\.txt",a):
-      			diario = '\n'
-      			for line in open(a,'r'):
-      				diario += line
-                        publicacoes = re.findall(v[0],diario)
-                        for texto in publicacoes:
-                              texto = texto.strip().replace('\\','').replace('/','').replace('"','')
-                              numero = busca(v[1],texto,ngroup=0)
-                              cursor.execute('INSERT INTO XXX (tribunal, numero, texto) values ("%s","%s","%s")' % (k, numero, texto))
-      			break
+	cursor = cursorConexao()
+	for a in os.listdir(path):
+		for k,v in diarios.items():
+			if re.search(k+r"\d+\.txt",a):
+				diario = '\n'
+				for line in open(a,'r'):
+					diario += line
+				publicacoes = re.findall(v[0],diario,re.DOTALL)
+				for texto in publicacoes:
+                              if len(texto[1]) > 200:
+      					texto = texto[1].strip().replace('\\','').replace('/','').replace('"','')
+      					numero = busca(v[1],texto,ngroup=0)
+      					cursor.execute('INSERT INTO diarios.publicacoes_diarias (tribunal, numero, texto) values ("%s","%s","%s")' % (k, numero, texto))
