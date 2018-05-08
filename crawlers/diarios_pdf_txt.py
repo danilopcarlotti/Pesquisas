@@ -1,6 +1,13 @@
 from common.download_path_diarios import path
-from pdf_to_text import pdf_to_text
-import time, os
+from common_nlp.pdf_to_text import pdf_to_text
+import time, os, datetime
+
+data = datetime.date.today().strftime("%Y%m%d")
+ano = data[:4]
+mes = data[4:6]
+dia = data[6:]
+if len(dia)==1:
+    dia = "0" + dia
 
 arq_go = open("go"+dia+mes+ano+".txt",'a',encoding="utf-8")
 arq_trf1 = open("trf1"+dia+mes+ano+".txt",'a',encoding="utf-8")
