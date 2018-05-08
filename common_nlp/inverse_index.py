@@ -6,5 +6,6 @@ class inverted_index(textNormalization):
 	def __init__(self):
 		self.inv_index = collections.defaultdict(set)
 
-i = inverted_index()
-print(i.tokenizer())
+if __name__ == '__main__':
+	i = inverted_index()
+	print(i.tokenizer())

@@ -1,18 +1,14 @@
 from common_nlp.textNormalization import textNormalization
 from crawlers.common.conexao_local import cursorConexao
+import sys
 
-cursor = cursorConexao()
-tn = textNormalization()
-
-# cursor.execute('SELECT id, recorrido from stj.dados_processo;')
-# metadados = cursor.fetchall()
-# polo_passivo = tn.dicionario_invertido_id_texto(metadados)
-# for k,v in polo_passivo.items():
-# 	cursor.execute('INSERT INTO stj.indice_polo_passivo (palavra,id_processos) values ("%s","%s");' % (k,v))
-
-# A REALIZAR
-cursor.execute('SELECT id_processo, voto from stj.votos;')
-metadados = cursor.fetchall()
-votos = tn.dicionario_invertido_id_texto(metadados)
-for k,v in votos.items():
-	cursor.execute('INSERT INTO stj.indice_votos (palavra,id_processos) values ("%s","%s");' % (k,v))
+if __name__ == '__main__':
+	tabela_inicial = sys.argv[1]
+	tabela_final = sys.argv[2]
+	cursor = cursorConexao()
+	tn = textNormalization()
+	cursor.execute('SELECT id, texto from %s where texto is not null;' % (tabela_inicial,))
+	dados = cursor.fetchall()
+	decisoes = tn.dicionario_invertido_id_texto(dados)
+	for k,v in decisoes.items():
+		cursor.execute('INSERT INTO %s (palavra,id_texto) values ("%s","%s");' % (tabela_final, k, v))
