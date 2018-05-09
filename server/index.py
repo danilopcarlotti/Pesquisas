@@ -8,17 +8,6 @@ from queries import Queries
 
 app = Flask(__name__)
 
-@app.route('/pesquisa', methods = ['POST', 'GET'])
-def pesquisa():
-  if request.method == 'POST':
-    try:
-      termos = request.form['query'].lower()
-      q = Queries()
-      return q.query_operadores(termos,tribunal='stf')
-    except Exception as e:
-      return e
-  else:
-    return 'Preencha o formulário corretamente, por favor.'
 
 @app.route('/classificacao',methods = ['POST', 'GET'])
 def classificacao():
@@ -42,11 +31,6 @@ def classificacao_texto():
    else:
       return redirect(url_for('failure'))
 
-@app.route('/')
-def main_page():
-  return redirect(url_for('classificacao'))
-  # return render_template('login.html')
-
 @app.route('/index',methods = ['POST', 'GET'])
 def index():
    if request.method == 'POST' and request.form['senha'] == 'senha':
@@ -54,6 +38,23 @@ def index():
       return redirect(url_for('index',name = user))
    else:
       return redirect(url_for('failure'))
+
+@app.route('/')
+def main_page():
+  return redirect(url_for('classificacao'))
+  # return render_template('login.html')
+
+@app.route('/pesquisa', methods = ['POST', 'GET'])
+def pesquisa():
+  if request.method == 'POST':
+    try:
+      termos = request.form['query'].lower()
+      q = Queries()
+      return q.query_operadores(termos,tribunal='stf')
+    except Exception as e:
+      return e
+  else:
+    return 'Preencha o formulário corretamente, por favor.'
 
 if __name__ == '__main__':
   app.secret_key = 'super secret key'
