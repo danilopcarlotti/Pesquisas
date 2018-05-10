@@ -46,15 +46,14 @@ def main_page():
 
 @app.route('/pesquisa', methods = ['POST', 'GET'])
 def pesquisa():
-  if request.method == 'POST':
-    try:
-      termos = request.form['query'].lower()
-      q = Queries()
-      return q.query_operadores(termos,tribunal='stf')
-    except Exception as e:
-      return e
-  else:
-    return 'Preencha o formulário corretamente, por favor.'
+   if request.method == 'POST':
+      try:
+         q = Queries()
+         return str(q.query_tribunais(request.form['query'],tribunal='segunda_inst'))
+      except Exception as e:
+         return e
+   else:
+      return 'Preencha o formulário corretamente, por favor.'
 
 if __name__ == '__main__':
   app.secret_key = 'super secret key'
