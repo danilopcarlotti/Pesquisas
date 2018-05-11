@@ -13,8 +13,8 @@ app = Flask(__name__)
 def classificacao():
     random.seed()
     q = Queries()
-    query_txt = 'SELECT id, tribunal, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst where classificacao is not null limit 1";'
-    dados = q.query_padrao(tribunal='segunda_inst', query_text=query_txt)
+    query_txt = 'SELECT id, tribunal, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst where classificacao is not null limit 1;'
+    dados = q.query_padrao(query_text=query_txt)
     session['id_p'] = dados[0][0]
     id_p = dados[0][0]
     tribunal = dados[0][1]
