@@ -16,7 +16,7 @@ def classificacao():
     resultado = None
     while not resultado:
       id_aleatorio = random.randrange(1324911,5324911)
-      query_txt = 'SELECT id, tribunal, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst where classificacao is null and id = "%s";' % (str(id_aleatorio),)
+      query_txt = 'SELECT id, tribunal, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto_decisao) like "%saúde%" and classificacao is null and id = "{}";'.format(str(id_aleatorio))
       dados = q.query_padrao(query_text=query_txt)
       if dados:
         resultado = 1
