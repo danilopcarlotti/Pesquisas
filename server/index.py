@@ -7,18 +7,23 @@ from flask import *
 from queries import Queries
 
 app = Flask(__name__)
+random.seed()
 
 
 @app.route('/classificacao',methods = ['POST', 'GET'])
 def classificacao():
-    random.seed()
     q = Queries()
-    query_txt = 'SELECT id, tribunal, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst where classificacao is not null limit 1;'
-    dados = q.query_padrao(query_text=query_txt)
-    session['id_p'] = dados[0][0]
-    id_p = dados[0][0]
-    tribunal = dados[0][1]
-    texto_decisao = dados[0][2]
+    resultado = None
+    while not resultado:
+      id_aleatorio = random.randrange(1324911,5324911)
+      query_txt = 'SELECT id, tribunal, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst where classificacao is null and id = "%s";' % (str(id_aleatorio),)
+      dados = q.query_padrao(query_text=query_txt)
+      if dados:
+        resultado = 1
+        session['id_p'] = dados[0][0]
+        id_p = dados[0][0]
+        tribunal = dados[0][1]
+        texto_decisao = dados[0][2]
     return render_template('classificacao.html', texto_decisao = texto_decisao, id_p = id_p, tribunal = tribunal)
 
 @app.route('/classificacao_texto',methods = ['POST'])
