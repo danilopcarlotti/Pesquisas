@@ -67,7 +67,7 @@ if __name__ == '__main__':
 					diario += line
 				publicacoes = re.findall(v[0],diario,re.DOTALL)
 				for texto in publicacoes:
-                              if len(texto[1]) > 200:
-      					texto = texto[1].strip().replace('\\','').replace('/','').replace('"','')
-      					numero = busca(v[1],texto,ngroup=0)
-      					cursor.execute('INSERT INTO diarios.publicacoes_diarias (tribunal, numero, texto) values ("%s","%s","%s")' % (k, numero, texto))
+					if len(texto[1]) > 200:
+						texto = texto[1].strip().replace('\\','').replace('/','').replace('"','')
+						numero = busca(v[1],texto,ngroup=0)
+						cursor.execute('INSERT INTO diarios.publicacoes_diarias (tribunal, numero, texto) values ("%s","%s","%s")' % (k, numero, texto))
