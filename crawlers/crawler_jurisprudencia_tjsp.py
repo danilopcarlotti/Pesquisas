@@ -4,7 +4,7 @@ from common.conexao_local import cursorConexao
 from common.download_path import path
 from common.image_to_txt import image_to_txt
 from common_nlp.parse_texto import busca
-from common_nlp.pdf_to_text import pdf_to_text
+# from common_nlp.pdf_to_text import pdf_to_text
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -21,11 +21,11 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 		self.botao_pesquisar = '//*[@id="pbSubmit"]'
 		self.botao_proximo_ini = '//*[@id="paginacaoSuperior-A"]/table/tbody/tr[1]/td[2]/div/a[5]'
 		self.botao_proximo = '//*[@id="paginacaoSuperior-A"]/table/tbody/tr[1]/td[2]/div/a[6]'
-		self.tabela_colunas = 'justica_estadual.jurisprudencia_sp_juri (ementas)'
-		self.tabela_colunas_1_inst = 'justica_estadual.jurisprudencia_sp_1_inst (sentencas)'
+		self.tabela_colunas = 'justica_estadual.jurisprudencia_sp (ementas)'
+		self.tabela_colunas_1_inst = 'justica_estadual.jurisprudencia_sp_1_inst (sentenca)'
 		self.link_esaj = 'https://esaj.tjsp.jus.br/cjsg/getArquivo.do?cdAcordao=%s&cdForo=%s'
 
-	def download_1_inst(self,data_ini, data_fim, termo = 'a'):
+	def download_1_inst(self,data_ini, data_fim, termo = 'revisão e contrato e juros'):
 		botao_proximo = '//*[@id="resultados"]/table[1]/tbody/tr[1]/td[2]/div/a[6]'
 		botao_proximo_ini = '//*[@id="resultados"]/table[1]/tbody/tr[1]/td[2]/div/a[5]'
 		data_ini_xpath = '//*[@id="iddadosConsulta.dtInicio"]'
@@ -35,7 +35,7 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(link)
-		driver.find_element_by_xpath(pesquisa_xpath).send_keys('a')
+		driver.find_element_by_xpath(pesquisa_xpath).send_keys(termo)
 		driver.find_element_by_xpath(data_ini_xpath).send_keys(data_ini)
 		driver.find_element_by_xpath(data_fim_xpath).send_keys(data_fim)
 		driver.find_element_by_xpath(self.botao_pesquisar).click()
@@ -79,7 +79,7 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 				justica_gratuita = '1'
 			else:
 				justica_gratuita = '0'
-			cursor.execute('INSERT INTO jurisprudencia_1_inst.jurisprudencia_1_inst (tribunal, numero, assunto, classe, data_decisao, orgao_julgador, julgador, texto_decisao, polo_ativo, polo_passivo, comarca, justica_gratuita) values ("%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s")' % ('SP', numero, assunto, classe, data_disponibilizacao, foro, juiz, texto_decisao, requerente, requerido, comarca, justica_gratuita))
+			cursor.execute('INSERT INTO jurisprudencia_1_inst.jurisprudencia_1_inst_sp (tribunal, numero, assunto, classe, data_decisao, orgao_julgador, julgador, texto_decisao, polo_ativo, polo_passivo, comarca, justica_gratuita) values ("%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s")' % ('SP', numero, assunto, classe, data_disponibilizacao, foro, juiz, texto_decisao, requerente, requerido, comarca, justica_gratuita))
 		decisoes = re.split(r'\n\s*?\d+\s*?\-\s*?\n',texto)
 		for d in range(1,len(decisoes)):
 			try:
@@ -99,8 +99,7 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 					numero = busca(r'[\d\.-]{15,25}',texto,ngroup=0)
 					polo_ativo = busca(r'apelante\s*?\:(.*?)\n',texto, args=re.I)
 					polo_passivo = busca(r'apelado\s*?\:(.*?)\n',texto, args=re.I)
-					if polo_ativo != '' and polo_passivo != '':
-						cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst_juri (tribunal, numero, texto_decisao, polo_ativo, polo_passivo) values ("%s","%s","%s","%s","%s");' % (tribunal, numero, texto, polo_ativo, polo_passivo))
+					cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst_antonio (tribunal, numero, texto_decisao, polo_ativo, polo_passivo) values ("%s","%s","%s","%s","%s");' % (tribunal, numero, texto, polo_ativo, polo_passivo))
 			except Exception as e:
 				print(arq)
 				print(e)
@@ -108,26 +107,29 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 
 def main():
 	c = crawler_jurisprudencia_tjsp()
-	# cursor = cursorConexao()
-	# c.parse_sp_dados_2_inst(cursor)
+	cursor = cursorConexao()
+	c.parse_sp_dados_2_inst(cursor)
 
 	# print('comecei ',c.__class__.__name__)
 	# try:
 	# 	for l in range(len(c.lista_anos)):
-	# 		if int(c.lista_anos[l]) > 2015:
-	# 			print(c.lista_anos[l],'\n')
-	# 			for m in range(len(c.lista_meses)):
-	# 				try:
-	# 					if int(c.lista_anos[l]) == 2016:
-	# 						if int(c.lista_meses[m]) > 9:
-	# 							c.download_1_inst('01'+c.lista_meses[m]+c.lista_anos[l],'28'+c.lista_meses[m]+c.lista_anos[l])
-	# 					else:
-	# 						c.download_1_inst('01'+c.lista_meses[m]+c.lista_anos[l],'28'+c.lista_meses[m]+c.lista_anos[l])
-	# 				except Exception as e:
-	# 					print(e)
+	# 		print(c.lista_anos[l],'\n')
+	# 		for m in range(len(c.lista_meses)):
+	# 			try:
+	# 				c.download_1_inst('01'+c.lista_meses[m]+c.lista_anos[l],'28'+c.lista_meses[m]+c.lista_anos[l])
+	# 			except Exception as e:
+	# 				print(e)
 	# except Exception as e:
 	# 	print(e)
 
+	cursor = cursorConexao()
+	cursor.execute('SELECT sentenca FROM justica_estadual.jurisprudencia_sp_1_inst;')
+	dados = cursor.fetchall()
+	for dado in dados:
+		c.parse_sp_dados_1_inst(dado[0], cursor)
+
+	# cursor = cursorConexao()
+	# cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_sp limit 10;')
 	# cursor = cursorConexao()
 	# for i in range(0,1500000,1000):
 	# 	print(1500000-i)
@@ -136,10 +138,10 @@ def main():
 	# 	for dado in dados:
 	# 		c.parse_sp_dados_1_inst(dado[0], cursor)
 
-	cursor = cursorConexao()
-	cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_sp limit 10;')
-	lista_links = cursor.fetchall()
-	c.download_acordao_sp(lista_links)
+	# cursor = cursorConexao()
+	# cursor.execute('SELECT id,ementas from justica_estadual.extracao_antonio;')
+	# lista_links = cursor.fetchall()
+	# c.download_acordao_sp(lista_links)
 
 	# print('comecei ',c.__class__.__name__)
 	# try:
