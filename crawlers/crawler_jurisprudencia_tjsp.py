@@ -99,8 +99,7 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 					numero = busca(r'[\d\.-]{15,25}',texto,ngroup=0)
 					polo_ativo = busca(r'apelante\s*?\:(.*?)\n',texto, args=re.I)
 					polo_passivo = busca(r'apelado\s*?\:(.*?)\n',texto, args=re.I)
-					if polo_ativo != '' and polo_passivo != '':
-						cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst_juri (tribunal, numero, texto_decisao, polo_ativo, polo_passivo) values ("%s","%s","%s","%s","%s");' % (tribunal, numero, texto, polo_ativo, polo_passivo))
+					cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst_antonio (tribunal, numero, texto_decisao, polo_ativo, polo_passivo) values ("%s","%s","%s","%s","%s");' % (tribunal, numero, texto, polo_ativo, polo_passivo))
 			except Exception as e:
 				print(arq)
 				print(e)
@@ -108,8 +107,8 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 
 def main():
 	c = crawler_jurisprudencia_tjsp()
-	# cursor = cursorConexao()
-	# c.parse_sp_dados_2_inst(cursor)
+	cursor = cursorConexao()
+	c.parse_sp_dados_2_inst(cursor)
 
 	# print('comecei ',c.__class__.__name__)
 	# try:
@@ -136,10 +135,10 @@ def main():
 	# 	for dado in dados:
 	# 		c.parse_sp_dados_1_inst(dado[0], cursor)
 
-	cursor = cursorConexao()
-	cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_sp limit 10;')
-	lista_links = cursor.fetchall()
-	c.download_acordao_sp(lista_links)
+	# cursor = cursorConexao()
+	# cursor.execute('SELECT id,ementas from justica_estadual.extracao_antonio;')
+	# lista_links = cursor.fetchall()
+	# c.download_acordao_sp(lista_links)
 
 	# print('comecei ',c.__class__.__name__)
 	# try:
