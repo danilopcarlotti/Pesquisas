@@ -1,22 +1,29 @@
 # http://jinja.pocoo.org/docs/2.10/templates/
 # https://www.tutorialspoint.com/flask/flask_static_files.htm
 
-import csv, io, sys
+import csv, io, random, sys
 from conexao import cursorConexao
 from flask import *
 from queries import Queries
 
 app = Flask(__name__)
+random.seed()
 
 
 @app.route('/classificacao',methods = ['POST', 'GET'])
 def classificacao():
     q = Queries()
-    dados = q.query_padrao()
-    session['id_p'] = dados[0][0]
-    id_p = dados[0][0]
-    tribunal = dados[0][1]
-    texto_decisao = dados[0][2]
+    resultado = None
+    while not resultado:
+      id_aleatorio = random.randrange(1324911,5324911)
+      query_txt = 'SELECT id, tribunal, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto_decisao) like "%saúde%" and classificacao is null and id = "{}";'.format(str(id_aleatorio))
+      dados = q.query_padrao(query_text=query_txt)
+      if dados:
+        resultado = 1
+        session['id_p'] = dados[0][0]
+        id_p = dados[0][0]
+        tribunal = dados[0][1]
+        texto_decisao = dados[0][2]
     return render_template('classificacao.html', texto_decisao = texto_decisao, id_p = id_p, tribunal = tribunal)
 
 @app.route('/classificacao_texto',methods = ['POST'])
@@ -46,15 +53,14 @@ def main_page():
 
 @app.route('/pesquisa', methods = ['POST', 'GET'])
 def pesquisa():
-  if request.method == 'POST':
-    try:
-      termos = request.form['query'].lower()
-      q = Queries()
-      return q.query_operadores(termos,tribunal='stf')
-    except Exception as e:
-      return e
-  else:
-    return 'Preencha o formulário corretamente, por favor.'
+   if request.method == 'POST':
+      try:
+         q = Queries()
+         return str(q.query_tribunais(request.form['query'],tribunal='segunda_inst'))
+      except Exception as e:
+         return e
+   else:
+      return 'Preencha o formulário corretamente, por favor.'
 
 if __name__ == '__main__':
   app.secret_key = 'super secret key'
