@@ -5,7 +5,7 @@ class User():
     def __init__(self, email, password):
         self.email = email
         q = Queries()
-        self.resultado_login = q.query_padrao(query_text='SELECT * from usuarios.users where email = "%s" and senha = "%s";' % (email,password))
+        self.resultado_login = q.query_padrao(query_text='SELECT * from usuarios.users where email = "%s" and senha = "%s";' % (email.replace('/','').replace('\\','').replace('"',''),password.replace('/','').replace('\\','').replace('"','')))
         self.authenticated = False
 
     def is_active(self):
