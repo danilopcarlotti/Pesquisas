@@ -23,7 +23,7 @@ def classificacao():
         session['id_p'] = dados[0][0]
         id_p = dados[0][0]
         tribunal = dados[0][1]
-        texto_decisao = dados[0][2]
+        texto_decisao = dados[0][2].replace('\n', '</p>\n<p>')
     return render_template('classificacao.html', texto_decisao = texto_decisao, id_p = id_p, tribunal = tribunal)
 
 @app.route('/classificacao_texto',methods = ['POST'])
