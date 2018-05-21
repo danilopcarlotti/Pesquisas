@@ -1,5 +1,5 @@
 import csv, io, sys
-from common.conexao import cursorConexao
+from conexao import cursorConexao
 
 class Queries():
   def __init__(self):
