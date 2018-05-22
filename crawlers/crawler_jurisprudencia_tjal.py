@@ -64,7 +64,7 @@ class crawler_jurisprudencia_tjal(crawler_jurisprudencia_tj):
 			julgador = busca(r'Relator \(a\)\:(.*?)\;', decisoes[d])
 			orgao_julgador = busca(r'Órgão julgador\:(.*?)\;', decisoes[d])
 			data_disponibilizacao = busca(r'Data do julgamento\:\s*?(.*?)\;', decisoes[d])
-			cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, assunto, classe, data_decisao, orgao_julgador, julgador, texto_decisao) 	values ("%s","%s","%s","%s","%s","%s","%s","%s");' % ('al',numero, assunto, classe, data_disponibilizacao, orgao_julgador, julgador, texto))
+			cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, assunto, classe, data_decisao, orgao_julgador, julgador, texto_decisao) 	values ("%s","%s","%s","%s","%s","%s","%s","%s");' % ('al',numero, assunto, classe, data_disponibilizacao, orgao_julgador, julgador, decisoes[d]))
 
 def main():
 	c = crawler_jurisprudencia_tjal()
