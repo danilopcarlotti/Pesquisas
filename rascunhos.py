@@ -6,6 +6,7 @@ import numpy as np
 cursor = cursorConexao()
 cursor.execute('SELECT texto_decisao, classificacao from jurisprudencia_2_inst.jurisprudencia_2_inst where classificacao is not null limit 5;')
 dados = cursor.fetchall()
+print(dados)
 acuracia = np.array([])
 for i in range(1,len(dados)-1):
 	dados_treino = dados[:i]+dados[i+1:]
