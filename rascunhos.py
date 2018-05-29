@@ -19,6 +19,7 @@ for e, class_e in examples:
 		acuracia.append(0)
 print(np.mean(acuracia))
 
+acuracia = []
 examples = dados[720:740]
 for e, class_e in examples:
 	if (mNB.test_mNB([e.encode('utf-8')]) == class_e):
@@ -27,6 +28,7 @@ for e, class_e in examples:
 		acuracia.append(0)
 print(np.mean(acuracia))
 
+acuracia = []
 examples = dados[740:760]
 for e, class_e in examples:
 	if (mNB.test_mNB([e.encode('utf-8')]) == class_e):
@@ -35,6 +37,7 @@ for e, class_e in examples:
 		acuracia.append(0)
 print(np.mean(acuracia))
 
+acuracia = []
 examples = dados[760:780]
 for e, class_e in examples:
 	if (mNB.test_mNB([e.encode('utf-8')]) == class_e):
