@@ -12,7 +12,7 @@ for i in range(1,len(dados)-1):
 	dados_treino = dados[:i]+dados[i+1:]
 	dados_teste = dados[i]
 	mNB = mNB_classification_text(dados_treino)
-	print(dados_teste)
+	print(dados_teste[0],dados_teste[1])
 	for texto, class_t in dados_teste:
 		if (mNB.test_mNB([texto]) == class_t):
 			acuracia = 1
