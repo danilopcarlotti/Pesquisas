@@ -14,5 +14,5 @@ mNB = mNB_classification_text(dados)
 cursor.execute('SELECT texto_decisao, classificacao from jurisprudencia_2_inst.jurisprudencia_2_inst where classificacao is not null limit 5,1;')
 examples = cursor.fetchall()
 for e, class_e in examples:
-	print(e,sck.test_mNB([e]),(sck.test_mNB([e]) == class_e))
+	print(e,mNB.test_mNB([e]),(mNB.test_mNB([e]) == class_e))
 # print(np.mean(acuracia))
