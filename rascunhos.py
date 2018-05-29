@@ -6,7 +6,7 @@ import numpy as np
 
 
 cursor = cursorConexao()
-cursor.execute('SELECT texto_decisao, classificacao from jurisprudencia_2_inst.jurisprudencia_2_inst where classificacao is not null')
+cursor.execute('SELECT count(*) from jurisprudencia_2_inst.jurisprudencia_2_inst where classificacao is not null')
 dados = cursor.fetchall()
 print(dados)
 # acuracia = []
