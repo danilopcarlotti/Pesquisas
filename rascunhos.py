@@ -1,3 +1,5 @@
+ # -*- coding: utf-8 -*-
+
 from crawlers.common.conexao_local import cursorConexao
 from common_nlp.mNB_classification_text import mNB_classification_text
 import numpy as np
