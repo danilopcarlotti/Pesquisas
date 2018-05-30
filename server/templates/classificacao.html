@@ -6,6 +6,10 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="../../../../favicon.ico">
+    <link rel="stylesheet" href="./templates/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 
     <title>Classificação</title>
 
@@ -14,28 +18,72 @@
 
     <!-- Custom styles for this template -->
     <link href="bootstrap-4.0.0/docs/4.0/examples/sign-in/signin.css" rel="stylesheet">
-    <style type="text/css">
-      .div-central {
-        margin-right: auto;
-        margin-left: auto;
-        text-align: center;
-        padding-top: 15%;
-      }
+	<style>
+.texto-juridico {
+    white-space: pre-line;       /* Since CSS 2.1 */
+    word-wrap: break-word;
+
+}
+.form-buttons{
+    position: fixed;
+}
+
+@media only screen and (max-width: 800px) {
+    .form{
+        position: relative;
+        width: 100%;
+    }
+    .form-buttons{
+        position: relative;
+    }
+}
     </style>
   </head>
 
   <body>
-    <div class='div-central'>
-    <p>Classifique o texto abaixo</p>
-    <p>Tribunal: {{ tribunal }}</p>
-    <p>{{ texto_decisao }}</p>
-    <br>
-      <form action = "http://localhost:5000/classificacao_texto" method = "post">
-          <input type="radio" name="classe" value="0"> Não sei<br>
-          <input type="radio" name="classe" value="1"> Relevante<br>
-          <input type="radio" name="classe" value="-1"> Irrelevante<br>
-        <button type="submit">Enviar classificação</button>
-      </form>
+      <h1 class='center-align blue-grey-text darken-3 col s12 m8 l6'>Classifique o texto abaixo</h1>
+      <h4 class='center-align blue-grey-text darken-3 col s12 m8 l6'>Tribunal: {{ tribunal }}</h4>
+    <div class ="container flow-text" >
+      <div class ="row" >
+        
+      </div>
+      <div class = "row">
+      </div>
+      <div class = "row" >
+        <div class = 'texto-juridico col s12 m8 l9'>
+            <p>
+            {{ texto_decisao | safe }}
+            </p>
+        </div>
+        <br>
+        <div class = "right form">
+          <form action = "classificacao_texto" method = "post">
+              <!-- <input type="radio" name="classe" value="0"> Não sei<br>
+              <input type="radio" name="classe" value="1"> Relevante<br>
+              <input type="radio" name="classe" value="-1"> Irrelevante<br>
+            <button  type="submit ">Enviar classificação</button> -->
+            <div class='row form-buttons'>
+
+            <button class="btn-large waves-effect waves-light col s12 m12 l12" value="1" type="submit" name="classe">Relevante
+                <i class="material-icons right">sentiment_very_satisfied</i>
+            </button>
+            <div class="section">
+
+            <button class="btn-large waves-effect waves-light red darken-1 col s12 m12 l12 " value="-1" type="submit" name="classe">Irrelevante
+                <i class=" material-icons right">sentiment_very_dissatisfied</i>
+            </button>
+          </div>
+            <div class="divider"></div>
+            <button class="btn-large waves-effect waves-light col s12 m12 l12 blue-grey darken-1" value="0" type="submit" name="classe">Não Sei
+                <i class="material-icons right">sentiment_neutral</i>
+            </button>
+          
+            </div>
+          </form>
+        </div>
+      
+      </div>
+    
     </div>
   </body>
 </html>
