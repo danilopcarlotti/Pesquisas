@@ -9,7 +9,7 @@ class topicModel(textNormalization):
 	def dicionario_corpora(self,textos):
 		return corpora.Dictionary(textos)
 
-	def lda_Model(self, texts, num_topics=5, npasses=20, num_words=15):
+	def lda_Model(self, texts, num_topics=5, npasses=20, num_words=10):
 		'''O input precisa ser uma lista em que cada elemento da lista é uma string correspondendo a um texto'''
 		textos = self.normalize_texts(texts)
 		dicionario = self.dicionario_corpora(textos)
