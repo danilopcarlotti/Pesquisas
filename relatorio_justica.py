@@ -127,8 +127,6 @@ def main():
 	# rel.resultados_2_df(dados, rel.colunas_2_inst).to_csv(path_or_buf='relatorio_cnj.csv', sep=';', quotechar='"')
 	df = pd.read_csv('relatorio_cnj.csv', sep=';', quotechar='"')
 
-	print(df.head())
-
 	# ESTATÍSTICA DESCRITIVA PARA CADA ESTADO
 	estatistica_d = {}
 	for k,v in rel.dicionario_estatisticas(df).items():
