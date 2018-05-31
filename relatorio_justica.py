@@ -140,10 +140,10 @@ def main():
 			for id_p, texto in dados_aux:
 
 				# APLICAÇÃO DO CLASSIFICADOR A UM TEXTO
-				token_texto = tokenize(texto, stem=True)
+				token_texto = [tokenize(texto, stem=True)]
 				classificacao = model.predict(token_texto)				
 				
-				cursor.execute('UPDATE jurisprudencia_2_inst.jurisprudencia_2_inst set classificacao = "{}" where id = {};'.format(classificacao[0],id_p))
+				cursor.execute('UPDATE jurisprudencia_2_inst.jurisprudencia_2_inst set classificacao_auto = "{}" where id = {};'.format(classificacao[0],id_p))
 		except Exception as e:
 			print(e)
 			break
