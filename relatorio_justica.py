@@ -27,8 +27,7 @@ class relatorio_justica():
 	def dicionario_estatisticas(self,df):
 		dicionario_dados = {}
 		for estado in self.estados:
-			dicionario_dados[estado] = 
-			{
+			dicionario_dados[estado] = {
 			'Estado':estado,
 			'Número de processos identificados':0, 
 			'Assunto':[],
