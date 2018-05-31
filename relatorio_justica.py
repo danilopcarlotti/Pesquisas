@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from collections import Counter
 from crawlers.common.conexao_local import cursorConexao
 # from crawlers.common_nlp.topicModelling import topicModelling
@@ -124,6 +126,8 @@ def main():
 	# dados = rel.query_padrao(parametros='*',condicoes='where classificacao = "1"')
 	# rel.resultados_2_df(dados, rel.colunas_2_inst).to_csv(path_or_buf='relatorio_cnj.csv', sep=';', quotechar='"')
 	df = pd.read_csv('relatorio_cnj.csv', sep=';', quotechar='"')
+
+	print(df.head())
 
 	# ESTATÍSTICA DESCRITIVA PARA CADA ESTADO
 	estatistica_d = {}
