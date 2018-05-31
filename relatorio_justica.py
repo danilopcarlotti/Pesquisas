@@ -122,7 +122,7 @@ def main():
 	# 		break
 
 	print('recolhendo os textos com saude para classificacao')
-	cursor.execute('SELECT id, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto_decisao) like "%saude%";')
+	cursor.execute('SELECT id, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto_decisao) like "%saude%" limit 1;')
 	dados_aux = cursor.fetchall()
 	print(len(dados_aux))
 
