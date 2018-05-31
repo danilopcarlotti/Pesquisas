@@ -1,6 +1,6 @@
 from collections import Counter
 from crawlers.common.conexao_local import cursorConexao
-from crawlers.common_nlp.topicModelling import topicModelling
+# from crawlers.common_nlp.topicModelling import topicModelling
 from common_nlp.mNB_classification_text import mNB_classification_text
 import pandas as pd
 
