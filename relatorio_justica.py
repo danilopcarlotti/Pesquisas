@@ -102,12 +102,12 @@ def main():
 	model = utils.load_model('modelo.pickle')
 
 	cursor = cursorConexao()
-	cursor.execute('SELECT count(*) from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto) like "%saúde%";')
+	cursor.execute('SELECT count(*) from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto_decisao) like "%saúde%";')
 	numero_textos = cursor.fetchall()[0][0]
 
 	for i in range(0,int(numero_textos),1000):
 		try:
-			cursor.execute('SELECT id, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto) like "%saúde%" limit {},1000;'.format(str(i)))
+			cursor.execute('SELECT id, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto_decisao) like "%saúde%" limit {},1000;'.format(str(i)))
 			dados_aux = cursor.fetchall()
 			for id_p, texto in dados_aux:
 
