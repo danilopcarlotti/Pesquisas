@@ -101,7 +101,7 @@ def main():
 
 	# print('rodando o classificador em toda a base')
 	# # CLASSE DO CLASSIFICADOR
-	# model = utils.load_model('modelo.pickle')
+	model = utils.load_model('modelo.pickle')
 
 	cursor = cursorConexao()
 
