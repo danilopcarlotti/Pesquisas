@@ -29,7 +29,7 @@ class relatorio_justica():
 		for estado in self.estados:
 			dicionario_dados[estado] = {
 			'Estado':estado,
-			'Número de processos identificados':0, 
+			'Numero de processos identificados':0, 
 			'Assunto':[],
 			'Classe':[],
 			'Órgão Julgador':[],
@@ -40,7 +40,7 @@ class relatorio_justica():
 		for estado in self.estados:
 			for index, row in df.iterrows():
 				if row['tribunal'] == estado:
-					dicionario_dados[estado]['Número de processos identificados'] += 1
+					dicionario_dados[estado]['Numero de processos identificados'] += 1
 					dicionario_dados[estado]['Assunto'].append(row['assunto'])
 					dicionario_dados[estado]['Classe'].append(row['classe'])
 					dicionario_dados[estado]['Órgão julgador'].append((row['orgao_julgador'],row['julgador']))
@@ -50,10 +50,10 @@ class relatorio_justica():
 		return dicionario_dados
 
 	def estatistica_descritiva(self, dicionario_dados, mais_frequentes = 10):
-		if dicionario_dados['Número de processos identificados'] = 0:
-			return {'Não encontrado':True}
-		resultado = {'Não encontrado':False}
-		resultado['Número de processos identificados'] = dicionario_dados['Número de processos identificados']
+		if dicionario_dados['Numero de processos identificados'] = 0:
+			return {'Nao encontrado':True}
+		resultado = {'Nao encontrado':False}
+		resultado['Numero de processos identificados'] = dicionario_dados['Numero de processos identificados']
 		resultado['Principais assuntos'] = Counter(dicionario_dados['Assunto']).most_common(mais_frequentes)
 		resultado['Principais classes'] = Counter(dicionario_dados['Classe']).most_common(mais_frequentes)
 		resultado['Principais órgãos julgadores'] = Counter(dicionario_dados['Órgão julgador']).most_common(mais_frequentes)
@@ -172,8 +172,8 @@ def main():
 		relatorio_final.write('Estado: ')
 		relatorio_final.write(k)
 		relatorio_final.write('\n\n')
-		if v['Não encontrado']:
-			relatorio_final.write('Não foram encontrados dados para este Estado\n\n')
+		if v['Nao encontrado']:
+			relatorio_final.write('Nao foram encontrados dados para este Estado\n\n')
 		else:
 			for m,n in v.items():
 				relatorio_final.write(m)
