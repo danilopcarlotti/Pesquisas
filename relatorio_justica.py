@@ -97,32 +97,32 @@ def main():
 	# 	query_rel_saude += 'texto_decisao not like "%{}%" and '.format(t)
 	# query_rel_saude = query_rel_saude[:-4]
 
-	print('rodando o classificador em toda a base')
-	# CLASSE DO CLASSIFICADOR
-	model = utils.load_model('modelo.pickle')
+	# print('rodando o classificador em toda a base')
+	# # CLASSE DO CLASSIFICADOR
+	# model = utils.load_model('modelo.pickle')
 
-	cursor = cursorConexao()
-	cursor.execute('SELECT count(*) from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto_decisao) like "%saúde%";')
-	numero_textos = cursor.fetchall()[0][0]
+	# cursor = cursorConexao()
+	# cursor.execute('SELECT count(*) from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto_decisao) like "%saúde%";')
+	# numero_textos = cursor.fetchall()[0][0]
 
-	for i in range(0,int(numero_textos),1000):
-		try:
-			cursor.execute('SELECT id, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto_decisao) like "%saúde%" limit {},1000;'.format(str(i)))
-			dados_aux = cursor.fetchall()
-			for id_p, texto in dados_aux:
+	# for i in range(0,int(numero_textos),1000):
+	# 	try:
+	# 		cursor.execute('SELECT id, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto_decisao) like "%saúde%" limit {},1000;'.format(str(i)))
+	# 		dados_aux = cursor.fetchall()
+	# 		for id_p, texto in dados_aux:
 
-				# APLICAÇÃO DO CLASSIFICADOR A UM TEXTO
-				token_texto = [utils.tokenize(texto, stem=True)]
-				classificacao = model.predict(token_texto)				
+	# 			# APLICAÇÃO DO CLASSIFICADOR A UM TEXTO
+	# 			token_texto = [utils.tokenize(texto, stem=True)]
+	# 			classificacao = model.predict(token_texto)				
 				
-				cursor.execute('UPDATE jurisprudencia_2_inst.jurisprudencia_2_inst set classificacao_auto = "{}" where id = {};'.format(classificacao[0],id_p))
-		except Exception as e:
-			print(e)
-			break
+	# 			cursor.execute('UPDATE jurisprudencia_2_inst.jurisprudencia_2_inst set classificacao_auto = "{}" where id = {};'.format(classificacao[0],id_p))
+	# 	except Exception as e:
+	# 		print(e)
+	# 		break
 
 	print('exportando a classificacao para um csv')
-	dados = rel.query_padrao(parametros='*',condicoes='where classificacao = "1"')
-	rel.resultados_2_df(dados, rel.colunas_2_inst).to_csv(path_or_buf='relatorio_cnj.csv', sep=';', quotechar='"')
+	# dados = rel.query_padrao(parametros='*',condicoes='where classificacao = "1"')
+	# rel.resultados_2_df(dados, rel.colunas_2_inst).to_csv(path_or_buf='relatorio_cnj.csv', sep=';', quotechar='"')
 	df = pd.read_csv('relatorio_cnj.csv', sep=';', quotechar='"')
 
 	# ESTATÍSTICA DESCRITIVA PARA CADA ESTADO
