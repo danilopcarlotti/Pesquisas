@@ -2,7 +2,7 @@ from collections import Counter
 from crawlers.common.conexao_local import cursorConexao
 # from crawlers.common_nlp.topicModelling import topicModelling
 from common_nlp.mNB_classification_text import mNB_classification_text
-import pandas as pd
+import pandas as pd, utils
 
 class relatorio_justica():
 	'''Classe para geração de relatórios sobre a justiça'''
@@ -88,33 +88,6 @@ class relatorio_justica():
 					dicionario_textos[estado].append(row['texto_decisao'])
 		return dicionario_textos
 
-import dill
-import nltk
-from sklearn.externals import joblib
-
-def tokenize(text, stem=False):
-    stemmer = nltk.stem.RSLPStemmer()
-    result = []
-
-    def valid_word(word):
-        def isdigit(d):
-            return d.isdigit()
-        return len(word) > 1 and not any(map(isdigit, word))
-
-    for word in filter(valid_word, nltk.tokenize.word_tokenize(text, language='portuguese')):
-        proc_word = word.lower()
-        if stem:
-            proc_word = stemmer.stem(proc_word)
-        result.append(proc_word)
-    return result
-
-def dummy_fun(x):
-    return x
-
-def load_model(filename):
-    model = joblib.load(filename)
-    return model
-
 
 def main():
 	rel = relatorio_justica()
@@ -126,7 +99,7 @@ def main():
 
 	print('rodando o classificador em toda a base')
 	# CLASSE DO CLASSIFICADOR
-	model = load_model('modelo.pickle')
+	model = utils.load_model('modelo.pickle')
 
 	cursor = cursorConexao()
 	cursor.execute('SELECT count(*) from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto) like "%saúde%";')
@@ -139,7 +112,7 @@ def main():
 			for id_p, texto in dados_aux:
 
 				# APLICAÇÃO DO CLASSIFICADOR A UM TEXTO
-				token_texto = [tokenize(texto, stem=True)]
+				token_texto = [utils.tokenize(texto, stem=True)]
 				classificacao = model.predict(token_texto)				
 				
 				cursor.execute('UPDATE jurisprudencia_2_inst.jurisprudencia_2_inst set classificacao_auto = "{}" where id = {};'.format(classificacao[0],id_p))
