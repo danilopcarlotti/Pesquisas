@@ -50,7 +50,7 @@ class relatorio_justica():
 		return dicionario_dados
 
 	def estatistica_descritiva(self, dicionario_dados, mais_frequentes = 10):
-		if dicionario_dados['Numero de processos identificados'] = 0:
+		if dicionario_dados['Numero de processos identificados'] == 0:
 			return {'Nao encontrado':True}
 		resultado = {'Nao encontrado':False}
 		resultado['Numero de processos identificados'] = dicionario_dados['Numero de processos identificados']
