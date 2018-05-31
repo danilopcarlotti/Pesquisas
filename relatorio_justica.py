@@ -139,8 +139,8 @@ def main():
 
 	# TEXTO DO RELATÓRIO
 	relatorio_final = open('relatorio_cnj_06_2018.txt','w')
-	relatorio_final.write('Relatório final\n\n\n')
-	relatorio_final.write('Estatística descritiva sobre os processos nos tribunais\n\n\n')
+	relatorio_final.write('Relatorio final\n\n\n')
+	relatorio_final.write('Estatistica descritiva sobre os processos nos tribunais\n\n\n')
 	for k,v in estatistica_d.items():
 		relatorio_final.write('Estado: ')
 		relatorio_final.write(k)
