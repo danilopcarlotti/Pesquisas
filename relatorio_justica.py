@@ -32,7 +32,7 @@ class relatorio_justica():
 			'Numero de processos identificados':0, 
 			'Assunto':[],
 			'Classe':[],
-			'orgao Julgador':[],
+			'orgao julgador':[],
 			'Local de origem do recurso':[],
 			'polo Ativo':[],
 			'polo Passivo':[]
