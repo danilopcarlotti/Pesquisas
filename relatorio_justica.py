@@ -32,10 +32,10 @@ class relatorio_justica():
 			'Numero de processos identificados':0, 
 			'Assunto':[],
 			'Classe':[],
-			'Órgão Julgador':[],
+			'orgao Julgador':[],
 			'Local de origem do recurso':[],
-			'Pólo Ativo':[],
-			'Pólo Passivo':[]
+			'polo Ativo':[],
+			'polo Passivo':[]
 			}
 		for estado in self.estados:
 			for index, row in df.iterrows():
@@ -43,10 +43,10 @@ class relatorio_justica():
 					dicionario_dados[estado]['Numero de processos identificados'] += 1
 					dicionario_dados[estado]['Assunto'].append(row['assunto'])
 					dicionario_dados[estado]['Classe'].append(row['classe'])
-					dicionario_dados[estado]['Órgão julgador'].append((row['orgao_julgador'],row['julgador']))
+					dicionario_dados[estado]['orgao julgador'].append((row['orgao_julgador'],row['julgador']))
 					dicionario_dados[estado]['Local de origem do recurso'].append(row['origem'])
-					dicionario_dados[estado]['Pólo Ativo'].append(row['polo_ativo'])
-					dicionario_dados[estado]['Pólo Passivo'].append(row['polo_passivo'])
+					dicionario_dados[estado]['polo Ativo'].append(row['polo_ativo'])
+					dicionario_dados[estado]['polo Passivo'].append(row['polo_passivo'])
 		return dicionario_dados
 
 	def estatistica_descritiva(self, dicionario_dados, mais_frequentes = 10):
@@ -56,10 +56,10 @@ class relatorio_justica():
 		resultado['Numero de processos identificados'] = dicionario_dados['Numero de processos identificados']
 		resultado['Principais assuntos'] = Counter(dicionario_dados['Assunto']).most_common(mais_frequentes)
 		resultado['Principais classes'] = Counter(dicionario_dados['Classe']).most_common(mais_frequentes)
-		resultado['Principais órgãos julgadores'] = Counter(dicionario_dados['Órgão julgador']).most_common(mais_frequentes)
+		resultado['Principais orgaos julgadores'] = Counter(dicionario_dados['orgao julgador']).most_common(mais_frequentes)
 		resultado['Principais locais de origem'] = Counter(dicionario_dados['Local de origem do recurso']).most_common(mais_frequentes)
-		resultado['Principais pólos ativos'] = Counter(dicionario_dados['Pólo Ativo']).most_common(mais_frequentes)
-		resultado['Principais pólos passivos'] = Counter(dicionario_dados['Pólo Passivo']).most_common(mais_frequentes)
+		resultado['Principais polos ativos'] = Counter(dicionario_dados['polo Ativo']).most_common(mais_frequentes)
+		resultado['Principais polos passivos'] = Counter(dicionario_dados['polo Passivo']).most_common(mais_frequentes)
 		return resultado
 
 	def query_padrao(self, parametros=None, query=None, instancia='jurisprudencia_2_inst.jurisprudencia_2_inst', condicoes=None):
