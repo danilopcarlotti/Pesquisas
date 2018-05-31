@@ -122,7 +122,7 @@ def main():
 	# 		print(e)
 	# 		break
 
-	print('exportando a classificacao para um csv')
+	# print('exportando a classificacao para um csv')
 	# dados = rel.query_padrao(parametros='*',condicoes='where classificacao = "1"')
 	# rel.resultados_2_df(dados, rel.colunas_2_inst).to_csv(path_or_buf='relatorio_cnj.csv', sep=';', quotechar='"')
 	df = pd.read_csv('relatorio_cnj.csv', sep=';', quotechar='"')
@@ -140,7 +140,7 @@ def main():
 	# 	topicos[k] = tp.lda_Model(v)
 
 	# TEXTO DO RELATÓRIO
-	relatorio_final = open('relatorio_cnj_06_2018.txt','w')
+	relatorio_final = open('relatorio_cnj_06_2018.txt','w',encoding='utf-8')
 	relatorio_final.write('Relatorio final\n\n\n')
 	relatorio_final.write('Estatistica descritiva sobre os processos nos tribunais\n\n\n')
 	for k,v in estatistica_d.items():
