@@ -104,24 +104,33 @@ def main():
 	# model = utils.load_model('modelo.pickle')
 
 	cursor = cursorConexao()
-	cursor.execute('SELECT count(*) from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto_decisao) like "%saúde%" limit 1;')
-	numero_textos = cursor.fetchall()[0][0]
-	print(numero_textos)
 
-	for i in range(0,int(numero_textos),1000):
-		try:
-			cursor.execute('SELECT id, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto_decisao) like "%saúde%" limit {},1000;'.format(str(i)))
-			dados_aux = cursor.fetchall()
-			for id_p, texto in dados_aux:
+	# for i in range(0,int(numero_textos),1000):
+	# 	try:
+	# 		cursor.execute('SELECT id, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto_decisao) like "%saúde%" limit {},1000;'.format(str(i)))
+	# 		dados_aux = cursor.fetchall()
+	# 		for id_p, texto in dados_aux:
 
-				# APLICAÇÃO DO CLASSIFICADOR A UM TEXTO
-				token_texto = [utils.tokenize(texto, stem=True)]
-				classificacao = model.predict(token_texto)				
+	# 			# APLICAÇÃO DO CLASSIFICADOR A UM TEXTO
+	# 			token_texto = [utils.tokenize(texto, stem=True)]
+	# 			classificacao = model.predict(token_texto)
+	# 			print(classificacao)			
 				
-				cursor.execute('UPDATE jurisprudencia_2_inst.jurisprudencia_2_inst set classificacao_auto = "{}" where id = {};'.format(classificacao[0],id_p))
-		except Exception as e:
-			print(e)
-			break
+	# 			cursor.execute('UPDATE jurisprudencia_2_inst.jurisprudencia_2_inst set classificacao_auto = "{}" where id = {};'.format(classificacao[0],id_p))
+	# 	except Exception as e:
+	# 		print(e)
+	# 		break
+
+	print('recolhendo os textos com saúde para classificacao')
+	cursor.execute('SELECT id, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto_decisao) like "%saude%";')
+	dados_aux = cursor.fetchall()
+	print(len(dados_aux))
+
+	# APLICAÇÃO DO CLASSIFICADOR A UM TEXTO
+	for id_p, texto in dados_aux:
+		token_texto = [utils.tokenize(texto, stem=True)]
+		classificacao = model.predict(token_texto)
+		cursor.execute('UPDATE jurisprudencia_2_inst.jurisprudencia_2_inst set classificacao_auto = "{}" where id = {};'.format(classificacao[0],id_p))
 
 	print('exportando a classificacao para um csv')
 	dados = rel.query_padrao(parametros='*',condicoes='where classificacao_auto = "1"')
