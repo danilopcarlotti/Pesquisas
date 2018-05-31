@@ -89,6 +89,34 @@ class relatorio_justica():
 					dicionario_textos[estado].append(row['texto_decisao'])
 		return dicionario_textos
 
+import dill
+import nltk
+from sklearn.externals import joblib
+
+def tokenize(text, stem=False):
+    stemmer = nltk.stem.RSLPStemmer()
+    result = []
+
+    def valid_word(word):
+        def isdigit(d):
+            return d.isdigit()
+        return len(word) > 1 and not any(map(isdigit, word))
+
+    for word in filter(valid_word, nltk.tokenize.word_tokenize(text, language='portuguese')):
+        proc_word = word.lower()
+        if stem:
+            proc_word = stemmer.stem(proc_word)
+        result.append(proc_word)
+    return result
+
+def dummy_fun(x):
+    return x
+
+def load_model(filename):
+    model = joblib.load(filename)
+    return model
+
+
 def main():
 	rel = relatorio_justica()
 	# termos_excluir_saude = ['Saúde animal','Inadimplemento por motivo de saúde','Ação de Interdição','Interditanda','Funasa','Atividades nocivas à saúde do trabalhador','Regime Celetista','Trabalhista','Execução fiscal','Crédito fazendário','Improbidade administrativa','Tráfico','Fazenda Pública','Tributo','Curatela','PREVIDENCIA PRIVADA','VARA DE FAMILIA','SUCESSOES','DIREITO PREVIDENCIARIO','GUARDA PROVISÓRIA','TESTAMENTO','AÇÃO PREVIDENCIÁRIA','PRISÃO DOMICILIAR','ALIMENTOS PROVISÓRIOS','adicional de insalubridade','PISO SALARIAL','Trabalhadores Sindicalizados da Área de Saúde','penal pública incondicionada','PENSÃO POR MORTE','licença para tratamento de saúde','concurso','REDUÇÃO DA JORNADA DE TRABALHO','Coordenador de Finanças do Sindicato dos Trabalhadores em Saúde no Estado do Pará - SINDSAÚDE','RECLAMAÇÃO TRABALHISTA']
@@ -97,12 +125,10 @@ def main():
 	# 	query_rel_saude += 'texto_decisao not like "%{}%" and '.format(t)
 	# query_rel_saude = query_rel_saude[:-4]
 
-	print('criando o classificador')
-	dados = rel.query_padrao(parametros='texto_decisao, classificacao',condicoes='where classificacao is not null')
-	
 	print('rodando o classificador em toda a base')
 	# CLASSE DO CLASSIFICADOR
-	sck = mNB_classification_text(dados)
+	model = load_model('modelo.pickle')
+
 	cursor = cursorConexao()
 	for i in range(5000000):
 		try:
@@ -111,9 +137,10 @@ def main():
 			for id_p, texto in dados_aux:
 
 				# APLICAÇÃO DO CLASSIFICADOR A UM TEXTO
-				classificacao = sck.test_mNB([texto])
+				token_texto = tokenize(texto, stem=True)
+				classificacao = model.predict(token_texto)				
 				
-				cursor.execute('UPDATE jurisprudencia_2_inst.jurisprudencia_2_inst set classificacao = "{}" where id = {};'.format(classificacao,id_p))
+				cursor.execute('UPDATE jurisprudencia_2_inst.jurisprudencia_2_inst set classificacao = "{}" where id = {};'.format(classificacao[0],id_p))
 		except Exception as e:
 			print(e)
 			break
