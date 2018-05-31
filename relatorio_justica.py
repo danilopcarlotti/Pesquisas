@@ -158,11 +158,11 @@ def main():
 		estatistica_d[k] = rel.estatistica_descritiva(v)
 
 	# TOPIC MODELLING PARA CADA ESTADO
-	tp = topicModelling()
-	textos_e = rel.textos_estado(df)
-	topicos = {}
-	for k,v in textos_e.items():
-		topicos[k] = tp.lda_Model(v)
+	# tp = topicModelling()
+	# textos_e = rel.textos_estado(df)
+	# topicos = {}
+	# for k,v in textos_e.items():
+	# 	topicos[k] = tp.lda_Model(v)
 
 	# TEXTO DO RELATÓRIO
 	relatorio_final = open('relatorio_cnj_06_2018.txt','w')
@@ -180,8 +180,8 @@ def main():
 				relatorio_final.write(' : ')
 				relatorio_final.write(n)
 				relatorio_final.write('\n')
-			relatorio_final.write('\nPrincipais tópicos das ações relacionadas à saúde neste tribunal:\n\n')
-			relatorio_final.write(topicos[k])
+			# relatorio_final.write('\nPrincipais tópicos das ações relacionadas à saúde neste tribunal:\n\n')
+			# relatorio_final.write(topicos[k])
 
 if __name__ == '__main__':
 	main()
