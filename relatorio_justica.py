@@ -1,6 +1,7 @@
 from collections import Counter
 from crawlers.common.conexao_local import cursorConexao
 from crawlers.common_nlp.topicModelling import topicModelling
+from common_nlp.mNB_classification_text import mNB_classification_text
 import pandas as pd
 
 class relatorio_justica():
@@ -96,9 +97,30 @@ def main():
 	# 	query_rel_saude += 'texto_decisao not like "%{}%" and '.format(t)
 	# query_rel_saude = query_rel_saude[:-4]
 
+	print('criando o classificador')
+	dados = rel.query_padrao(parametros='texto_decisao, classificacao',condicoes='where classificacao is not null')
+	
+	print('rodando o classificador em toda a base')
+	# CLASSE DO CLASSIFICADOR
+	sck = mNB_classification_text(dados)
+	cursor = cursorConexao()
+	for i in range(5000000):
+		try:
+			cursor.execute('SELECT id, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst limit {},1000;'.format(str(i)))
+			dados_aux = cursor.fetchall()
+			for id_p, texto in dados_aux:
+
+				# APLICAÇÃO DO CLASSIFICADOR A UM TEXTO
+				classificacao = sck.test_mNB([texto])
+				
+				cursor.execute('UPDATE jurisprudencia_2_inst.jurisprudencia_2_inst set classificacao = "{}" where id = {};'.format(classificacao,id_p))
+		except Exception as e:
+			print(e)
+			break
+
+	print('exportando a classificacao para um csv')
 	dados = rel.query_padrao(parametros='*',condicoes='where classificacao = "1"')
 	rel.resultados_2_df(dados, rel.colunas_2_inst).to_csv(path_or_buf='relatorio_cnj.csv', sep=';', quotechar='"')
-
 	df = pd.read_csv('relatorio_cnj.csv', sep=';', quotechar='"')
 
 	# ESTATÍSTICA DESCRITIVA PARA CADA ESTADO
