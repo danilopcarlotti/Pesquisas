@@ -151,7 +151,7 @@ def main():
 			for m,n in v.items():
 				relatorio_final.write(m)
 				relatorio_final.write(' : ')
-				relatorio_final.write(n)
+				relatorio_final.write(str(n))
 				relatorio_final.write('\n')
 			# relatorio_final.write('\nPrincipais tópicos das ações relacionadas à saúde neste tribunal:\n\n')
 			# relatorio_final.write(topicos[k])
