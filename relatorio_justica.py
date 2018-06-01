@@ -54,18 +54,16 @@ class relatorio_justica():
 		dicionario_dados = {}
 		anos = ['2009','2010','2011','2012','2013','2014','2015','2016']
 		for estado in self.estados:
+			dicionario_dados[estado] = {}
 			for ano in anos:
-				dicionario_dados[estado] = {
-					ano : {
-					'Estado':estado,
-					'Numero de processos identificados':0, 
-					'Assunto':[],
-					'Classe':[],
-					'orgao julgador':[],
-					'Local de origem do recurso':[],
-					'polo Ativo':[],
-					'polo Passivo':[]
-					}
+				dicionario_dados[estado][ano] = {
+				'Numero de processos identificados':0, 
+				'Assunto':[],
+				'Classe':[],
+				'orgao julgador':[],
+				'Local de origem do recurso':[],
+				'polo Ativo':[],
+				'polo Passivo':[]
 				}
 		for index, row in df.iterrows():
 			if row['tribunal']:
