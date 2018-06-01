@@ -67,7 +67,7 @@ class relatorio_justica():
 				}
 		for index, row in df.iterrows():
 			if row['tribunal']:
-				ano_processo = re.search(r'\.(\d{4})\.',row['numero'])
+				ano_processo = re.search(r'\.(\d{4})\.',str(row['numero']))
 				if ano_processo:
 					if int(ano_processo.group(1)) < 2009:
 						dicionario_dados[row['tribunal']]['2009']['Numero de processos identificados'] += 1
