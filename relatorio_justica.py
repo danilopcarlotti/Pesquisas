@@ -39,21 +39,20 @@ class relatorio_justica():
 			'polo Ativo':[],
 			'polo Passivo':[]
 			}
-		for estado in self.estados:
-			for index, row in df.iterrows():
-				if row['tribunal'] == estado:
-					dicionario_dados[estado]['Numero de processos identificados'] += 1
-					dicionario_dados[estado]['Assunto'].append(row['assunto'])
-					dicionario_dados[estado]['Classe'].append(row['classe'])
-					dicionario_dados[estado]['orgao julgador'].append(row['orgao_julgador'])
-					dicionario_dados[estado]['Local de origem do recurso'].append(row['origem'])
-					dicionario_dados[estado]['polo Ativo'].append(row['polo_ativo'])
-					dicionario_dados[estado]['polo Passivo'].append(row['polo_passivo'])
+		for index, row in df.iterrows():
+			if row['tribunal']:
+				dicionario_dados[row['tribunal']]['Numero de processos identificados'] += 1
+				dicionario_dados[row['tribunal']]['Assunto'].append(row['assunto'])
+				dicionario_dados[row['tribunal']]['Classe'].append(row['classe'])
+				dicionario_dados[row['tribunal']]['orgao julgador'].append(row['orgao_julgador'])
+				dicionario_dados[row['tribunal']]['Local de origem do recurso'].append(row['origem'])
+				dicionario_dados[row['tribunal']]['polo Ativo'].append(row['polo_ativo'])
+				dicionario_dados[row['tribunal']]['polo Passivo'].append(row['polo_passivo'])
 		return dicionario_dados
 
 	def dicionario_estatisticas_ano(self,df):
 		dicionario_dados = {}
-		anos = [2009,2010,2011,2012,2013,2014,2015,2016]
+		anos = ['2009','2010','2011','2012','2013','2014','2015','2016']
 		for estado in self.estados:
 			for ano in anos:
 				dicionario_dados[estado] = {
@@ -68,35 +67,34 @@ class relatorio_justica():
 					'polo Passivo':[]
 					}
 				}
-		for estado in self.estados:
-			for index, row in df.iterrows():
-				if row['tribunal'] == estado:
-					ano_processo = re.search(r'\.(\d{4})\.',row['numero'])
-					if ano_processo:
-						if int(ano_processo.group(1)) < 2009:
-							dicionario_dados[estado][2009]['Numero de processos identificados'] += 1
-							dicionario_dados[estado][2009]['Assunto'].append(row['assunto'])
-							dicionario_dados[estado][2009]['Classe'].append(row['classe'])
-							dicionario_dados[estado][2009]['orgao julgador'].append(row['orgao_julgador'])
-							dicionario_dados[estado][2009]['Local de origem do recurso'].append(row['origem'])
-							dicionario_dados[estado][2009]['polo Ativo'].append(row['polo_ativo'])
-							dicionario_dados[estado][2009]['polo Passivo'].append(row['polo_passivo'])
-						elif int(ano_processo.group(1)) > 2016:
-							dicionario_dados[estado][2016]['Numero de processos identificados'] += 1
-							dicionario_dados[estado][2016]['Assunto'].append(row['assunto'])
-							dicionario_dados[estado][2016]['Classe'].append(row['classe'])
-							dicionario_dados[estado][2016]['orgao julgador'].append(row['orgao_julgador'])
-							dicionario_dados[estado][2016]['Local de origem do recurso'].append(row['origem'])
-							dicionario_dados[estado][2016]['polo Ativo'].append(row['polo_ativo'])
-							dicionario_dados[estado][2016]['polo Passivo'].append(row['polo_passivo'])
-						else:
-							dicionario_dados[estado][int(ano_processo.group(1))]['Numero de processos identificados'] += 1
-							dicionario_dados[estado][int(ano_processo.group(1))]['Assunto'].append(row['assunto'])
-							dicionario_dados[estado][int(ano_processo.group(1))]['Classe'].append(row['classe'])
-							dicionario_dados[estado][int(ano_processo.group(1))]['orgao julgador'].append(row['orgao_julgador'])
-							dicionario_dados[estado][int(ano_processo.group(1))]['Local de origem do recurso'].append(row['origem'])
-							dicionario_dados[estado][int(ano_processo.group(1))]['polo Ativo'].append(row['polo_ativo'])
-							dicionario_dados[estado][int(ano_processo.group(1))]['polo Passivo'].append(row['polo_passivo'])
+		for index, row in df.iterrows():
+			if row['tribunal']:
+				ano_processo = re.search(r'\.(\d{4})\.',row['numero'])
+				if ano_processo:
+					if int(ano_processo.group(1)) < 2009:
+						dicionario_dados[row['tribunal']]['2009']['Numero de processos identificados'] += 1
+						dicionario_dados[row['tribunal']]['2009']['Assunto'].append(row['assunto'])
+						dicionario_dados[row['tribunal']]['2009']['Classe'].append(row['classe'])
+						dicionario_dados[row['tribunal']]['2009']['orgao julgador'].append(row['orgao_julgador'])
+						dicionario_dados[row['tribunal']]['2009']['Local de origem do recurso'].append(row['origem'])
+						dicionario_dados[row['tribunal']]['2009']['polo Ativo'].append(row['polo_ativo'])
+						dicionario_dados[row['tribunal']]['2009']['polo Passivo'].append(row['polo_passivo'])
+					elif int(ano_processo.group(1)) > 2016:
+						dicionario_dados[row['tribunal']]['2016']['Numero de processos identificados'] += 1
+						dicionario_dados[row['tribunal']]['2016']['Assunto'].append(row['assunto'])
+						dicionario_dados[row['tribunal']]['2016']['Classe'].append(row['classe'])
+						dicionario_dados[row['tribunal']]['2016']['orgao julgador'].append(row['orgao_julgador'])
+						dicionario_dados[row['tribunal']]['2016']['Local de origem do recurso'].append(row['origem'])
+						dicionario_dados[row['tribunal']]['2016']['polo Ativo'].append(row['polo_ativo'])
+						dicionario_dados[row['tribunal']]['2016']['polo Passivo'].append(row['polo_passivo'])
+					else:
+						dicionario_dados[row['tribunal']][ano_processo.group(1)]['Numero de processos identificados'] += 1
+						dicionario_dados[row['tribunal']][ano_processo.group(1)]['Assunto'].append(row['assunto'])
+						dicionario_dados[row['tribunal']][ano_processo.group(1)]['Classe'].append(row['classe'])
+						dicionario_dados[row['tribunal']][ano_processo.group(1)]['orgao julgador'].append(row['orgao_julgador'])
+						dicionario_dados[row['tribunal']][ano_processo.group(1)]['Local de origem do recurso'].append(row['origem'])
+						dicionario_dados[row['tribunal']][ano_processo.group(1)]['polo Ativo'].append(row['polo_ativo'])
+						dicionario_dados[row['tribunal']][ano_processo.group(1)]['polo Passivo'].append(row['polo_passivo'])
 		return dicionario_dados
 
 	def estatistica_descritiva(self, dicionario_dados, mais_frequentes = 10):
