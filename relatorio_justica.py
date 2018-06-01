@@ -121,15 +121,15 @@ def main():
 	# 		print(e)
 	# 		break
 
-	print('recolhendo os textos com saude para classificacao')
-	cursor.execute('SELECT id, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto_decisao) like "%saude%";')
-	dados_aux = cursor.fetchall()
+	# print('recolhendo os textos com saude para classificacao')
+	# cursor.execute('SELECT id, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto_decisao) like "%saude%" and classificacao_auto is not null;')
+	# dados_aux = cursor.fetchall()
 
-	# APLICAÇÃO DO CLASSIFICADOR A UM TEXTO
-	for id_p, texto in dados_aux:
-		token_texto = [utils.tokenize(texto, stem=True)]
-		classificacao = model.predict(token_texto)
-		cursor.execute('UPDATE jurisprudencia_2_inst.jurisprudencia_2_inst set classificacao_auto = "{}" where id = {};'.format(classificacao[0],id_p))
+	# # APLICAÇÃO DO CLASSIFICADOR A UM TEXTO
+	# for id_p, texto in dados_aux:
+	# 	token_texto = [utils.tokenize(texto, stem=True)]
+	# 	classificacao = model.predict(token_texto)
+	# 	cursor.execute('UPDATE jurisprudencia_2_inst.jurisprudencia_2_inst set classificacao_auto = "{}" where id = {};'.format(classificacao[0],id_p))
 
 	print('exportando a classificacao para um csv')
 	dados = rel.query_padrao(parametros='*',condicoes='where classificacao_auto = "1"')
