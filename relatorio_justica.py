@@ -239,17 +239,17 @@ def main():
 			relatorio_final.write('Estado: ')
 			relatorio_final.write(k)
 			relatorio_final.write('\n\n')
-				for ano,dados_ano in v.items():
-					relatorio_final.write('ANO: ')
-					relatorio_final.write(str(ano))
-					relatorio_final.write('\n\n')
-					for m,n in dados_ano.items():
-						relatorio_final.write(m)
-						relatorio_final.write(' : ')
-						relatorio_final.write(str(n))
-						relatorio_final.write('\n')
-				# relatorio_final.write('\nPrincipais tópicos das ações relacionadas à saúde neste tribunal:\n\n')
-				# relatorio_final.write(topicos[k])
+			for ano,dados_ano in v.items():
+				relatorio_final.write('ANO: ')
+				relatorio_final.write(str(ano))
+				relatorio_final.write('\n\n')
+				for m,n in dados_ano.items():
+					relatorio_final.write(m)
+					relatorio_final.write(' : ')
+					relatorio_final.write(str(n))
+					relatorio_final.write('\n')
+			# relatorio_final.write('\nPrincipais tópicos das ações relacionadas à saúde neste tribunal:\n\n')
+			# relatorio_final.write(topicos[k])
 
 if __name__ == '__main__':
 	main()
