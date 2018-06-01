@@ -121,23 +121,23 @@ def main():
 	# 		print(e)
 	# 		break
 
-	print('recolhendo os textos com saude para classificacao')
-	cursor.execute('SELECT id, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto_decisao) like "%saude%" and classificacao_auto is null;')
-	dados_aux = cursor.fetchall()
+	# print('recolhendo os textos com saude para classificacao')
+	# cursor.execute('SELECT id, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto_decisao) like "%saude%" and classificacao_auto is null;')
+	# dados_aux = cursor.fetchall()
 
-	print('aplicando o classificador')
-	# APLICAÇÃO DO CLASSIFICADOR A UM TEXTO
-	for id_p, texto in dados_aux:
-		token_texto = [utils.tokenize(texto, stem=True)]
-		classificacao = model.predict(token_texto)
-		cursor.execute('UPDATE jurisprudencia_2_inst.jurisprudencia_2_inst set classificacao_auto = "{}" where id = {};'.format(classificacao[0],id_p))
+	# print('aplicando o classificador')
+	# # APLICAÇÃO DO CLASSIFICADOR A UM TEXTO
+	# for id_p, texto in dados_aux:
+	# 	token_texto = [utils.tokenize(texto, stem=True)]
+	# 	classificacao = model.predict(token_texto)
+	# 	cursor.execute('UPDATE jurisprudencia_2_inst.jurisprudencia_2_inst set classificacao_auto = "{}" where id = {};'.format(classificacao[0],id_p))
 
-	print('exportando a classificacao para um csv')
-	dados = rel.query_padrao(parametros='*',condicoes='where classificacao_auto = "1"')
-	rel.resultados_2_df(dados, rel.colunas_2_inst).to_csv(path_or_buf='relatorio_cnj.csv', sep=';', quotechar='"')
+	# print('exportando a classificacao para um csv')
+	# dados = rel.query_padrao(parametros='*',condicoes='where classificacao_auto = "1"')
+	# rel.resultados_2_df(dados, rel.colunas_2_inst).to_csv(path_or_buf='relatorio_cnj.csv', sep=';', quotechar='"')
+
+	print('fazendo estatistica descritiva')
 	df = pd.read_csv('relatorio_cnj.csv', sep=';', quotechar='"')
-
-	print('fazendo estatística descritiva')
 	# ESTATÍSTICA DESCRITIVA PARA CADA ESTADO
 	estatistica_d = {}
 	for k,v in rel.dicionario_estatisticas(df).items():
