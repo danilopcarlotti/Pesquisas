@@ -194,7 +194,7 @@ def main():
 		estatistica_d[k] = {} 
 	for k,v in rel.dicionario_estatisticas_ano(df).items():
 		for k1, v1 in v.items():
-			estatistica_d[k][v1] = rel.estatistica_descritiva(v1)
+			estatistica_d[k][k1] = rel.estatistica_descritiva(v1)
 
 	# TOPIC MODELLING PARA CADA ESTADO
 	# tp = topicModelling()
