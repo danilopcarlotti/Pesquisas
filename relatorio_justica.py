@@ -12,7 +12,7 @@ class relatorio_justica():
 		self.colunas_2_inst = ['id','tribunal','numero','assunto','classe','data_decisao','orgao_julgador','julgador','texto_decisao','relatorio','fundamentacao','dispositivo','polo_ativo','polo_passivo','origem']
 		self.instancia_1 = 'jurisprudencia_1_inst.jurisprudencia_1_inst'
 		self.instancia_2 = 'jurisprudencia_2_inst.jurisprudencia_2_inst'
-		self.estados = ['ac','al','ap','am','ba','ce','df','es','go','ma','mt','ms','mg','pa','pb','pr','pe','pi','rj','rn','rs','ro','rr','sc','sp','se','to']
+		self.estados = ['ac','al','ap','am','ba','ce','df','es','go','ma','mt','ms','mg','pa','pb','pr','pe','pi','rj','rn','rs','ro','rr','sc','sp','se','to','trf1','trf2','trf3','trf4','trf5']
 		self.cursor = cursorConexao()
 
 	def dados_2_dic(self, dados, colunas):
