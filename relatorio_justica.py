@@ -45,7 +45,7 @@ class relatorio_justica():
 					dicionario_dados[estado]['Numero de processos identificados'] += 1
 					dicionario_dados[estado]['Assunto'].append(row['assunto'])
 					dicionario_dados[estado]['Classe'].append(row['classe'])
-					dicionario_dados[estado]['orgao julgador'].append((row['orgao_julgador'],row['julgador']))
+					dicionario_dados[estado]['orgao julgador'].append(row['orgao_julgador'])
 					dicionario_dados[estado]['Local de origem do recurso'].append(row['origem'])
 					dicionario_dados[estado]['polo Ativo'].append(row['polo_ativo'])
 					dicionario_dados[estado]['polo Passivo'].append(row['polo_passivo'])
@@ -121,21 +121,23 @@ def main():
 	# 		print(e)
 	# 		break
 
-	# print('recolhendo os textos com saude para classificacao')
-	# cursor.execute('SELECT id, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto_decisao) like "%saude%" and classificacao_auto is not null;')
-	# dados_aux = cursor.fetchall()
+	print('recolhendo os textos com saude para classificacao')
+	cursor.execute('SELECT id, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto_decisao) like "%saude%" and classificacao_auto is null;')
+	dados_aux = cursor.fetchall()
 
-	# # APLICAÇÃO DO CLASSIFICADOR A UM TEXTO
-	# for id_p, texto in dados_aux:
-	# 	token_texto = [utils.tokenize(texto, stem=True)]
-	# 	classificacao = model.predict(token_texto)
-	# 	cursor.execute('UPDATE jurisprudencia_2_inst.jurisprudencia_2_inst set classificacao_auto = "{}" where id = {};'.format(classificacao[0],id_p))
+	print('aplicando o classificador')
+	# APLICAÇÃO DO CLASSIFICADOR A UM TEXTO
+	for id_p, texto in dados_aux:
+		token_texto = [utils.tokenize(texto, stem=True)]
+		classificacao = model.predict(token_texto)
+		cursor.execute('UPDATE jurisprudencia_2_inst.jurisprudencia_2_inst set classificacao_auto = "{}" where id = {};'.format(classificacao[0],id_p))
 
 	print('exportando a classificacao para um csv')
 	dados = rel.query_padrao(parametros='*',condicoes='where classificacao_auto = "1"')
 	rel.resultados_2_df(dados, rel.colunas_2_inst).to_csv(path_or_buf='relatorio_cnj.csv', sep=';', quotechar='"')
 	df = pd.read_csv('relatorio_cnj.csv', sep=';', quotechar='"')
 
+	print('fazendo estatística descritiva')
 	# ESTATÍSTICA DESCRITIVA PARA CADA ESTADO
 	estatistica_d = {}
 	for k,v in rel.dicionario_estatisticas(df).items():
