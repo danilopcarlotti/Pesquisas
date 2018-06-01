@@ -73,7 +73,7 @@ class relatorio_justica():
 				if row['tribunal'] == estado:
 					ano_processo = re.search(r'\.(\d{4})\.',row['numero'])
 					if ano_processo:
-						if int(ano_processo) < 2009:
+						if int(ano_processo.group(1)) < 2009:
 							dicionario_dados[estado][2009]['Numero de processos identificados'] += 1
 							dicionario_dados[estado][2009]['Assunto'].append(row['assunto'])
 							dicionario_dados[estado][2009]['Classe'].append(row['classe'])
@@ -81,7 +81,7 @@ class relatorio_justica():
 							dicionario_dados[estado][2009]['Local de origem do recurso'].append(row['origem'])
 							dicionario_dados[estado][2009]['polo Ativo'].append(row['polo_ativo'])
 							dicionario_dados[estado][2009]['polo Passivo'].append(row['polo_passivo'])
-						elif int(ano_processo) > 2016:
+						elif int(ano_processo.group(1)) > 2016:
 							dicionario_dados[estado][2016]['Numero de processos identificados'] += 1
 							dicionario_dados[estado][2016]['Assunto'].append(row['assunto'])
 							dicionario_dados[estado][2016]['Classe'].append(row['classe'])
