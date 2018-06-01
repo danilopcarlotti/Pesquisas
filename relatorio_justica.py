@@ -4,7 +4,7 @@ from collections import Counter
 from crawlers.common.conexao_local import cursorConexao
 # from crawlers.common_nlp.topicModelling import topicModelling
 from common_nlp.mNB_classification_text import mNB_classification_text
-import pandas as pd, utils
+import pandas as pd, utils, re
 
 class relatorio_justica():
 	'''Classe para geração de relatórios sobre a justiça'''
@@ -49,6 +49,54 @@ class relatorio_justica():
 					dicionario_dados[estado]['Local de origem do recurso'].append(row['origem'])
 					dicionario_dados[estado]['polo Ativo'].append(row['polo_ativo'])
 					dicionario_dados[estado]['polo Passivo'].append(row['polo_passivo'])
+		return dicionario_dados
+
+	def dicionario_estatisticas_ano(self,df):
+		dicionario_dados = {}
+		anos = [2009,2010,2011,2012,2013,2014,2015,2016]
+		for estado in self.estados:
+			for ano in anos:
+				dicionario_dados[estado] = {
+					ano : {
+					'Estado':estado,
+					'Numero de processos identificados':0, 
+					'Assunto':[],
+					'Classe':[],
+					'orgao julgador':[],
+					'Local de origem do recurso':[],
+					'polo Ativo':[],
+					'polo Passivo':[]
+					}
+				}
+		for estado in self.estados:
+			for index, row in df.iterrows():
+				if row['tribunal'] == estado:
+					ano_processo = re.search(r'\.(\d{4})\.',row['numero'])
+					if ano_processo:
+						if int(ano_processo) < 2009:
+							dicionario_dados[estado][2009]['Numero de processos identificados'] += 1
+							dicionario_dados[estado][2009]['Assunto'].append(row['assunto'])
+							dicionario_dados[estado][2009]['Classe'].append(row['classe'])
+							dicionario_dados[estado][2009]['orgao julgador'].append(row['orgao_julgador'])
+							dicionario_dados[estado][2009]['Local de origem do recurso'].append(row['origem'])
+							dicionario_dados[estado][2009]['polo Ativo'].append(row['polo_ativo'])
+							dicionario_dados[estado][2009]['polo Passivo'].append(row['polo_passivo'])
+						elif int(ano_processo) > 2016:
+							dicionario_dados[estado][2016]['Numero de processos identificados'] += 1
+							dicionario_dados[estado][2016]['Assunto'].append(row['assunto'])
+							dicionario_dados[estado][2016]['Classe'].append(row['classe'])
+							dicionario_dados[estado][2016]['orgao julgador'].append(row['orgao_julgador'])
+							dicionario_dados[estado][2016]['Local de origem do recurso'].append(row['origem'])
+							dicionario_dados[estado][2016]['polo Ativo'].append(row['polo_ativo'])
+							dicionario_dados[estado][2016]['polo Passivo'].append(row['polo_passivo'])
+						else:
+							dicionario_dados[estado][int(ano_processo.group(1))]['Numero de processos identificados'] += 1
+							dicionario_dados[estado][int(ano_processo.group(1))]['Assunto'].append(row['assunto'])
+							dicionario_dados[estado][int(ano_processo.group(1))]['Classe'].append(row['classe'])
+							dicionario_dados[estado][int(ano_processo.group(1))]['orgao julgador'].append(row['orgao_julgador'])
+							dicionario_dados[estado][int(ano_processo.group(1))]['Local de origem do recurso'].append(row['origem'])
+							dicionario_dados[estado][int(ano_processo.group(1))]['polo Ativo'].append(row['polo_ativo'])
+							dicionario_dados[estado][int(ano_processo.group(1))]['polo Passivo'].append(row['polo_passivo'])
 		return dicionario_dados
 
 	def estatistica_descritiva(self, dicionario_dados, mais_frequentes = 10):
@@ -101,9 +149,9 @@ def main():
 
 	# print('rodando o classificador em toda a base')
 	# # CLASSE DO CLASSIFICADOR
-	model = utils.load_model('modelo.pickle')
+	# model = utils.load_model('modelo.pickle')
 
-	cursor = cursorConexao()
+	# cursor = cursorConexao()
 
 	# for i in range(0,int(numero_textos),1000):
 	# 	try:
@@ -138,10 +186,19 @@ def main():
 
 	print('fazendo estatistica descritiva')
 	df = pd.read_csv('relatorio_cnj.csv', sep=';', quotechar='"')
+	
 	# ESTATÍSTICA DESCRITIVA PARA CADA ESTADO
+	# estatistica_d = {}
+	# for k,v in rel.dicionario_estatisticas(df).items():
+	# 	estatistica_d[k] = rel.estatistica_descritiva(v)
+
+	# ESTATÍSTICA DESCRITIVA PARA CADA ESTADO x ANO
 	estatistica_d = {}
 	for k,v in rel.dicionario_estatisticas(df).items():
-		estatistica_d[k] = rel.estatistica_descritiva(v)
+		estatistica_d[k] = {} 
+	for k,v in rel.dicionario_estatisticas_ano(df).items():
+		for k1, v1 in v.items():
+			estatistica_d[k][v1] = rel.estatistica_descritiva(v1)
 
 	# TOPIC MODELLING PARA CADA ESTADO
 	# tp = topicModelling()
@@ -151,21 +208,46 @@ def main():
 	# 	topicos[k] = tp.lda_Model(v)
 
 	# TEXTO DO RELATÓRIO
-	relatorio_final = open('relatorio_cnj_06_2018.txt','w',encoding='utf-8')
+	# relatorio_final = open('relatorio_cnj_06_2018.txt','w',encoding='utf-8')
+	# relatorio_final.write('Relatorio final\n\n\n')
+	# relatorio_final.write('Estatistica descritiva sobre os processos nos tribunais\n\n\n')
+	# for k,v in estatistica_d.items():
+	# 	relatorio_final.write('Estado: ')
+	# 	relatorio_final.write(k)
+	# 	relatorio_final.write('\n\n')
+	# 	if v['Nao encontrado']:
+			# relatorio_final.write('Nao foram encontrados dados para este Estado\n\n')
+		# else:
+		# 	for m,n in v.items():
+		# 		relatorio_final.write(m)
+		# 		relatorio_final.write(' : ')
+		# 		relatorio_final.write(str(n))
+		# 		relatorio_final.write('\n')
+			# relatorio_final.write('\nPrincipais tópicos das ações relacionadas à saúde neste tribunal:\n\n')
+			# relatorio_final.write(topicos[k])
+
+	# TEXTO DO RELATÓRIO POR ANO
+		# TEXTO DO RELATÓRIO
+	relatorio_final = open('relatorio_cnj_06_2018_por_ano.txt','w',encoding='utf-8')
 	relatorio_final.write('Relatorio final\n\n\n')
 	relatorio_final.write('Estatistica descritiva sobre os processos nos tribunais\n\n\n')
 	for k,v in estatistica_d.items():
+		if v['Nao encontrado']:
+			pass
+			# relatorio_final.write('Nao foram encontrados dados para este Estado\n\n')
+		else:
 		relatorio_final.write('Estado: ')
 		relatorio_final.write(k)
 		relatorio_final.write('\n\n')
-		if v['Nao encontrado']:
-			relatorio_final.write('Nao foram encontrados dados para este Estado\n\n')
-		else:
-			for m,n in v.items():
-				relatorio_final.write(m)
-				relatorio_final.write(' : ')
-				relatorio_final.write(str(n))
-				relatorio_final.write('\n')
+			for ano,dados_ano in v.items():
+				relatorio_final.write('ANO: ')
+				relatorio_final.write(str(ano))
+				relatorio_final.write('\n\n')
+				for m,n in dados_ano.items():
+					relatorio_final.write(m)
+					relatorio_final.write(' : ')
+					relatorio_final.write(str(n))
+					relatorio_final.write('\n')
 			# relatorio_final.write('\nPrincipais tópicos das ações relacionadas à saúde neste tribunal:\n\n')
 			# relatorio_final.write(topicos[k])
 
