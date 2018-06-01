@@ -228,22 +228,18 @@ def main():
 	relatorio_final.write('Relatorio final\n\n\n')
 	relatorio_final.write('Estatistica descritiva sobre os processos nos tribunais\n\n\n')
 	for k,v in estatistica_d.items():
-		if v['Nao encontrado']:
-			pass
-			# relatorio_final.write('Nao foram encontrados dados para este Estado\n\n')
-		else:
-			relatorio_final.write('Estado: ')
-			relatorio_final.write(k)
+		relatorio_final.write('Estado: ')
+		relatorio_final.write(k)
+		relatorio_final.write('\n\n')
+		for ano,dados_ano in v.items():
+			relatorio_final.write('ANO: ')
+			relatorio_final.write(str(ano))
 			relatorio_final.write('\n\n')
-			for ano,dados_ano in v.items():
-				relatorio_final.write('ANO: ')
-				relatorio_final.write(str(ano))
-				relatorio_final.write('\n\n')
-				for m,n in dados_ano.items():
-					relatorio_final.write(m)
-					relatorio_final.write(' : ')
-					relatorio_final.write(str(n))
-					relatorio_final.write('\n')
+			for m,n in dados_ano.items():
+				relatorio_final.write(m)
+				relatorio_final.write(' : ')
+				relatorio_final.write(str(n))
+				relatorio_final.write('\n')
 			# relatorio_final.write('\nPrincipais tópicos das ações relacionadas à saúde neste tribunal:\n\n')
 			# relatorio_final.write(topicos[k])
 
