@@ -66,86 +66,73 @@ class parserTextoJuridico():
 			return 'Certidão'
 		return 'NDA'
 
-	def indicaResultado(texto, tipo):
+	def indicaResultado(self,texto, tipo):
 		# Procedência ou não da ação
 		# Treinado para ações trabalhistas do TRT02
 		resultado = []
 		if tipo == 'Sentença':
 			# VETOR RESULTADO SENTENÇA POSSUI 4 POSIÇÕES (IMPROCEDENTE, PARCIALMENTE PROCEDENTE, PROCEDENTE, EXTINTO)
 			resultado = [0,0,0,0]
-			resultadoProcesso = re.findall(r'julg.{1,30}IMPROCEDE',texto,re.IGNORECASE)
-			resultadoProcessopp = re.findall(r'julg.*{1,30}PARCIALMENTE\s*PROCEDENTE[S\s]?',texto,re.IGNORECASE)
-			resultadoProcessop = re.findall(r'julg.*{1,30}PROCEDE',texto,re.IGNORECASE)
+			resultadoProcesso = re.search(r'julg.{1,30}IMPROCEDE',texto,re.IGNORECASE)
+			resultadoProcessop = re.search(r'julg.*{1,30} PROCEDE',texto,re.IGNORECASE)
+			resultadoProcessopp = re.search(r'julg.*{1,30}PARCIALMENTE\s*PROCEDENTE[S\s]?',texto,re.IGNORECASE)
 			resultadoExtincao = re.search(r'julg.{1,30}extin[guirtoa]?',texto,re.IGNORECASE)
-			if len(resultadoProcesso) > 0:
+			if resultadoProcesso:
 				resultado[0] = 1 
-			if len(resultadoProcessop) > 0:
+			if resultadoProcessop:
 				resultado[2] = 1
-			if len(resultadoProcessopp) > 0 or (resultado[2] == 1 and resultado[0] == 1):
+			if resultadoProcessopp or (resultado[2] and resultado[0]):
 				resultado[1] = 1
 				resultado[0] = 0
-				resultado[1] = 1
-			if resultadoExtincao != None and resultado[0] == 0 and resultado[1] == 0 and resultado[2] == 0:
+				resultado[2] = 0
+			if resultadoExtincao and resultado[0] == 0 and resultado[1] == 0 and resultado[2] == 0:
 				resultado[3] = 1
 		elif tipo == 'Recurso':
-			# VETOR RESULTADO RECURSOS POSSUI 13 POSIÇÕES
-			# (INTEMPESTIVO,
-			# [ADESIVO RECLAMANTE NÃO CONHECIDO, ADESIVO RECLAMADA NÃO CONHECIDO, ORDINÁRIO RECLAMANTE NÃO CONHECIDO, ORDINÁRIO RECLAMADA NÃO CONHECIDO]
-			# [ADESIVO RECLAMANTE CONHECIDO E PROVIDO, ADESIVO RECLAMANTE CONHECIDO E NÃO PROVIDO, ADESIVO RECLAMADA CONHECIDO E PROVIDO, ADESIVO RECLAMADA CONHECIDO E NÃO PROVIDO, ORDINÁRIO RECLAMANTE CONHECIDO E PROVIDO, ORDINÁRIO RECLAMANTE CONHECIDO E NÃO PROVIDO, ORDINÁRIO RECLAMADA CONHECIDO E PROVIDO, ORDINÁRIO RECLAMADA CONHECIDO E NÃO PROVIDO])
-			resultado = [0,[0,0,0,0],[0,0,0,0,0,0,0,0]]
-			resultadoProcesso = re.findall(r'ACORDAM(.+)\.',texto, re.IGNORECASE)
-			for r in resultadoProcesso:
-				if re.search(r'intempestivo',r, re.IGNORECASE) != None:
+			# VETOR RESULTADO RECURSOS POSSUI 5 POSIÇÕES
+			# (INTEMPESTIVO, NÃO CONHECIDO, CONHECIDO E PROVIDO, CONHECIDO E NEGADO, CONHECIDO PARCIALMENTE PROVIDO)
+			resultado = [0,0,0,0,0]
+			# Caso em que o resultado aparece no corpo do acórdão
+			resultadoProcesso = re.findall(r'ACORDAM(.+)\.',texto, flags=re.IGNORECASE|re.DOTALL)
+			if len(resultadoProcesso):
+				for r in resultadoProcesso:
+					if re.search(r'intempestivo',r, flags=re.IGNORECASE|re.DOTALL) != None:
+						resultado[0] = 1
+					else:
+						if re.search(r'(NÃO CONHECER.{1,30}DO RECURSO)|(RECURSO NÃO CONHECIDO)|RECURSO DESPROVIDO',r, flags=re.IGNORECASE|re.DOTALL) != None:
+							resultado[1] = 1
+						elif re.search(r'CONHECER.{1,30}[D]?O[S]? RECURSO[S]?',r, flags=re.IGNORECASE|re.DOTALL) != None:
+							if re.search(r'DAR PROVIMENTO', r, flags=re.IGNORECASE|re.DOTALL) != None:
+								resultado[2] = 1
+							elif re.search(r'NEGAR PROVIMENTO', r, flags=re.IGNORECASE|re.DOTALL) != None:
+								resultado[3] = 1
+						elif re.search(r'CONHECER.{1,30}E PROVER O[S]? RECURSO[S]?',r, flags=re.IGNORECASE|re.DOTALL) != None:
+							resultado[2] = 1
+						elif re.search(r'CONHECER.{1,30}E NEGAR[-LHES]? PROVIMENTO',r, flags=re.IGNORECASE|re.DOTALL) != None:
+							resultado[3] = 1
+						elif re.search(r'RECURSO PARCIALMENTE PROVIDO', r) != None:
+							resultado[4] = 1
+			# Caso em que o resultado aparece na ementa ou nada identificado no texto acima
+			if resultado == [0,0,0,0,0]:
+				if re.search(r'recurso.{1,30}intempestivo',texto, flags=re.IGNORECASE|re.DOTALL) != None:
 					resultado[0] = 1
 				else:
-					if re.search(r'NÃO CONHECER',r, re.IGNORECASE) != None:
-						if re.search(r'adesivo d[oas]? reclamant[es]?',r, re.IGNORECASE) != None:
-							resultado[1][0] = 1
-						if re.search(r'adesivo d[oas]? reclamad[oas]?',r, re.IGNORECASE) != None:
-							resultado[1][1] = 1
-						if re.search(r'ordinário d[oas]? reclamant[es]?',r, re.IGNORECASE) != None:
-							resultado[1][2] = 1
-						if re.search(r'ordinário d[oas]? reclamad[oas]?',r, re.IGNORECASE) != None:
-							resultado[1][3] = 1
-					elif re.search(r'CONHECER [D]?O[S]? RECURSO[S]?',r, re.IGNORECASE) != None:
-						if re.search(r'adesivo d[oas]? reclamant[es]?',r, re.IGNORECASE) != None:
-							if re.search(r'DAR PROVIMENTO', r, re.IGNORECASE) != None:
-								resultado[2][0] = 1
-							elif re.search(r'NEGAR PROVIMENTO', r, re.IGNORECASE) != None:
-								resultado[2][1] = 1
-						if re.search(r'adesivo d[oas]? reclamad[oas]?',r, re.IGNORECASE) != None:
-							if re.search(r'DAR PROVIMENTO', r, re.IGNORECASE) != None:
-								resultado[2][2] = 1
-							elif re.search(r'NEGAR PROVIMENTO', r, re.IGNORECASE) != None:
-								resultado[2][3] = 1
-						if re.search(r'ordinário d[oas]? reclamant[es]?',r, re.IGNORECASE) != None:
-							if re.search(r'DAR PROVIMENTO', r, re.IGNORECASE) != None:
-								resultado[2][4] = 1
-							elif re.search(r'NEGAR PROVIMENTO', r, re.IGNORECASE) != None:
-								resultado[2][5] = 1
-						if re.search(r'ordinário d[oas]? reclamad[oas]?',r, re.IGNORECASE) != None:
-							if re.search(r'DAR PROVIMENTO', r, re.IGNORECASE) != None:
-								resultado[2][6] = 1
-							elif re.search(r'NEGAR PROVIMENTO', r, re.IGNORECASE) != None:
-								resultado[2][7] = 1
-					elif re.search(r'CONHECER E PROVER O[S]? RECURSO[S]?',r, re.IGNORECASE) != None:
-						if re.search(r'adesivo d[oas]? reclamant[es]?',r, re.IGNORECASE) != None:
-							resultado[2][0] = 1
-						if re.search(r'adesivo d[oas]? reclamad[oas]?',r, re.IGNORECASE) != None:
-							resultado[2][2] = 1
-						if re.search(r'ordinário d[oas]? reclamant[es]?',r, re.IGNORECASE) != None:
-							resultado[2][4] = 1
-						if re.search(r'ordinário d[oas]? reclamad[oas]?',r, re.IGNORECASE) != None:
-							resultado[2][6] = 1
-					elif re.search(r'CONHECER E NEGAR[-LHES]? PROVIMENTO',r, re.IGNORECASE) != None:
-						if re.search(r'adesivo d[oas]? reclamant[es]?',r, re.IGNORECASE) != None:
-							resultado[2][1] = 1
-						if re.search(r'adesivo d[oas]? reclamad[oas]?',r, re.IGNORECASE) != None:
-							resultado[2][3] = 1
-						if re.search(r'ordinário d[oas]? reclamant[es]?',r, re.IGNORECASE) != None:
-							resultado[2][5] = 1
-						if re.search(r'ordinário d[oas]? reclamad[oas]?',r, re.IGNORECASE) != None:
-							resultado[2][7] = 1
+					if re.search(r'(NÃO CONHECER.{1,30}DO RECURSO)|(RECURSO NÃO CONHECIDO)|RECURSO DESPROVIDO|\.\s*?IMPROCEDÊNCIA\.',texto, flags=re.IGNORECASE|re.DOTALL) != None:
+						resultado[1] = 1
+					else:
+						conhecer = re.search(r'CONHECER [D]?O[S]? RECURSO[S]?(.*?)\.',texto, flags=re.IGNORECASE|re.DOTALL)
+						conhecer_1 = re.search(r'RECURSO CONHECIDO(.*?)\.',texto, flags=re.IGNORECASE|re.DOTALL)
+						if conhecer and conhecer.group(1) != None:
+							if re.search(r'(DAR PROVIMENTO)|( PROVIDO)', conhecer.group(1)) != None:
+								resultado[2] = 1
+							elif re.search(r'(NEGAR PROVIMENTO)|( DESPROVIDO)', conhecer.group(1)) != None:
+								resultado[3] = 1
+						elif conhecer_1 and conhecer_1.group(1) != None:
+							if re.search(r'(DAR PROVIMENTO)|( PROVIDO)', conhecer_1.group(1)) != None:
+								resultado[2] = 1
+							elif re.search(r'(NEGAR PROVIMENTO)|( DESPROVIDO)', conhecer_1.group(1)) != None:
+								resultado[3] = 1
+						elif re.search(r'RECURSO PARCIALMENTE PROVIDO', texto) != None:
+							resultado[4] = 1
 		return resultado
 
 	def parser_acordao(self,texto, tipo):

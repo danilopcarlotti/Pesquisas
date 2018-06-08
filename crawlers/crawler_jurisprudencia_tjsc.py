@@ -81,14 +81,14 @@ class crawler_jurisprudencia_tjsc():
 		orgao_julgador = busca(r'\n.rgão Julgador\:(.*?)\n', texto)
 		data_disponibilizacao = busca(r'\n\s*?Julgado em\s*?\:(.*?)\n', texto)
 		origem = busca(r'\n\s*?Origem\s*?\:(.*?)\n', texto)
-		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, classe, data_decisao, orgao_julgador, julgador, origem, texto_decisao) values ("%s","%s","%s","%s","%s","%s","%s","%s");' % ('sc',numero, classe, data_disponibilizacao, orgao_julgador, julgador, origem, texto))
+		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst_sc (tribunal, numero, classe, data_decisao, orgao_julgador, julgador, origem, texto_decisao) values ("%s","%s","%s","%s","%s","%s","%s","%s");' % ('sc',numero, classe, data_disponibilizacao, orgao_julgador, julgador, origem, texto))
 
 
 def main():
 	c = crawler_jurisprudencia_tjsc()
 	cursor = cursorConexao()
 
-	cursor.execute('SELECT texto_ementa from justica_estadual.jurisprudencia_sc;')
+	cursor.execute('SELECT texto from justica_estadual.jurisprudencia_sc;')
 	dados = cursor.fetchall()
 	for dado in dados:
 		c.parser_acordaos(dado[0], cursor)
