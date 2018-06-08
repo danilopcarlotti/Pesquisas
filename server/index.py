@@ -17,6 +17,12 @@ def classificacao():
     while not resultado:
       id_aleatorio = random.randrange(1324911,5324911)
       query_txt = 'SELECT id, tribunal, texto_decisao from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto_decisao) like "%saúde%" and classificacao is null and id = "{}";'.format(str(id_aleatorio))
+      # id_aleatorio = random.randrange(19803,321358) # ID ALEATÓRIO STF
+      # QUERY STF
+      # query_txt = 'SELECT id, texto_decisao from stf.decisoes where lower(texto_decisao) like "%saúde%" and classificacao is null and id = "{}";'.format(str(id_aleatorio))
+      # id_aleatorio = random.randrange(448,299891) # ID ALEATÓRIO STj
+      # QUERY STJ
+      # query_txt = 'SELECT id, voto from stj.votos where lower(voto) like "%saúde%" and classificacao is null and id = "{}";'.format(str(id_aleatorio))
       dados = q.query_padrao(query_text=query_txt)
       if dados:
         resultado = 1
@@ -32,6 +38,11 @@ def classificacao_texto():
       id_p = session.get('id_p', None)
       classificacao = request.form['classe']
       cursor = cursorConexao()
+      # UṔDATE STF
+      # cursor.execute('UPDATE stf.decisoes set classificacao = "%s" where id = "%s"' % (classificacao, id_p))
+      # UPDATE STJ
+      # cursor.execute('UPDATE stj.votos set classificacao = "%s" where id = "%s"' % (classificacao, id_p))
+      # UPDATE 2ª INSTÂNCIA
       cursor.execute('UPDATE jurisprudencia_2_inst.jurisprudencia_2_inst set classificacao = "%s" where id = "%s"' % (classificacao, id_p))
       return redirect(url_for('classificacao'))
       # return render_template('classificacao_texto.html', classe = classificacao, id_p = id_p)
