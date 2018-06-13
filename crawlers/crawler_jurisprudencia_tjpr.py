@@ -18,11 +18,11 @@ class crawler_jurisprudencia_tjpr():
 		self.botao_proximoXP = '//*[@id="navigator"]/div[1]/a[7]'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_pr (ementas)'
 
-	def download_tj(self):
+	def download_tj(self, termo='ementa'):
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
-		driver.find_element_by_id(self.pesquisa_livre).send_keys('ementa')
+		driver.find_element_by_id(self.pesquisa_livre).send_keys(termo)
 		driver.find_element_by_xpath(self.botao_pesquisar).click()
 		time.sleep(1)
 		contador = 0		

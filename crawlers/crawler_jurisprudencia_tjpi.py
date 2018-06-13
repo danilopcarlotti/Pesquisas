@@ -17,11 +17,11 @@ class crawler_jurisprudencia_tjpi():
 		self.botao_proximoXP = '//*[@id="wrapper"]/div/div[2]/div/nav/ul/li[4]/a/span/i'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_pi (ementas)'
 
-	def download_tj(self):
+	def download_tj(self, termo='ementa'):
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
-		driver.find_element_by_xpath(self.pesquisa_livre).send_keys('ementa')
+		driver.find_element_by_xpath(self.pesquisa_livre).send_keys(termo)
 		driver.find_element_by_xpath(self.botao_pesquisar).click()
 		loop_counter = 0
 		while True:

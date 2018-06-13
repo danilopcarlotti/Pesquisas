@@ -62,10 +62,6 @@ if __name__ == '__main__':
 			c.parser_acordaos(dado, cursor)
 		except Exception as e:
 			print(id_d, e)
-		# try:
-		# 	c.parser_acordaos(dado, cursor)
-		# except Exception as e:
-		# 	print(id_d,e)
 
 	# try:
 	# 	for a in c.lista_anos:

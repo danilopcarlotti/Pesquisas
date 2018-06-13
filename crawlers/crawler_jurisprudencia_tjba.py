@@ -21,10 +21,10 @@ class crawler_jurisprudencia_tjba():
 		self.botao_proximoXP = '//*[@id="jurisprudenciaGridId_paginator_top"]/span[5]/span'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_ba (ementas)'
 
-	def download_tj(self):
+	def download_tj(self, termo='acordam'):
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
-		driver.find_element_by_id(self.pesquisa_livre).send_keys('acordam')
+		driver.find_element_by_id(self.pesquisa_livre).send_keys(termo)
 		driver.find_element_by_id(self.botao_pesquisar).click()
 		time.sleep(15)
 		loop_counter = 0

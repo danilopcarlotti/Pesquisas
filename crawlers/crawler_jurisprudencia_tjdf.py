@@ -17,7 +17,7 @@ class crawler_jurisprudencia_tjdf(crawler_jurisprudencia_tj):
 		
 	def download_tj(self,ultima_pag):
 		cursor = cursorConexao()
-		for i in range(15000,ultima_pag):
+		for i in range(ultima_pag):
 			try:
 				time.sleep(5)
 				link = (self.link_inicial % str(i))
@@ -51,7 +51,12 @@ class crawler_jurisprudencia_tjdf(crawler_jurisprudencia_tj):
 
 def main():
 	c = crawler_jurisprudencia_tjdf()
-
+	print('comecei ',c.__class__.__name__)
+	try:
+		c.download_tj(40000) #número atualizado em jan 2018
+	except Exception as e:
+		print(e)
+	subprocess.Popen('cd %s;for A in *.doc; do libreoffice --headless --convert-to docx $A; done; libreoffice --headless --convert-to docx *.doc; rm *.doc;' % (path+'/df_2_inst/',), shell=True)
 	cursor = cursorConexao()
 	for arq in os.listdir(path+'/df_2_inst'):
 		if re.search(r'docx',arq):
@@ -60,17 +65,6 @@ def main():
 			except Exception as e:
 				print(arq, e)
 
-	# print('comecei ',c.__class__.__name__)
-	# try:
-	# 	c.download_tj(40000) #número atualizado em jan 2018
-	# except Exception as e:
-	# 	print(e)
 
 if __name__ == '__main__':
 	main()
-
-# for A in *.doc; do libreoffice --headless --convert-to docx $A; done
-# libreoffice --headless --convert-to docx *.doc
-# rm *.doc
-
-# rm *.docx

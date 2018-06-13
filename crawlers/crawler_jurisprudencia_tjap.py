@@ -13,11 +13,11 @@ class crawler_jurisprudencia_tjap():
 		self.pesquisa_livre = 'ementa'
 		self.botao_pesquisar = 'btPesquisar'
 
-	def download_tj(self):
+	def download_tj(self, termo='acordam'):
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
 		time.sleep(2)
-		driver.find_element_by_id(self.pesquisa_livre).send_keys('acordam')
+		driver.find_element_by_id(self.pesquisa_livre).send_keys(termo)
 		driver.find_element_by_id(self.botao_pesquisar).click()
 		while True:
 			try:

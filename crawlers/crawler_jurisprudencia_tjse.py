@@ -17,12 +17,12 @@ class crawler_jurisprudencia_tjse():
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_se (ementas)'
 		self.botao_proximoXP = '//*[@id="dgResultadoJurisprudencia2_paginator_top"]/a[3]'
 
-	def download_tj(self):
+	def download_tj(self, termo='processo'):
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
 		time.sleep(1)
-		driver.find_element_by_xpath(self.pesquisa_livre).send_keys('processo')
+		driver.find_element_by_xpath(self.pesquisa_livre).send_keys(termo)
 		if input('Resolva o captcha do Google e digite um número diferente de zero:\n'):
 			pass
 		contador_loop = 0

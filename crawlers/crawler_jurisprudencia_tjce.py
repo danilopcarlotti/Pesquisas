@@ -17,7 +17,7 @@ class crawler_jurisprudencia_tjce():
 		self.botao_proximo = '//*[@id="paginacaoSuperior-A"]/table/tbody/tr[1]/td[2]/div/a[6]'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_ce (ementas)'
 
-	def parser_acordaos(self,texto, cursor):
+	def parser_acordaos(self, texto, cursor):
 		decisoes = re.split(r'\n\d+\s*?\-',texto)
 		for d in range(1,len(decisoes)):
 			numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', decisoes[d],ngroup=0)

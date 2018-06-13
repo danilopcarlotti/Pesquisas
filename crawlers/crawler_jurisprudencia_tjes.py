@@ -17,12 +17,12 @@ class crawler_jurisprudencia_tjes():
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_es (ementas)'
 		self.botao_proximoXP = '//*[@id="conteudo"]/table[2]/tbody/tr[1]/td[2]/a[1]'
 
-	def download_tj(self):
+	def download_tj(self, termo='ementa'):
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
 		time.sleep(5)
-		driver.find_element_by_id(self.pesquisa_livre).send_keys('ementa')
+		driver.find_element_by_id(self.pesquisa_livre).send_keys(termo)
 		driver.find_element_by_id(self.botao_pesquisar).click()
 		loop_counter = 0
 		while True:
@@ -31,9 +31,10 @@ class crawler_jurisprudencia_tjes():
 				cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))
 				driver.find_element_by_xpath(self.botao_proximoXP).click()
 				time.sleep(2)
-			except:
-				if input('ajude-me'):
-					pass
+			except Exception as e:
+				if loop_counter > 3:
+					break
+				loop_counter += 1
 		driver.close()
 
 	def parser_acordaos(self,texto, cursor):
@@ -56,7 +57,7 @@ if __name__ == '__main__':
 	# 	print('finalizei com erro ',e)
 
 	cursor = cursorConexao()
-	cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_es limit 1000000')
+	cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_es;')
 	dados = cursor.fetchall()
 	for dado in dados:
 		c.parser_acordaos(dado[0], cursor)

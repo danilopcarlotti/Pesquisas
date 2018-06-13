@@ -6,7 +6,7 @@ from crawlerJus import crawlerJus
 from common.conexao_local import cursorConexao
 
 
-class processosSTJ(crawlerJus):
+class crawler_jurisprudencia_stj(crawlerJus):
 	"""Classe para download de informações sobre processos do STJ"""
 	def __init__(self, contador):
 		super().__init__()
@@ -24,11 +24,11 @@ class processosSTJ(crawlerJus):
 		]
 		self.contador = contador
 		
-	def baixarDadosProcesso(self):
+	def baixarDadosProcesso(self, termo='a'):
 		driver = webdriver.Chrome(self.chromedriver)
 		link_pesquisa = 'http://www.stj.jus.br/SCON/'
 		driver.get(link_pesquisa)
-		driver.find_element_by_xpath('//*[@id="pesquisaLivre"]').send_keys('a')
+		driver.find_element_by_xpath('//*[@id="pesquisaLivre"]').send_keys(termo)
 		driver.find_element_by_xpath('//*[@id="botoesPesquisa"]/input[1]').click()
 		driver.find_elements_by_xpath('//*[@id="itemlistaresultados"]/span[2]/a')[2].click()
 		driver.find_element_by_class_name('iconeProximaPagina').send_keys('\n')
@@ -40,7 +40,7 @@ class processosSTJ(crawlerJus):
 			except:
 				driver.execute_script("window.history.go(-1)")
 				driver.find_element_by_class_name('iconeProximaPagina').send_keys('\n')
-		while self.contador < 60000:
+		while self.contador < 62000: #jun 2018
 			cursor = cursorConexao()
 			try:
 				acompanhamentos = driver.find_elements_by_xpath('//*[@id="acoesdocumento"]/a[2]')
@@ -112,5 +112,5 @@ class processosSTJ(crawlerJus):
 			contador += 1
 
 if __name__ == '__main__':
-	p = processosSTJ(336)
-	p.baixarDadosProcesso()
+	c = crawler_jurisprudencia_stj(336)
+	c.baixarDadosProcesso()

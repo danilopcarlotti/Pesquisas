@@ -18,12 +18,12 @@ class crawler_jurisprudencia_tjrr():
 		self.lista_proximos = ['5','8','9','10']
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_rr (ementas)'
 
-	def download_tj(self):
+	def download_tj(self, termo='a'):
 		cursor = cursorConexao()
 		crawler = crawlerJus()
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
-		driver.find_element_by_xpath(self.pesquisa_livre).send_keys('a')
+		driver.find_element_by_xpath(self.pesquisa_livre).send_keys(termo)
 		driver.find_element_by_xpath(self.botao_pesquisar).click()
 		for i in self.lista_proximos:
 			bota_p = self.botao_proximoXP % i

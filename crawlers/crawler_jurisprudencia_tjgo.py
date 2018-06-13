@@ -18,11 +18,11 @@ class crawler_jurisprudencia_tjgo():
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_go (ementas)'
 		self.contador_paginas = 2
 
-	def download_tj(self):
+	def download_tj(self, termo='acordam'):
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
-		driver.find_element_by_id(self.pesquisa_livre).send_keys('acordam')
+		driver.find_element_by_id(self.pesquisa_livre).send_keys(termo)
 		driver.find_element_by_id(self.botao_pesquisar).click()
 		texto = crawler_jurisprudencia_tj.extrai_texto_html(self,(driver.page_source).replace('"',''))
 		cursor.execute('INSERT INTO %s value ("%s");' % (self.tabela_colunas,texto))

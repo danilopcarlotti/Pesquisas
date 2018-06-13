@@ -25,7 +25,7 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 		self.tabela_colunas_1_inst = 'justica_estadual.jurisprudencia_sp_1_inst (sentenca)'
 		self.link_esaj = 'https://esaj.tjsp.jus.br/cjsg/getArquivo.do?cdAcordao=%s&cdForo=%s'
 
-	def download_1_inst(self,data_ini, data_fim, termo = 'revisão e contrato e juros'):
+	def download_1_inst(self,data_ini, data_fim, termo = 'a'):
 		botao_proximo = '//*[@id="resultados"]/table[1]/tbody/tr[1]/td[2]/div/a[6]'
 		botao_proximo_ini = '//*[@id="resultados"]/table[1]/tbody/tr[1]/td[2]/div/a[5]'
 		data_ini_xpath = '//*[@id="iddadosConsulta.dtInicio"]'
@@ -137,11 +137,6 @@ def main():
 	# 	dados = cursor.fetchall()
 	# 	for dado in dados:
 	# 		c.parse_sp_dados_1_inst(dado[0], cursor)
-
-	# cursor = cursorConexao()
-	# cursor.execute('SELECT id,ementas from justica_estadual.extracao_antonio;')
-	# lista_links = cursor.fetchall()
-	# c.download_acordao_sp(lista_links)
 
 	# print('comecei ',c.__class__.__name__)
 	# try:

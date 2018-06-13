@@ -13,7 +13,7 @@ class crawler_jurisprudencia_stf(crawlerJus):
 		super().__init__()
 		ssl._create_default_https_context = ssl._create_unverified_context 
 		self.link_base = 'http://www.stf.jus.br/portal/processo/verProcessoAndamento.asp?incidente='
-		self.numero_final = 6000000 #Este é o último número estimado de um processo válido no STF em 11/11/2017. Número deve ser atualizado
+		self.numero_final = 7000000 # jun 2018
 		self.numero_inicial = 2000000
 
 	def baixarDadosProcesso(self,link_processos):
@@ -88,8 +88,6 @@ class crawler_jurisprudencia_stf(crawlerJus):
 		contador = 0
 		for i in range(self.numero_inicial,self.numero_final):
 			self.baixarVotos(self.link_base+str(i))
-			if i % 1000 == 0:
-				print(i)
 
 	def baixar_documentos_stf(self):
 		print('**FAZENDO DOWNLOAD DOS DOCUMENTOS DE PROCESSOS DO STF**')

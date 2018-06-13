@@ -23,11 +23,11 @@ class crawler_jurisprudencia_tjrj(crawlerJus):
 		self.pesquisa_livre = '//*[@id="ContentPlaceHolder1_txtTextoPesq"]'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_rj (ementas)'
 
-	def download_tj(self,ano_inicial,ano_final):
+	def download_tj(self,ano_inicial,ano_final,termo='direito'):
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
-		driver.find_element_by_xpath(self.pesquisa_livre).send_keys('direito')
+		driver.find_element_by_xpath(self.pesquisa_livre).send_keys(termo)
 		driver.find_element_by_xpath(self.botao_ano_inicial).send_keys(ano_inicial)
 		driver.find_element_by_xpath(self.botao_ano_final).send_keys(ano_final)
 		driver.find_element_by_xpath(self.botao_pesquisar).click()

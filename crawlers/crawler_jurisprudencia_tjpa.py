@@ -21,11 +21,11 @@ class crawler_jurisprudencia_tjpa():
 		self.data_julgamento_finalXP = '//*[@id="julg_dataFim"]'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_pa (ementas)'
 
-	def download_tj(self,data_ini,data_fim):
+	def download_tj(self,data_ini,data_fim, termo='a'):
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
-		driver.find_element_by_xpath(self.pesquisa_livre).send_keys('a')
+		driver.find_element_by_xpath(self.pesquisa_livre).send_keys(termo)
 		driver.find_element_by_xpath(self.botao_mostrar_pesquisa_avancada).click()
 		driver.find_element_by_xpath(self.data_julgamento_inicialXP).send_keys(data_ini)
 		driver.find_element_by_xpath(self.data_julgamento_finalXP).send_keys(data_fim)

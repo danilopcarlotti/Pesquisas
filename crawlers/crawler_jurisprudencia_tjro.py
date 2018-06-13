@@ -19,11 +19,11 @@ class crawler_jurisprudencia_tjro():
 		self.ano_julgamentoXP = '//*[@id="frmJuris:formConsultaJuris:iAnoJulgamento"]'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_ro (ementas)'
 
-	def download_tj(self, ano):
+	def download_tj(self, ano, termo='ementa'):
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
-		driver.find_element_by_xpath(self.pesquisa_livreXP).send_keys('ementa')
+		driver.find_element_by_xpath(self.pesquisa_livreXP).send_keys(termo)
 		driver.find_element_by_xpath(self.ano_julgamentoXP).send_keys(ano)
 		driver.find_element_by_xpath(self.botao_pesquisarXP).click()
 		driver.find_element_by_xpath(self.link_decisoesXP).click()

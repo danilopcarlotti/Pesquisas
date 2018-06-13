@@ -21,11 +21,11 @@ class crawler_jurisprudencia_tjsc():
 		self.data_inicialXP = '//*[@id="dtini"]'
 		self.data_finalXP = '//*[@id="dtfim"]'
 
-	def download_tj(self,data_ini,data_fim):
+	def download_tj(self,data_ini,data_fim, termo='processo'):
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
-		driver.find_element_by_xpath(self.pesquisa_livre).send_keys('processo')
+		driver.find_element_by_xpath(self.pesquisa_livre).send_keys(termo)
 		driver.find_element_by_xpath(self.data_inicialXP).send_keys(data_ini)
 		driver.find_element_by_xpath('//*[@id="busca_avancada"]/table[1]/tbody/tr/td[1]/span[1]').click()
 		driver.find_element_by_xpath(self.data_finalXP).send_keys(data_fim)
@@ -70,9 +70,10 @@ class crawler_jurisprudencia_tjsc():
 				return
 		driver.close()
 
-	def download_acordao_sc(self,link, id_p, cursor, crawlerclass):
+	def download_acordao_sc(self,link, id_p, cursor):
+		crawlerclass = crawlerJus()
 		texto = crawlerclass.baixa_texto_html(link).replace('"','').replace('\\','').replace('/','')
-		cursor.execute('UPDATE justica_estadual.jurisprudencia_sc set texto_ementa = "%s" where id = "%s"' % (texto, id_p))
+		cursor.execute('UPDATE justica_estadual.jurisprudencia_sc set texto = "%s" where id = "%s"' % (texto, id_p))
 		
 	def parser_acordaos(self,texto,cursor):
 		numero = busca(r'\d{4}\.\d{6}\-\d', texto,ngroup=0)
@@ -83,22 +84,9 @@ class crawler_jurisprudencia_tjsc():
 		origem = busca(r'\n\s*?Origem\s*?\:(.*?)\n', texto)
 		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst_sc (tribunal, numero, classe, data_decisao, orgao_julgador, julgador, origem, texto_decisao) values ("%s","%s","%s","%s","%s","%s","%s","%s");' % ('sc',numero, classe, data_disponibilizacao, orgao_julgador, julgador, origem, texto))
 
-
 def main():
 	c = crawler_jurisprudencia_tjsc()
 	cursor = cursorConexao()
-
-	cursor.execute('SELECT texto from justica_estadual.jurisprudencia_sc;')
-	dados = cursor.fetchall()
-	for dado in dados:
-		c.parser_acordaos(dado[0], cursor)
-
-	# crawlerclass = crawlerJus()
-	# cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_sc;')
-	# lista_links = cursor.fetchall()
-	# for i,l in lista_links:
-	# 	c.download_acordao_sc(l, i, cursor, crawlerclass)
-
 
 	# print('comecei ',c.__class__.__name__)
 	# for a in c.lista_anos:
@@ -112,6 +100,18 @@ def main():
 	# 			c.download_tj('15/'+c.lista_meses[m]+'/'+a,'28/'+c.lista_meses[m]+'/'+a)
 	# 		except Exception as e:
 	# 			print(e,c.lista_meses[m])
+
+	# cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_sc;')
+	# lista_links = cursor.fetchall()
+	# for i,l in lista_links:
+	# 	c.download_acordao_sc(l, i, cursor)
+
+	cursor.execute('SELECT texto from justica_estadual.jurisprudencia_sc;')
+	dados = cursor.fetchall()
+	for dado in dados:
+		c.parser_acordaos(dado[0], cursor)
+
+
 
 if __name__ == '__main__':
 	main()

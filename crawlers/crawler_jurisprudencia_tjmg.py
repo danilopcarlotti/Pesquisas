@@ -22,12 +22,12 @@ class crawler_jurisprudencia_tjmg():
 		self.link_download_captcha = '/html/body/table/tbody/tr[3]/td/table/tbody/tr[4]/td/a[2]' 
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_mg (ementas)'
 
-	def download_tj(self,data_ini,data_fim):
+	def download_tj(self,data_ini,data_fim, termo='direito'):
 		crawler_jurisprudencia_tj.delete_audios(self)
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
-		driver.find_element_by_xpath(self.pesquisa_livre).send_keys('direito')
+		driver.find_element_by_xpath(self.pesquisa_livre).send_keys(termo)
 		driver.find_element_by_xpath(self.data_julgamento_inicialXP).send_keys(data_ini)
 		driver.find_element_by_xpath(self.data_julgamento_finalXP).send_keys(data_fim)
 		driver.find_element_by_xpath(self.botao_pesquisar).click()

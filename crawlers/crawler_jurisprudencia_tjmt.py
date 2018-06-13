@@ -20,11 +20,11 @@ class crawler_jurisprudencia_tjmt():
 		self.botao_proximo_XP = '//*[@id="AcordaoPagination"]/ul/li[%s]/a'  
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_mt (ementas)' 
 
-	def download_tj(self):
+	def download_tj(self, termo='a'):
 		global contador
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
-		driver.find_element_by_xpath(self.pesquisa_livre).send_keys('a')
+		driver.find_element_by_xpath(self.pesquisa_livre).send_keys(termo)
 		driver.find_element_by_xpath(self.botao_pesquisar).click()
 		time.sleep(5)
 		botao_prox = self.botao_proximo_XP % '10'

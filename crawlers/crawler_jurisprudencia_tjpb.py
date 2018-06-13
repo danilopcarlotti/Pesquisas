@@ -22,11 +22,11 @@ class crawler_jurisprudencia_tjpb(crawler_jurisprudencia_tj):
 		self.botao_data_fimXP = '//*[@id="dataFim"]'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_pb (ementas)'
 
-	def download_tj(self,dataIni,dataFim):
+	def download_tj(self,dataIni,dataFim,termo='a'):
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(self.link_inicial)
-		driver.find_element_by_id(self.pesquisa_livre).send_keys('a')
+		driver.find_element_by_id(self.pesquisa_livre).send_keys(termo)
 		driver.find_element_by_xpath(self.botao_data_iniXP).send_keys(dataIni)
 		driver.find_element_by_xpath(self.botao_data_fimXP).send_keys(dataFim)
 		driver.find_element_by_xpath('//*[@id="radio-intteor"]').click()

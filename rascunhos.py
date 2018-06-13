@@ -1,11 +1,19 @@
-from crawlers.common.conexao_local import cursorConexao
-from common_nlp.mNB_classification_text import mNB_classification_text
-import numpy as np, pandas as pd
+from common_nlp.pdf_to_text import pdf_to_text
+# from crawlers.diarios_base import *
+import os
 
-
-cursor = cursorConexao()
-cursor.execute('SELECT texto_decisao, classificacao from jurisprudencia_2_inst.jurisprudencia_2_inst where classificacao is not null;')
-dados = cursor.fetchall()
-mNB = mNB_classification_text(dados[:700])
-df = mNB.dataframe
-df.to_csv('testes_saude.csv',sep=';',quotechar='"')
+contador = 0
+arqs_i = os.listdir('/home/danilo/Documents/Diários_trt_2017')
+pdf_2_txt = pdf_to_text()
+contador = 2345
+for arq in arqs_i:
+	contador -= 1
+	if contador < 993:
+		try:
+			arq_trt = open("/home/danilo/Documents/Diários_trt_2017_txt/trt{}.txt".format(str(contador)),'a',encoding="utf-8")
+			arq_trt.write(pdf_2_txt.convert_pdfminer('/home/danilo/Documents/Diários_trt_2017/'+arq))
+			arq_trt.close()
+			print(contador)
+		except Exception as e:
+			print(e)
+			print(arq)
