@@ -56,7 +56,7 @@ if __name__ == '__main__':
 	# 	print(e)
 
 	cursor = cursorConexao()
-	cursor.execute('SELECT ementas from justica_federal.jurisprudencia_trf1 limit 100000;')
+	cursor.execute('SELECT ementas from justica_federal.jurisprudencia_trf1;')
 	dados = cursor.fetchall()
 	print(len(dados))
 	for dado in dados:

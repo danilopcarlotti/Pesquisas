@@ -782,12 +782,12 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Script para download de jurisprudência dos tribunais disponíveis')
 	parser.add_argument('-t',type=str,default=False,help='termo a ser utilizado como referencia na pesquisa',dest='t')
 	
-	def main_termo(termo):
-		for func in lista_funcoes_jurisprudencia:
-			func(termo)
 	def main():
 		for func in lista_funcoes_jurisprudencia:
 			func()
+	def main_termo(termo):
+		for func in lista_funcoes_jurisprudencia:
+			func(termo)
 	
 	args = parser.parse_args()
 	if args.t:

@@ -1,3 +1,6 @@
+import sys
+sys.path.append('/home/danilo/Documents/Pesquisas/common_nlp')
+from dicionario_marcadores import dicionario_marcadores
 import re, sys
 
 class parserTextoJuridico():
@@ -9,12 +12,13 @@ class parserTextoJuridico():
 		self.re_inciso = r'(inciso\s*?)[A-Z]{,5}([,\.]?)'
 		self.re_completo = r'art[\.\s].{,30}|lei[\sn\.\d/]{,30}|inciso.{,30}'
 		self.nomes_leis_alternativos = ['Constituição','CLT','CF','CPP','CP','CC']
+		self.marcadores = dicionario_marcadores
 
 	def calcula_valor_decisao(self, texto, tipo_decisao):
 		# treinado para ações trabalhistas do TRT02
-		if tipo_decisao = 'acordo':
+		if tipo_decisao == 'acordo':
 			textoValor = re.search(r'o valor.*?acordo.*?R\$\s*[\d\.,]{1,30}',texto)
-		elif tipo_decisao = 'condenacao':
+		elif tipo_decisao == 'condenacao':
 			textoValor = re.search(r'calculad.*? sobre.*?R\$\s*[\d.,]{1,30}.{1,30}condenação|calculad.*? sobre o valor.*?condenação.*?R\$\s*[\d\.,]{1,30}',texto)
 		else:
 			raise ValueError('Tipo de decisão não conhecido')
@@ -101,7 +105,7 @@ class parserTextoJuridico():
 						if re.search(r'(NÃO CONHECER.{1,30}DO RECURSO)|(RECURSO NÃO CONHECIDO)|RECURSO DESPROVIDO',r, flags=re.IGNORECASE|re.DOTALL) != None:
 							resultado[1] = 1
 						elif re.search(r'CONHECER.{1,30}[D]?O[S]? RECURSO[S]?',r, flags=re.IGNORECASE|re.DOTALL) != None:
-							if re.search(r'DAR PROVIMENTO', r, flags=re.IGNORECASE|re.DOTALL) != None:
+							if re.search(r'DAR PROVIMENTO|DOU PROVIMENTO', r, flags=re.IGNORECASE|re.DOTALL) != None:
 								resultado[2] = 1
 							elif re.search(r'NEGAR PROVIMENTO', r, flags=re.IGNORECASE|re.DOTALL) != None:
 								resultado[3] = 1
@@ -122,12 +126,12 @@ class parserTextoJuridico():
 						conhecer = re.search(r'CONHECER [D]?O[S]? RECURSO[S]?(.*?)\.',texto, flags=re.IGNORECASE|re.DOTALL)
 						conhecer_1 = re.search(r'RECURSO CONHECIDO(.*?)\.',texto, flags=re.IGNORECASE|re.DOTALL)
 						if conhecer and conhecer.group(1) != None:
-							if re.search(r'(DAR PROVIMENTO)|( PROVIDO)', conhecer.group(1)) != None:
+							if re.search(r'(DAR PROVIMENTO)|( PROVIDO)|(DOU PROVIMENTO)', conhecer.group(1)) != None:
 								resultado[2] = 1
 							elif re.search(r'(NEGAR PROVIMENTO)|( DESPROVIDO)', conhecer.group(1)) != None:
 								resultado[3] = 1
 						elif conhecer_1 and conhecer_1.group(1) != None:
-							if re.search(r'(DAR PROVIMENTO)|( PROVIDO)', conhecer_1.group(1)) != None:
+							if re.search(r'(DAR PROVIMENTO)|( PROVIDO)|(DOU PROVIMENTO)', conhecer_1.group(1)) != None:
 								resultado[2] = 1
 							elif re.search(r'(NEGAR PROVIMENTO)|( DESPROVIDO)', conhecer_1.group(1)) != None:
 								resultado[3] = 1
@@ -233,6 +237,7 @@ class parserTextoJuridico():
 		return ''
 
 	def referencias_completas(self,texto):
+		# retorna todas as referências encontradas
 		return re.findall(self.re_completo,texto,re.IGNORECASE)
 
 	def referencias_inciso(self,texto):
@@ -276,6 +281,53 @@ class parserTextoJuridico():
 			if dicionario['Lei'] != '' and dicionario not in resultado:
 				resultado.append(dicionario)
 		return resultado
+
+	def separa_argumentos(self, texto):
+		paragrafos = re.split(dicionario_marcadores['início de parágrafo'],texto)[1:]
+		argumentos = []
+		argumento_atual = []
+		for p in paragrafos:
+			if argumento_atual == []:
+				argumento_atual.append(p)
+			else:
+				continuidade = False
+				for exp in dicionario_marcadores['continuidade do argumento']:
+					if not continuidade and re.search(exp, p, re.DOTALL):
+						argumento_atual.append(p)
+						continuidade = True
+				if not continuidade:
+					argumentos.append(argumento_atual)
+					argumento_atual = [p]
+		if argumento_atual != []:
+			argumentos.append(argumento_atual)
+		return argumentos
+
+	def separa_texto_juridico(self,texto, separar_argumentos=False):
+		partes_texto = {'relatorio':None,'fundamentação':None,'dispositivo':None}
+		separacao_0 = re.split(self.marcadores['fundamentação_dispositivo'], texto)
+		separacao_1 = re.split(self.marcadores['fundamentação'], texto)
+		separacao_2 = re.split(self.marcadores['dispositivo'], texto)
+		if len(separacao_0) == 3:
+			partes_texto['relatorio'] = separacao_0[0]
+			partes_texto['fundamentação'] = separacao_0[1]
+			partes_texto['dispositivo'] = separacao_0[2]
+		elif len(separacao_1) == 2:
+			partes_texto['relatorio'] = separacao_1[0]
+			fundamentos = separacao_1[1]
+			separacao_2 = re.split(self.marcadores['dispositivo'], fundamentos)
+			if len(separacao_2) == 2:
+				partes_texto['fundamentação'] = separacao_2[0]
+				partes_texto['dispositivo'] = separacao_2[1]
+			else:
+				partes_texto['fundamentação'] = fundamentos
+		elif len(separacao_2) == 2:
+				partes_texto['relatorio'] = separacao_2[0]
+				partes_texto['dispositivo'] = ' '.join(separacao_2[1:])
+		if separar_argumentos:
+			for k,v in partes_texto.items():
+				if v:
+					partes_texto[k] = self.separa_argumentos(v)
+		return partes_texto
 
 	def valor_dano_moral(self,texto):
 		search = re.search(r'danos? mora.{1,50}R\s*?\$?\s*?[\d\,\.]{0,30}|indeniza.{1,50}R\s*?\$?\s*?[\d\.\,]{1,30}|R\s*?\$\s*?[\d\.\,]{0,30}.{0,50}danos? mora', texto, re.DOTALL | re.IGNORECASE)
