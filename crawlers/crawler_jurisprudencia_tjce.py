@@ -1,8 +1,10 @@
 import sys, re
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from common.conexao_local import cursorConexao
-from common_nlp.parse_texto import busca
 from bs4 import BeautifulSoup
+
+sys.path.append(os.path.dirname(os.getcwd()))
+from common_nlp.parse_texto import busca
 
 class crawler_jurisprudencia_tjce():
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância do Ceará"""

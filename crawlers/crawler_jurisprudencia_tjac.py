@@ -2,10 +2,13 @@ import sys, re, os, time, urllib.request, subprocess
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from common.download_path import path
-from common_nlp.parse_texto import busca
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+
+sys.path.append(os.path.dirname(os.getcwd()))
+from common_nlp.parse_texto import busca
+
 
 class crawler_jurisprudencia_tjac(crawler_jurisprudencia_tj):
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância do Acre"""

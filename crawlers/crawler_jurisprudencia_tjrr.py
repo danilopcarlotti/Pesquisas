@@ -1,11 +1,13 @@
 import sys, re, time
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
-from common_nlp.parse_texto import busca
 from crawlerJus import crawlerJus
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+
+sys.path.append(os.path.dirname(os.getcwd()))
+from common_nlp.parse_texto import busca
 
 class crawler_jurisprudencia_tjrr():
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de Roraima"""

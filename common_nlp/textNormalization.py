@@ -7,12 +7,39 @@ class textNormalization():
 	def __init__(self):
 		pass
 
-	def tokenizer(self):
-		return RegexpTokenizer(r'\w+')
+	def escape_text_insert(self,text):
+		return text.replace('"','').replace('/','').replace('\\','').replace('<','').replace('>','')
 
 	def file_to_string(self,arq):
 		arquivo = open(arq,'r')
 		return ''.join([line for line in arquivo])
+
+	def month_name_number(self,text):
+		text = text.lower()
+		if text == 'janeiro':
+			return '01'
+		elif text == 'fevereiro':
+			return '02'
+		elif text == 'março':
+			return '03'
+		elif text == 'abril':
+			return '04'
+		elif text == 'maio':
+			return '05'
+		elif text == 'junho':
+			return '06'
+		elif text == 'julho':
+			return '07'
+		elif text == 'agosto':
+			return '08'
+		elif text == 'setembro':
+			return '09'
+		elif text == 'outubro':
+			return '10'
+		elif text == 'novembro':
+			return '09'
+		elif text == 'dezembro':
+			return '12'
 
 	def normalize_texts(self,texts,one_text = False):
 		normal_texts = []
@@ -42,3 +69,6 @@ class textNormalization():
 				else:
 					dicionario_i[w] = [id_]
 		return dicionario_i
+
+	def tokenizer(self):
+		return RegexpTokenizer(r'\w+')

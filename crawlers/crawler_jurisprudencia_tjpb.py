@@ -1,12 +1,14 @@
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from common.download_path import path
-from common_nlp.parse_texto import busca
-from common_nlp.pdf_to_text import pdf_to_text
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import sys, re, time, subprocess, urllib.request, os
+
+sys.path.append(os.path.dirname(os.getcwd()))
+from common_nlp.parse_texto import busca
+from common_nlp.pdf_to_text import pdf_to_text
 
 class crawler_jurisprudencia_tjpb(crawler_jurisprudencia_tj):
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância da Paraíba"""

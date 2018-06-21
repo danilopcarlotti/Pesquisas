@@ -2,11 +2,13 @@ from bs4 import BeautifulSoup
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from common.conexao_local import cursorConexao
 from common.download_path import path
-from common_nlp.parse_texto import busca
-from common_nlp.pdf_to_text import pdf_to_text
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import sys, re, time, os, pyautogui
+
+sys.path.append(os.path.dirname(os.getcwd()))
+from common_nlp.parse_texto import busca
+from common_nlp.pdf_to_text import pdf_to_text
 
 contador = 0
 

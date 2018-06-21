@@ -3,9 +3,11 @@ from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from crawlerJus import crawlerJus
 from common.conexao_local import cursorConexao
 from common.download_path import path
-from common_nlp.parse_texto import busca
 from selenium import webdriver
 import sys, re, os, time, docx2txt
+
+sys.path.append(os.path.dirname(os.getcwd()))
+from common_nlp.parse_texto import busca
 
 class crawler_jurisprudencia_tjdf(crawler_jurisprudencia_tj):
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância do Distrito Federal"""

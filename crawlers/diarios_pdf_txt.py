@@ -1,6 +1,7 @@
 from common.download_path_diarios import path
-from common_nlp.pdf_to_text import pdf_to_text
 import time, os, datetime
+sys.path.append(os.path.dirname(os.getcwd()))
+from common_nlp.pdf_to_text import pdf_to_text
 
 data = datetime.date.today().strftime("%Y%m%d")
 ano = data[:4]

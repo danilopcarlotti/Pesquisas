@@ -1,7 +1,9 @@
 from common.conexao_local import cursorConexao
 from common.download_path_diarios import path
-from common_nlp.parse_texto import busca
 import re, os
+
+sys.path.append(os.path.dirname(os.getcwd()))
+from common_nlp.parse_texto import busca
 
 re_final_am = r'(\nPROCESSO DIGITAL: |\nDe ordem d[oa]|\nDespacho proferido pel|\n\d+ - Apelação n|\nProcesso n\. (?=\d{7})|\nProcesso :(?=\d{7})|\n\d+\. PROCESSO:(?=\d{7})|\nAutos n(?=\s*?\d{7})|\n\s*?ADV:)'
 re_final_ac = r'(Acórdão n|\n\d+\. Classe|\n\d+ - (?=\d{7})|\nADV:|\nProcesso: |\nProcesso (?=\d+)|\nAutos n\.º|IV - ADMINISTRATIVO)'

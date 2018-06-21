@@ -1,5 +1,4 @@
 from common.conexao_local import cursorConexao
-from common_nlp.pdf_to_text import pdf_to_text
 from common.download_path import path
 from crawler_jurisprudencia_tjac import crawler_jurisprudencia_tjac
 from crawler_jurisprudencia_tjal import crawler_jurisprudencia_tjal
@@ -35,6 +34,9 @@ from crawler_jurisprudencia_trf5 import crawler_jurisprudencia_trf5
 from crawler_jurisprudencia_stf import crawler_jurisprudencia_stf
 from crawler_jurisprudencia_stj import crawler_jurisprudencia_stj
 import argparse
+
+sys.path.append(os.path.dirname(os.getcwd()))
+from common_nlp.parse_texto import busca
 
 def acre(termo=None):
 	c = crawler_jurisprudencia_tjac()

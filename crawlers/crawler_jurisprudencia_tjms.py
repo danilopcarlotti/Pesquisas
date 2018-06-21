@@ -1,10 +1,12 @@
 import sys, re, os
 from common.conexao_local import cursorConexao
-from common_nlp.parse_texto import busca
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+
+sys.path.append(os.path.dirname(os.getcwd()))
+from common_nlp.parse_texto import busca
 
 class crawler_jurisprudencia_tjms():
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de Mato Grosso do Sul"""
