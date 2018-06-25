@@ -1,4 +1,3 @@
-from nltk import stem
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import cross_val_score
 from sklearn.naive_bayes import MultinomialNB
