@@ -10,7 +10,7 @@ class mNB_classification_text():
 	def __init__(self,dados):
 		self.dados = dados
 		self.dataframe = self.dataframe_data()
-		self.count_vectorizer = CountVectorizer(analyzer=self.stemmer,stop_words=[line for line in open('stopwords_pt.txt','r')])
+		self.count_vectorizer = CountVectorizer(analyzer=self.stemmer)
 		self.word_counts = self.count_words()
 		self.targets = self.dataframe['class'].values
 		self.classifier = self.mNB_classifier()
@@ -49,12 +49,7 @@ class mNB_classification_text():
 	def stemmer(self, words):
 		analyzer = CountVectorizer().build_analyzer()
 		stemmer = nltk.stem.RSLPStemmer()
-		return (stemmer.stem(w) for w in analyzer(words))
-
-	def training_data(self):
-		data = self.dataframe_data()
-		data = data.reindex(numpy.random.permutation(data.index))
-		return data
+		return (stemmer.stem(w) for w in analyzer(words) if w not in [line.strip() for line in open('stopwords_pt.txt','r')])
 
 	def validate_score(self, cv=None):
 		mNB = MultinomialNB()
@@ -64,9 +59,9 @@ class mNB_classification_text():
 if __name__ == '__main__':
 	dados = [('s ssss','s'),('bbb bb','b'),('bbb bb','b'),('sss ss','s'),('sssss ssssssss','s'),('s ssss','s'),('bbb bb','b'),('bbb bb','b'),('sss ss','s'),('sssss ssssssss','s'),('s ssss','s'),('bbb bb','b'),('bbb bb','b'),('sss ss','s'),('sssss ssssssss','s'),('s ssss','s'),('bbb bb','b'),('bbb bb','b'),('sss ss','s'),('sssss ssssssss','s')]
 	sck = mNB_classification_text(dados)
-	examples = [('s s','s'),('bbb','b')]
-	for e, class_e in examples:
-		print(e,sck.predict_mNB([e]),(sck.predict_mNB([e]) == class_e))
-	examples2 = ['bbb','ss s','bb bb bbb','s s']
+	# examples = [('s s','s'),('bbb','b')]
+	# for e, class_e in examples:
+	# 	print(e,sck.predict_mNB([e]),(sck.predict_mNB([e]) == class_e))
+	examples2 = ['bbb','ss s','bb bb bbb','s s', 'a a a s']
 	print(sck.predict_mNB(examples2, as_dict=True))
 	print(numpy.mean(sck.validate_score(cv=8)))
