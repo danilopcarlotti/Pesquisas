@@ -51,9 +51,11 @@ class mNB_classification_text():
 		stemmer = nltk.stem.RSLPStemmer()
 		return (stemmer.stem(w) for w in analyzer(words) if w not in [line.strip() for line in open('stopwords_pt.txt','r')])
 
-	def validate_score(self, cv=None):
+	def validate_score(self, cv=None, mean=False):
 		mNB = MultinomialNB()
 		scores = cross_val_score(mNB, self.word_counts, self.targets, cv=cv)
+		if mean:
+			return numpy.mean(scores)
 		return scores
 
 if __name__ == '__main__':
@@ -64,4 +66,4 @@ if __name__ == '__main__':
 	# 	print(e,sck.predict_mNB([e]),(sck.predict_mNB([e]) == class_e))
 	examples2 = ['bbb','ss s','bb bb bbb','s s', 'a a a s']
 	print(sck.predict_mNB(examples2, as_dict=True))
-	print(numpy.mean(sck.validate_score(cv=8)))
+	print(sck.validate_score(cv=8))
