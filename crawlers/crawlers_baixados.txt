@@ -111,3 +111,38 @@ ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
 (tribunal, numero, assunto, classe, data_decisao, orgao_julgador, julgador, texto_decisao, relatorio, fundamentacao, dispositivo, polo_ativo, polo_passivo, origem);
+
+Diários a baixar
+
+SP - aparentemente sim
+STF - aparentemente não
+STJ - sim
+RO - sim
+RR - sim
+PA - não (recaptcha)
+MA - aparentemente sim
+TO - aparentemente sim
+PI - aparentemente sim
+TRF1 - aparentemente sim
+TRF5 - aparentemente sim
+GO - aparentemente sim
+RS - aparentemente sim
+AC - aparentemente sim
+TRF4 - aparentemente sim
+DF - aparentemente não
+PE - aparentemente sim
+SC - sim
+RN - sim
+TRF3 - sim
+AL - aparentemente sim
+CE - aparentemente sim
+MS - aparentemente sim
+AM -aparentemente sim
+PR - aparentemente sim
+TRT - não necessário
+AP - não (recaptcha)
+PB - aparentemente sim
+SE - aparentemente sim
+MT - aparentemente sim
+TRF2 - aparentemente sim
+ES - não

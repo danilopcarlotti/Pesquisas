@@ -65,6 +65,41 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 		crawler_jurisprudencia_tj.download_pdf_acordao_captcha_image(self,dados_baixar,'//*[@id="valorCaptcha"]','//*[@id="pbEnviar"]','sp_2_inst')
 		subprocess.Popen('mv %s/sp_2_inst_*.pdf %s/sp_2_inst' % (path,path), shell=True)
 
+	def download_diario_retroativo(self):
+		cadernos = ['11','12','13','14','15','18']
+		datas = []
+		final_path = ''
+		for l in range(len(c.lista_anos)):
+			for i in range(1,10):
+				for j in range(1,10):
+					datas.append('0'+str(j)+'/0'+str(i)+'/'+c.lista_anos[l])
+				for j in range(10,32):
+					datas.append(str(j)+'/'+str(i)+'/'+c.lista_anos[l])
+			for i in range(11,13):
+				for j in range(1,10):
+					datas.append('0'+str(j)+'/'+str(i)+'/'+c.lista_anos[l])
+				for j in range(10,32):
+					datas.append(str(j)+'/'+str(i)+'/'+c.lista_anos[l])
+		contador = 0
+		driver = webdriver.Chrome(self.chromedriver)
+		driver.get('https://www.dje.tjsp.jus.br/cdje/index.do')
+		for data in datas:
+			contador += 1
+			print(data)
+			for caderno in cadernos:
+				driver.execute_script("popup('/cdje/downloadCaderno.do?dtDiario=%s'+'&cdCaderno=%s','cadernoDownload');" % (data, caderno))
+				time.sleep(1)
+			time.sleep(15)
+			nome_pasta = data.replace('/','')
+			subprocess.Popen('mkdir %s/Diarios_sp/%s' % (final_path,nome_pasta), shell=True) 
+			subprocess.Popen('mv %s/*.pdf %s/Diarios_sp/%s' % (path,final_path,nome_pasta), shell=True)
+			if contador > 10:
+				time.sleep(10)
+				driver.close()
+				driver = webdriver.Chrome(self.chromedriver)
+				driver.get('https://www.dje.tjsp.jus.br/cdje/index.do')
+				contador = 0
+
 	def parse_sp_dados_1_inst(self,texto,cursor):
 		def parse(texto_decisao,cursor):
 			dados_re = r'\s*?{}\:.*?\n(.*?)\n'
@@ -106,6 +141,7 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 				print(arq)
 				print(e)
 				# print(numero)
+
 
 def main():
 	c = crawler_jurisprudencia_tjsp()
@@ -153,4 +189,9 @@ def main():
 	# 	print('finalizei o ano com erro ',e)
 
 if __name__ == '__main__':
-	main()
+	# main()
+	c = crawler_jurisprudencia_tjsp()
+	try:
+		c.download_diario_retroativo()
+	except Exception as e:
+		print(e)

@@ -43,6 +43,16 @@ class crawler_jurisprudencia_tj(crawlerJus):
 			if re.search(r'wav',file):
 				os.remove(common.download_path.path+'/'+file)
 
+	def download_diarios_retroativos(self, link_diarios, datas_id, download_id, datas):
+		driver = webdriver.Chrome(self.chromedriver)
+		driver.get(link_diarios)
+		time.sleep(1)
+		for data in datas:
+			driver.execute_script('document.getElementById("%s").removeAttribute("readonly")' % datas_id)
+			driver.find_element_by_id(datas_id).send_keys(data)
+			driver.find_element_by_id(download_id).click()
+			time.sleep(1)
+
 	def download_pdf_acordao_captcha_audio(self,link,input_captcha_xpath,ouvir_captch_xpath,send_captcha,id_acordao):
 		binary = FirefoxBinary(common.download_path.path+'/firefox/firefox')
 		profile = webdriver.FirefoxProfile()
@@ -110,7 +120,6 @@ class crawler_jurisprudencia_tj(crawlerJus):
 			subprocess.Popen('mv %s/%s_*.pdf %s/%s' % (path,prefix,path,prefix), shell=True)
 		driver.close()
 		subprocess.Popen('rm *.png', shell=True)
-
 
 	def download_pdf_acordao_sem_captcha(self,link,id_acordao):
 		driver = webdriver.Chrome(self.chromedriver)
