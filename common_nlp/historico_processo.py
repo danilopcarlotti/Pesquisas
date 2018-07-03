@@ -22,7 +22,7 @@ class historico_processo(parserTextoJuridico):
 				self.historico['outras movimentações'].append((data_pub,tribunal, texto))
 		self.tempo_duracao()
 
-	def atualiza_historico_existente(self, historico_p = None, novos_andamentos):
+	def atualiza_historico_existente(self, novos_andamentos, historico_p = None):
 		# Para o caso de armazenar o histórico e posteriormente atualizá-lo com novos andamentos
 		if historico_p:
 			self.load_historico(historico_p)
