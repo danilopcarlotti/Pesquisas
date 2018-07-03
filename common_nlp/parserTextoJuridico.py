@@ -1,5 +1,4 @@
 import sys
-sys.path.append('/home/danilo/Documents/Pesquisas/common_nlp')
 from dicionario_marcadores import dicionario_marcadores
 import re, sys
 
@@ -54,16 +53,13 @@ class parserTextoJuridico():
 		if movimentoProcessual != None:
 			return 'Movimento processual'
 		sentenca1 = re.search(r'TERMO DE AUDIÊNCIA',texto)
-		embargos = re.search(r'embargos declaratórios',texto, re.IGNORECASE)
-		embargos2 = re.search(r'embargos de declaração',texto, re.IGNORECASE)
-		embargos3 = re.search(r'embargante',texto, re.IGNORECASE)
-		if (embargos != None or embargos2 != None or embargos3 != None) and sentenca1 == None:
+		embargos = re.search(r'embargos declaratórios|embargos de declaração|embargante',texto, re.IGNORECASE)
+		if embargos != None and sentenca1 == None:
 			return 'Embargos declaratórios'
-		sentenca = re.search(r'\s*S\s*E\s*N\s*T\s*E\s*N\s*Ç\s*A\s*',texto)
-		sentenca2 = re.search(r'Dispensado o relatório',texto)
+		sentenca = re.search(r'\s*S\s*E\s*N\s*T\s*E\s*N\s*Ç\s*A\s*|Dispensado o relatório',texto)
 		sentenca3 = re.search(r'FUNDAMENTAÇÃO',texto)
 		sentenca4 = re.search(r'DISPOSITIVO',texto)
-		if sentenca != None or sentenca1 != None or sentenca2 != None or (sentenca3 != None and sentenca4 != None):
+		if sentenca != None or sentenca1 != None or (sentenca3 != None and sentenca4 != None):
 			return 'Sentença'
 		certidao = re.search(r'C\s*E\s*R\s*T\s*I\s*D\s*Ã\s*O',texto)
 		if certidao != None:
@@ -303,16 +299,16 @@ class parserTextoJuridico():
 		return argumentos
 
 	def separa_texto_juridico(self,texto, separar_argumentos=False):
-		partes_texto = {'relatorio':None,'fundamentação':None,'dispositivo':None}
+		partes_texto = {'relatório':None,'fundamentação':None,'dispositivo':None}
 		separacao_0 = re.split(self.marcadores['fundamentação_dispositivo'], texto)
 		separacao_1 = re.split(self.marcadores['fundamentação'], texto)
 		separacao_2 = re.split(self.marcadores['dispositivo'], texto)
 		if len(separacao_0) == 3:
-			partes_texto['relatorio'] = separacao_0[0]
+			partes_texto['relatório'] = separacao_0[0]
 			partes_texto['fundamentação'] = separacao_0[1]
 			partes_texto['dispositivo'] = separacao_0[2]
 		elif len(separacao_1) == 2:
-			partes_texto['relatorio'] = separacao_1[0]
+			partes_texto['relatório'] = separacao_1[0]
 			fundamentos = separacao_1[1]
 			separacao_2 = re.split(self.marcadores['dispositivo'], fundamentos)
 			if len(separacao_2) == 2:
@@ -321,7 +317,7 @@ class parserTextoJuridico():
 			else:
 				partes_texto['fundamentação'] = fundamentos
 		elif len(separacao_2) == 2:
-				partes_texto['relatorio'] = separacao_2[0]
+				partes_texto['relatório'] = separacao_2[0]
 				partes_texto['dispositivo'] = ' '.join(separacao_2[1:])
 		if separar_argumentos:
 			for k,v in partes_texto.items():

@@ -35,7 +35,7 @@ dicionario_marcadores = {
 	r'^Também.*?[\.\:]', 
 	r'^Todavia.*?[\.\:]'
 	],
-	'dispositivo':r'\n\s+.{1,20}dispositivo|\n\s+DISPOSITIVO|ACORDAM\n\s+',
+	'dispositivo':r'\n\s+.{1,20}dispositivo|\n\s+DISPOSITIVO|\nACORDAM',
 	'fundamentação':r'\n\s+É O RELATÓRIO|\n\s+FUNDAMENTAÇÃO|\n\s+É o relatório',
 	'fundamentação_dispositivo':r'\n\s+.{1,20}dispositivo|\n\s+DISPOSITIVO|\n\s+ACORDAM|\n\s+É O RELATÓRIO|\n\s+FUNDAMENTAÇÃO|\n\s+É o relatório',
 	'indicação de tópico' : [r'^Quanto [àao].*?[\.\:],', 
