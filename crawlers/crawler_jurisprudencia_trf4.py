@@ -1,9 +1,10 @@
-import time, re
+import time, re, urllib.request, sys, os, subprocess
 from bs4 import BeautifulSoup
+from common.conexao_local import cursorConexao
+from common.download_path import path
+from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from common.conexao_local import cursorConexao
-from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
@@ -20,6 +21,27 @@ class crawler_jurisprudencia_trf4():
 		self.link_resultado_xpath = '//*[@id="parcial"]'
 		self.pesquisa_livre = '//*[@id="textoPesqLivre"]'
 		self.tabela_colunas = 'justica_federal.jurisprudencia_trf4 (ementas)'
+
+	def download_diario_retroativo(self):
+		link_inicial = 'https://www2.trf4.jus.br/trf4/diario/download.php?arquivo=%2Fvar%2Fwww%2Fhtml%2Fdiario%2Fdocsa%2Fde_jud_{}1645{}_{}_a.pdf'
+		marcador = {'2018' : '01', '2017' : '01', '2016' : '02', '2015' : '02', '2014' : '02', '2013' : '01', '2012' : '06', '2011' : '01'}
+		datas = []
+		for a in range(len(self.lista_anos)):
+			for m in range(len(self.lista_meses)):
+				for d in range(1,10):
+					datas.append((str(self.lista_anos[a]), self.lista_meses[m],'0'+str(d)))
+				for d in range(10,32):
+					datas.append((str(self.lista_anos[a]), self.lista_meses[m],str(d)))
+		for ano, mes, dia in datas:
+			try:
+				print(link_inicial.format(ano+mes+dia, marcador[ano],ano+'_'+mes+'_'+dia))
+				response = urllib.request.urlopen(link_inicial.format(ano+mes+dia, marcador[ano],ano+'_'+mes+'_'+dia),timeout=5)
+				file = open(dia+mes+ano+'.pdf', 'wb')
+				file.write(response.read())
+				file.close()
+				subprocess.Popen('mv %s/*.pdf %s/Diarios_trf4' % (os.getcwd(),path), shell=True)
+			except Exception as e:
+				print(e)
 
 	def download_trf4(self, data_ini, data_fim, termo = 'recurso'):
 		cursor = cursorConexao()
@@ -89,11 +111,12 @@ class crawler_jurisprudencia_trf4():
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_trf4()
-	cursor = cursorConexao()
-	cursor.execute('SELECT ementas FROM justica_federal.jurisprudencia_trf4;')
-	dados = cursor.fetchall()
-	for ementa in dados:
-		c.parser_acordaos(ementa[0],cursor)
+
+	# cursor = cursorConexao()
+	# cursor.execute('SELECT ementas FROM justica_federal.jurisprudencia_trf4;')
+	# dados = cursor.fetchall()
+	# for ementa in dados:
+	# 	c.parser_acordaos(ementa[0],cursor)
 	# try:
 	# 	for l in range(len(c.lista_anos)):
 	# 		print(c.lista_anos[l],'\n')
@@ -111,4 +134,5 @@ if __name__ == '__main__':
 	# except Exception as e:
 	# 	print(e)
 
+	c.download_diario_retroativo()
 

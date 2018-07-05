@@ -21,6 +21,41 @@ class crawler_jurisprudencia_tjms():
 		self.botao_proximo = '//*[@id="paginacaoSuperior-A"]/table/tbody/tr[1]/td[2]/div/a[6]'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_ms (ementas)'
 
+	def download_diario_retroativo(self):
+		cadernos = ['1','2','3']
+		link_inicial = 'http://www.tjms.jus.br/cdje/index.do'
+		datas = []
+		for l in range(len(c.lista_anos)):
+			for i in range(1,10):
+				for j in range(1,10):
+					datas.append('0'+str(j)+'/0'+str(i)+'/'+c.lista_anos[l])
+				for j in range(10,32):
+					datas.append(str(j)+'/0'+str(i)+'/'+c.lista_anos[l])
+			for i in range(11,13):
+				for j in range(1,10):
+					datas.append('0'+str(j)+'/'+str(i)+'/'+c.lista_anos[l])
+				for j in range(10,32):
+					datas.append(str(j)+'/'+str(i)+'/'+c.lista_anos[l])
+		contador = 0
+		driver = webdriver.Chrome(self.chromedriver)
+		driver.get(link_inicial)
+		for data in datas:
+			contador += 1
+			print(data)
+			for caderno in cadernos:
+				driver.execute_script("popup('/cdje/downloadCaderno.do?dtDiario=%s'+'&cdCaderno=%s&tpDownload=D','cadernoDownload');" % (data, caderno))
+				time.sleep(1)
+			time.sleep(3)
+			nome_pasta = data.replace('/','')
+			subprocess.Popen('mkdir %s/Diarios_ms/%s' % (final_path,nome_pasta), shell=True) 
+			subprocess.Popen('mv %s/*.pdf %s/Diarios_ms/%s' % (path,final_path,nome_pasta), shell=True)
+			if contador > 10:
+				time.sleep(3)
+				driver.close()
+				driver = webdriver.Chrome(self.chromedriver)
+				driver.get(link_inicial)
+				contador = 0
+
 	def parser_acordaos(self,texto,cursor):
 		def parse(texto_decisao,cursor):
 			numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}', texto_decisao,ngroup=0)

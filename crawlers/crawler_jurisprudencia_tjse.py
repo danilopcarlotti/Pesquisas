@@ -18,6 +18,19 @@ class crawler_jurisprudencia_tjse():
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_se (ementas)'
 		self.botao_proximoXP = '//*[@id="dgResultadoJurisprudencia2_paginator_top"]/a[3]'
 
+	def download_diario_retroativo(self):
+		link_inicial = 'http://www.diario.tjse.jus.br/diario/diarios/%s.pdf'
+		for i in range(4933,0,-1):
+			try:
+				print(link_inicial % (str(i),))
+				response = urllib.request.urlopen(link_inicial % (str(i),),timeout=15)
+				file = open(str(i)'.pdf', 'wb')
+				file.write(response.read())
+				file.close()
+				subprocess.Popen('mv %s/*.pdf %s/Diarios_se' % (os.getcwd(),path), shell=True)
+			except Exception as e:
+				print(e)
+
 	def download_tj(self, termo='processo'):
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)

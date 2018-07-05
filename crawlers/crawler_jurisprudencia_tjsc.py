@@ -23,6 +23,21 @@ class crawler_jurisprudencia_tjsc():
 		self.data_inicialXP = '//*[@id="dtini"]'
 		self.data_finalXP = '//*[@id="dtfim"]'
 
+	def download_diario_retroativo(self):
+		link_inicial = 'http://busca.tjsc.jus.br/dje-consulta/rest/diario/caderno?edicao=%s&cdCaderno=%s'
+		cadernos = ['1','2','3']
+		for i in range(2853,0,-1):
+			for e in cadernos:
+				try:
+					print(link_inicial % (str(i),e))
+					response = urllib.request.urlopen(link_inicial % (str(i),e),timeout=15)
+					file = open(str(i)+'_'+e'.pdf', 'wb')
+					file.write(response.read())
+					file.close()
+					subprocess.Popen('mv %s/*.pdf %s/Diarios_sc' % (os.getcwd(),path), shell=True)
+				except Exception as e:
+					print(e)
+
 	def download_tj(self,data_ini,data_fim, termo='processo'):
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)
