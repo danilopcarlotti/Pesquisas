@@ -16,7 +16,24 @@ class crawler_jurisprudencia_tjdf(crawler_jurisprudencia_tj):
 		self.link_inicial = 'https://pesquisajuris.tjdft.jus.br/IndexadorAcordaos-web/sistj?visaoId=tjdf.sistj.acordaoeletronico.buscaindexada.apresentacao.VisaoBuscaAcordao&nomeDaPagina=buscaLivre2&buscaPorQuery=1&baseSelecionada=BASE_ACORDAOS&ramoJuridico=&baseDados=[BASE_ACORDAOS,%%20TURMAS_RECURSAIS]&argumentoDePesquisa=a&filtroSegredoDeJustica=false&desembargador=&indexacao=&tipoDeNumero=NumAcordao&tipoDeRelator=TODOS&camposSelecionados=[ESPELHO]&numero=&tipoDeData=DataPublicacao&dataFim=&dataInicio=&ementa=&orgaoJulgador=&filtroAcordaosPublicos=false&legislacao=&numeroDaPaginaAtual=%s&quantidadeDeRegistros=20&totalHits=799443'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_df (ementas)'
 		self.tabela_colunas_1_inst = 'justica_estadual.jurisprudencia_df_1_inst (sentencas)'
-		
+
+	def download_diario_retroativo(self):
+
+		# checar o ano e número de diários no ano!!!!
+		# https://dje.tjdft.jus.br/dje/djeletronico?visaoId=tjdf.djeletronico.comum.internet.apresentacao.VisaoDiarioEletronicoInternetPorData
+
+		link_inicial = 'https://dje.tjdft.jus.br/dje/jsp/dje/DownloadDeDiario.jsp?dj=DJ%s_2018-ASSINADO.PDF&statusDoDiario=ASSINADO' #126
+		for i in range(126,0,-1):
+			try:
+				print(link_inicial % (str(i),))
+				response = urllib.request.urlopen(link_inicial % (str(i),),timeout=15)
+				file = open(str(i)+'.pdf', 'wb')
+				file.write(response.read())
+				file.close()
+				subprocess.Popen('mv %s/*.pdf %s/Diarios_df' % (os.getcwd(),path), shell=True)
+			except Exception as e:
+				print(e)
+
 	def download_tj(self,ultima_pag):
 		cursor = cursorConexao()
 		for i in range(ultima_pag):
