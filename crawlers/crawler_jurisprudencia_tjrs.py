@@ -1,10 +1,11 @@
 from bs4 import BeautifulSoup
+from common.download_path import path
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from crawlerJus import crawlerJus
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from common.conexao_local import cursorConexao
-import sys, re, time
+import sys, re, time, os, urllib.request, subprocess
 
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
@@ -21,6 +22,21 @@ class crawler_jurisprudencia_tjrs():
 		self.data_iniXP = '//*[@id="%s1"]'
 		self.data_fimXP = '//*[@id="%s2"]'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_rs (ementas)'
+
+	def download_diario_retroativo(self):
+		link_inicial = 'http://www3.tjrs.jus.br/servicos/diario_justica/download_edicao.php?tp=%s&ed=%s'
+		edicoes = ['0','5','7','6']
+		for i in range(6298,0,-1):
+			for e in edicoes:
+				try:
+					print(link_inicial % (e,str(i)))
+					response = urllib.request.urlopen(link_inicial % (e,str(i)),timeout=15)
+					file = open(str(i)+'_'+e+'.pdf', 'wb')
+					file.write(response.read())
+					file.close()
+					subprocess.Popen('mv %s/*.pdf %s/Diarios_rs' % (os.getcwd(),path), shell=True)
+				except Exception as e:
+					print(e)
 
 	def download_tj(self,data_ini,data_fim, termo='a'):
 		cursor = cursorConexao()
@@ -64,7 +80,6 @@ class crawler_jurisprudencia_tjrs():
 				driver.close()
 				return
 
-
 	def parser_acordaos(self,links):
 		cursor = cursorConexao()
 		crawler = crawlerJus()
@@ -83,30 +98,31 @@ class crawler_jurisprudencia_tjrs():
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjrs()
 
+	c.download_diario_retroativo()
 
-	print('comecei ',c.__class__.__name__)
-	try:
-		for l in range(len(c.lista_anos)):
-			print(c.lista_anos[l],'\n')
-			for m in range(len(c.lista_meses)):
-				for i in range(1,8):
-					try:
-						c.download_tj('0'+str(i)+c.lista_meses[m]+c.lista_anos[l],'0'+str(i+1)+c.lista_meses[m]+c.lista_anos[l])
-					except Exception as e:
-						print(e)		
-				for i in range(10,30):
-					try:
-						c.download_tj(str(i)+c.lista_meses[m]+c.lista_anos[l],str(i+1)+c.lista_meses[m]+c.lista_anos[l])
-					except Exception as e:
-						print(e)
-	except Exception as e:
-		print('finalizei o ano com erro ',e)
+	# print('comecei ',c.__class__.__name__)
+	# try:
+	# 	for l in range(len(c.lista_anos)):
+	# 		print(c.lista_anos[l],'\n')
+	# 		for m in range(len(c.lista_meses)):
+	# 			for i in range(1,8):
+	# 				try:
+	# 					c.download_tj('0'+str(i)+c.lista_meses[m]+c.lista_anos[l],'0'+str(i+1)+c.lista_meses[m]+c.lista_anos[l])
+	# 				except Exception as e:
+	# 					print(e)		
+	# 			for i in range(10,30):
+	# 				try:
+	# 					c.download_tj(str(i)+c.lista_meses[m]+c.lista_anos[l],str(i+1)+c.lista_meses[m]+c.lista_anos[l])
+	# 				except Exception as e:
+	# 					print(e)
+	# except Exception as e:
+	# 	print('finalizei o ano com erro ',e)
 
-	cursor = cursorConexao()
+	# cursor = cursorConexao()
 
-	cursor.execute('SELECT id, ementas from justica_estadual.jurisprudencia_rs;')
-	links = cursor.fetchall()
-	c.parser_acordaos(links)
+	# cursor.execute('SELECT id, ementas from justica_estadual.jurisprudencia_rs;')
+	# links = cursor.fetchall()
+	# c.parser_acordaos(links)
 
 		
 
