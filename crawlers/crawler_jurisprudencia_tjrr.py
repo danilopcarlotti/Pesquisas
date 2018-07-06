@@ -1,6 +1,7 @@
-import sys, re, time
+import sys, re, time, os, pyautogui, subprocess
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
+from common.download_path import path, path_hd
 from crawlerJus import crawlerJus
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
@@ -60,6 +61,42 @@ class crawler_jurisprudencia_tjrr():
 					break
 		driver.close()
 
+	def download_diario_retroativo(self):
+		link = 'http://diario.tjrr.jus.br/dpj/dpj-%s.pdf'
+		datas = []
+		for l in range(len(self.lista_anos)):
+			for i in range(1,10):
+				for j in range(1,10):
+					datas.append(self.lista_anos[l]+'0'+str(i)+'0'+str(j))
+				for j in range(10,32):
+					datas.append(self.lista_anos[l]+'0'+str(i)+str(j))
+			for i in range(10,13):
+				for j in range(1,10):
+					datas.append(self.lista_anos[l]+str(i)+'0'+str(j))
+				for j in range(10,32):
+					datas.append(self.lista_anos[l]+str(i)+str(j))
+		for data in datas:
+			try:
+				driver = webdriver.Chrome(self.chromedriver)
+				driver.get(link % data)
+				time.sleep(2.5)
+				pyautogui.hotkey('ctrl','s')
+				time.sleep(1)
+				pyautogui.press('enter')
+				time.sleep(1)
+				try:
+					subprocess.Popen('rm %s/*.html' % (path,), shell=True) 
+				except:
+					pass
+				try:
+					subprocess.Popen('mkdir %s/Diarios_rr/%s' % (path_hd,data), shell=True) 
+					subprocess.Popen('mv %s/*.pdf %s/Diarios_rr/%s' % (path,path_hd,data), shell=True)
+				except:
+					pass
+				driver.close()
+			except Exception as e:
+				print(e)
+
 	def parser_acordaos(self,texto,cursor):
 		numero = busca(r'\nNúmero do processo\:\s*?(\d{1,45})\n', texto)
 		data_disponibilizacao = busca(r'\nPublicado em\s*?\:\s*?(\d{8})', texto)
@@ -77,8 +114,10 @@ if __name__ == '__main__':
 	# except Exception as e:
 	# 	print('finalizei com erro ',e)
 
-	cursor = cursorConexao()
-	cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_rr;')
-	dados = cursor.fetchall()
-	for dado in dados:
-		c.parser_acordaos(dado[0], cursor)
+	# cursor = cursorConexao()
+	# cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_rr;')
+	# dados = cursor.fetchall()
+	# for dado in dados:
+	# 	c.parser_acordaos(dado[0], cursor)
+
+	c.download_diario_retroativo()

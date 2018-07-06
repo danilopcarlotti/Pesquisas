@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from common.conexao_local import cursorConexao
-from common.download_path import path
+from common.download_path import path, path_hd
 import time, datetime, urllib.request,logging, click, os, sys, re, subprocess, pyautogui
 
 class crawler_jurisprudencia_tjto():
@@ -35,6 +35,22 @@ class crawler_jurisprudencia_tjto():
 		crawler_jurisprudencia_tj.download_pdf_acordao_sem_captcha(self,link,'to_2_inst_' + id_acordao)
 		subprocess.Popen('mv %s/to_2_inst_* %s/to_2_inst' % (path,path), shell=True)
 
+	def download_diario_retroativo(self):
+		contador = 0
+		# último número do diário em 04.07.2018
+		for i in range(3253,0,-1):
+			try:
+				print('http://wwa.tjto.jus.br/diario/diariopublicado/%s.pdf' % str(i))
+				response = urllib.request.urlopen('http://wwa.tjto.jus.br/diario/diariopublicado/%s.pdf' % str(i),timeout=15)
+				file = open(str(i)+".pdf", 'wb')
+				time.sleep(1)
+				file.write(response.read())
+				file.close()
+				subprocess.Popen('mkdir %s/Diarios_to/%s' % (path_hd,str(i)), shell=True) 
+				subprocess.Popen('mv %s/*.pdf %s/Diarios_to/%s' % (os.getcwd(),path_hd,str(i)), shell=True)
+			except Exception as e:
+				print(e)
+
 	def parser_acordaos(self):
 		p = pdf_to_text()
 		cursor = cursorConexao()
@@ -48,8 +64,10 @@ class crawler_jurisprudencia_tjto():
 
 def main():
 	c = crawler_jurisprudencia_tjto()
-	cursor = cursorConexao()
 
+	c.download_diario_retroativo()
+
+	# cursor = cursorConexao()
 	# cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_to where id > 67164 limit 10000000;')
 	# lista_links = cursor.fetchall()
 	# for i,l in lista_links:

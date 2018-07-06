@@ -1,6 +1,6 @@
-import sys, re, os, subprocess
+import sys, re, os, subprocess, time, pyautogui
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
-from common.download_path import path
+from common.download_path import path, path_hd
 from common.conexao_local import cursorConexao
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -27,6 +27,40 @@ class crawler_jurisprudencia_tjam(crawler_jurisprudencia_tj):
 	def download_acordao_am(self,dados_baixar):
 		self.download_pdf_acordao_captcha_image(dados_baixar,'//*[@id="valorCaptcha"]','//*[@id="pbEnviar"]','am_2_inst')
 
+	def download_diario_retroativo(self):
+		cadernos = ['2','3','4']
+		datas = []
+		for l in range(len(self.lista_anos)):
+			for i in range(1,10):
+				for j in range(1,10):
+					datas.append('0'+str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
+				for j in range(10,32):
+					datas.append(str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
+			for i in range(10,13):
+				for j in range(1,10):
+					datas.append('0'+str(j)+'/'+str(i)+'/'+self.lista_anos[l])
+				for j in range(10,32):
+					datas.append(str(j)+'/'+str(i)+'/'+self.lista_anos[l])
+		contador = 0
+		driver = webdriver.Chrome(self.chromedriver)
+		driver.get('http://consultasaj.tjam.jus.br/cdje/index.do')
+		for data in datas:
+			contador += 1
+			print(data)
+			for caderno in cadernos:
+				driver.execute_script("popup('/cdje/downloadCaderno.do?dtDiario=%s'+'&cdCaderno=%s&tpDownload=D','cadernoDownload');" % (data, caderno))
+				time.sleep(1)
+			time.sleep(5)
+			nome_pasta = data.replace('/','')
+			subprocess.Popen('mkdir %s/Diarios_am/%s' % (path_hd,nome_pasta), shell=True) 
+			subprocess.Popen('mv %s/*.pdf %s/Diarios_am/%s' % (path,path_hd,nome_pasta), shell=True)
+			if contador > 10:
+				time.sleep(5)
+				driver.close()
+				driver = webdriver.Chrome(self.chromedriver)
+				driver.get('http://consultasaj.tjam.jus.br/cdje/index.do')
+				contador = 0
+
 	def parser_acordaos(self, arquivo, cursor, pdf_class):
 		texto = pdf_class.convert_pdfminer(arquivo).replace('"','').replace('/','').replace('\\','')
 		numero = re.search(r'\nPROCESSO N.. (.{1,44})',texto)
@@ -43,14 +77,15 @@ class crawler_jurisprudencia_tjam(crawler_jurisprudencia_tj):
 
 def main():
 	c = crawler_jurisprudencia_tjam()
-	cursor = cursorConexao()
+	c.download_diario_retroativo()
+	# cursor = cursorConexao()
 	# cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_am where id > 29237 limit 10000000;')
 	# lista_links = cursor.fetchall()
 	# c.download_acordao_am(lista_links)
 
-	p = pdf_to_text()
-	for arq in os.listdir(path+'/am_2_inst'):
-		c.parser_acordaos(path+'/am_2_inst/'+arq, cursor, p)
+	# p = pdf_to_text()
+	# for arq in os.listdir(path+'/am_2_inst'):
+	# 	c.parser_acordaos(path+'/am_2_inst/'+arq, cursor, p)
 
 	# print('comecei ',c.__class__.__name__)
 	# try:

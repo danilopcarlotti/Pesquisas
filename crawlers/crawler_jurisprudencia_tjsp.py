@@ -1,7 +1,7 @@
 import sys, re, os, time, subprocess
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
-from common.download_path import path
+from common.download_path import path, path_hd
 from common.image_to_txt import image_to_txt
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
@@ -68,14 +68,13 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 	def download_diario_retroativo(self):
 		cadernos = ['11','12','13','14','15','18']
 		datas = []
-		final_path = ''
 		for l in range(len(c.lista_anos)):
 			for i in range(1,10):
 				for j in range(1,10):
 					datas.append('0'+str(j)+'/0'+str(i)+'/'+c.lista_anos[l])
 				for j in range(10,32):
-					datas.append(str(j)+'/'+str(i)+'/'+c.lista_anos[l])
-			for i in range(11,13):
+					datas.append(str(j)+'/0'+str(i)+'/'+c.lista_anos[l])
+			for i in range(10,13):
 				for j in range(1,10):
 					datas.append('0'+str(j)+'/'+str(i)+'/'+c.lista_anos[l])
 				for j in range(10,32):
@@ -91,8 +90,8 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 				time.sleep(1)
 			time.sleep(15)
 			nome_pasta = data.replace('/','')
-			subprocess.Popen('mkdir %s/Diarios_sp/%s' % (final_path,nome_pasta), shell=True) 
-			subprocess.Popen('mv %s/*.pdf %s/Diarios_sp/%s' % (path,final_path,nome_pasta), shell=True)
+			subprocess.Popen('mkdir %s/Diarios_sp/%s' % (path_hd,nome_pasta), shell=True) 
+			subprocess.Popen('mv %s/*.pdf %s/Diarios_sp/%s' % (path,path_hd,nome_pasta), shell=True)
 			if contador > 10:
 				time.sleep(10)
 				driver.close()

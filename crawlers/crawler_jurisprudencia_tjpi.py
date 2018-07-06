@@ -1,6 +1,7 @@
-import sys, re, time
+import sys, re, time, os, subprocess, pyautogui
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
+from common.download_path import path, path_hd
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -36,6 +37,57 @@ class crawler_jurisprudencia_tjpi():
 					break
 		driver.close()
 
+	def download_diario_retroativo(self):
+		botao_refresh = '//*[@id="diarioInitForm"]/img[2]'
+		data_xpath = '//*[@id="dataDiario"]'
+		download_xpath = '//*[@id="theContent"]/div[1]/table/tbody/tr/td/a'
+		link_inicial = 'http://www.tjpi.jus.br/site/modules/diario/Init.download.mtw'
+		driver = webdriver.Chrome(self.chromedriver)
+		driver.get(link_inicial)
+		datas = []
+		for l in range(0,1):
+			for i in range(6,10):
+				for j in range(1,10):
+					datas.append('0'+str(j)+'0'+str(i)+''+self.lista_anos[l])
+				for j in range(10,32):
+					datas.append(str(j)+'0'+str(i)+self.lista_anos[l])
+			for i in range(10,13):
+				for j in range(1,10):
+					datas.append('0'+str(j)+str(i)+self.lista_anos[l])
+				for j in range(10,32):
+					datas.append(str(j)+str(i)+self.lista_anos[l])
+		for l in range(1,len(self.lista_anos)):
+			for i in range(1,10):
+				for j in range(1,10):
+					datas.append('0'+str(j)+'0'+str(i)+''+self.lista_anos[l])
+				for j in range(10,32):
+					datas.append(str(j)+'0'+str(i)+self.lista_anos[l])
+			for i in range(10,13):
+				for j in range(1,10):
+					datas.append('0'+str(j)+str(i)+self.lista_anos[l])
+				for j in range(10,32):
+					datas.append(str(j)+str(i)+self.lista_anos[l])
+		for data in datas:
+			time.sleep(1)
+			driver.find_element_by_xpath(data_xpath).clear()
+			for letter in data:
+				driver.find_element_by_xpath(data_xpath).send_keys(letter)
+			driver.find_element_by_xpath(botao_refresh).click()
+			try:
+				driver.find_element_by_xpath(download_xpath).click()
+				driver.switch_to.window(driver.window_handles[-1])
+				time.sleep(1)
+				pyautogui.hotkey('ctrl','s')
+				time.sleep(1)
+				pyautogui.press('enter')
+				time.sleep(1)
+				pyautogui.hotkey('ctrl','w')
+				driver.switch_to.window(driver.window_handles[0])
+				subprocess.Popen('mkdir %s/Diarios_pi/%s' % (path_hd,data), shell=True) 
+				subprocess.Popen('mv %s/*.pdf %s/Diarios_pi/%s' % (path,path_hd,data), shell=True)
+			except Exception as e:
+				driver.switch_to.window(driver.window_handles[0])
+
 	def parser_acordaos(self,texto,cursor):
 		decisoes = re.split(r'\n\s*?Temporariamente indisponível.',texto)
 		for d in range(len(decisoes)):
@@ -56,8 +108,10 @@ if __name__ == '__main__':
 	# except:
 	# 	print('finalizei com erro\n')
 
-	cursor = cursorConexao()
-	cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_pi limit 1000000')
-	dados = cursor.fetchall()
-	for dado in dados:
-		c.parser_acordaos(dado[0], cursor)
+	# cursor = cursorConexao()
+	# cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_pi limit 1000000')
+	# dados = cursor.fetchall()
+	# for dado in dados:
+	# 	c.parser_acordaos(dado[0], cursor)
+
+	c.download_diario_retroativo()

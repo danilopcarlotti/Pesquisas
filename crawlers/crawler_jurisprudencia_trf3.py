@@ -1,9 +1,10 @@
-import time, ssl
+import time, ssl, os, urllib.request, subprocess
 from bs4 import BeautifulSoup
+from common.conexao_local import cursorConexao
+from common.download_path import path, path_hd
+from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
-from common.conexao_local import cursorConexao
 
 class crawler_jurisprudencia_trf3():
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de Maranhão"""
@@ -19,6 +20,21 @@ class crawler_jurisprudencia_trf3():
 		self.link_resultado_xpath = '//*[@id="itemlistaresultados"]/span[3]/a'
 		self.pesquisa_livre = '//*[@id="txtPesqLivre"]'
 		self.tabela_colunas = 'justica_federal.jurisprudencia_trf3 (ementas)'
+
+	def download_diario_retroativo(self):
+		link_inicial = 'http://web.trf3.jus.br/diario/Consulta/BaixarPdf/%s'
+		for i in range(20040,0,-1):
+			try:
+				print(link_inicial % str(i))
+				response = urllib.request.urlopen(link_inicial % str(i),timeout=15)
+				file = open(str(i)+".pdf", 'wb')
+				time.sleep(1)
+				file.write(response.read())
+				file.close()
+				subprocess.Popen('mkdir %s/Diarios_trf3/%s' % (path,str(i)), shell=True) 
+				subprocess.Popen('mv %s/*.pdf %s/Diarios_trf3/%s' % (os.getcwd(),path,str(i)), shell=True)
+			except Exception as e:
+				print(e)
 
 	def download_trf3(self, termo = 'recurso'):
 		cursor = cursorConexao()
@@ -62,9 +78,12 @@ class crawler_jurisprudencia_trf3():
 					driver.close()
 					break
 
+
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_trf3()
-	try:
-		c.download_trf3()
-	except Exception as e:
-		print(e)
+	# try:
+	# 	c.download_trf3()
+	# except Exception as e:
+	# 	print(e)
+
+	c.download_diario_retroativo()

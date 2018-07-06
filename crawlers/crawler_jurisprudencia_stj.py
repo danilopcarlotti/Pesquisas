@@ -1,5 +1,6 @@
-import re, os, sys, time, datetime, urllib.request, ssl,logging, click
+import re, os, sys, time, datetime, urllib.request, ssl,logging, pyautogui
 from bs4 import BeautifulSoup
+from common.download_path import path, path_hd
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from crawlerJus import crawlerJus
@@ -111,6 +112,51 @@ class crawler_jurisprudencia_stj(crawlerJus):
 			print(contador)
 			contador += 1
 
+	def download_diario_retroativo(self):
+		driver = webdriver.Chrome(self.chromedriver)
+		datas = []
+		lista_anos = [str(i) for i in range(2011,datetime.date.today().year+1)]
+		driver.get('https://ww2.stj.jus.br/processo/dj/init')
+		for l in range(7,len(lista_anos)):
+			for i in range(1,10):
+				for j in range(1,10):
+					datas.append('0'+str(j)+'0'+str(i)+''+lista_anos[l])
+				for j in range(10,29):
+					datas.append(str(j)+'0'+str(i)+lista_anos[l])
+			for i in range(10,13):
+				for j in range(1,10):
+					datas.append('0'+str(j)+str(i)+lista_anos[l])
+				for j in range(10,29):
+					datas.append(str(j)+str(i)+lista_anos[l])
+		for data in datas:
+			driver.find_element_by_xpath('//*[@id="id_data_pesquisa"]').clear()
+			for letter in data:
+				driver.find_element_by_xpath('//*[@id="id_data_pesquisa"]').send_keys(letter)
+			driver.find_element_by_xpath('//*[@id="id_btn_calendario"]').click()
+			driver.find_element_by_xpath('//*[@id="idDjUltimasDecisoesEtiqueta"]').click()
+			time.sleep(1)
+			print(data)
+			try:
+				driver.find_element_by_xpath('//*[@id="id_btn_download_integra"]/a').click()
+				time.sleep(10)
+				driver.switch_to.window(driver.window_handles[-1])
+				time.sleep(1)
+				pyautogui.hotkey('ctrl','s')
+				time.sleep(1)
+				pyautogui.typewrite(data)
+				time.sleep(1)
+				pyautogui.press('enter')
+				time.sleep(1)
+				pyautogui.hotkey('ctrl','w')
+				driver.switch_to.window(driver.window_handles[0])
+				subprocess.Popen('mkdir %s/Diarios_STJ/%s' % (path_hd,nome_pasta), shell=True) 
+				subprocess.Popen('mv %s/*.pdf %s/Diarios_STJ/%s' % (path,path_hd,nome_pasta), shell=True)
+			except:
+				pass
+		driver.close()
+
+
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_stj(336)
-	c.baixarDadosProcesso()
+	# c.baixarDadosProcesso()
+	c.download_diario_retroativo()

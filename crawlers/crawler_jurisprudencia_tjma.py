@@ -1,6 +1,7 @@
-import time, re
+import time, re, sys, os
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
+from common.download_path import path, path_hd
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -8,7 +9,7 @@ from selenium.webdriver.common.keys import Keys
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
 
-class crawler_jurisprudencia_tjma():
+class crawler_jurisprudencia_tjma(crawler_jurisprudencia_tj):
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de Maranhão"""
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
@@ -45,6 +46,41 @@ class crawler_jurisprudencia_tjma():
 				print(e)
 				break
 
+	def download_diario_retroativo(self):
+		data_ini_xpath = 'dtaInicio'
+		data_fim_xpath = 'dtaTermino'
+		download_xpath = '//*[@id="table1"]/tbody/tr[2]/td[3]/a[1]'
+		link_inicial = 'http://www.tjma.jus.br/inicio/diario'
+		pesquisar_xpath = '//*[@id="btnConsultar"]'
+		driver = webdriver.Chrome(self.chromedriver)
+		driver.get(link_inicial)
+		time.sleep(3)
+		datas = []
+		for l in range(len(self.lista_anos)):
+			for i in range(1,10):
+				for j in range(1,10):
+					datas.append('0'+str(j)+'0'+str(i)+''+self.lista_anos[l])
+				for j in range(10,32):
+					datas.append(str(j)+'0'+str(i)+self.lista_anos[l])
+			for i in range(10,13):
+				for j in range(1,10):
+					datas.append('0'+str(j)+str(i)+self.lista_anos[l])
+				for j in range(10,32):
+					datas.append(str(j)+str(i)+self.lista_anos[l])
+		for data in datas:
+			# PROBLEMA COM VISIBILIDADE DE ELEMENTO
+			driver.find_element_by_id(data_ini_xpath).send_keys(data)
+			driver.find_element_by_id(data_fim_xpath).send_keys(data)
+			driver.find_element_by_xpath(pesquisar_xpath).click()
+			try:
+				driver.find_element_by_xpath(download_xpath).click()
+				time.sleep(3)
+				subprocess.Popen('mkdir %s/Diarios_ma/%s' % (path_hd,nome_pasta), shell=True) 
+				subprocess.Popen('mv %s/*.pdf %s/Diarios_ma/%s' % (path,path_hd,nome_pasta), shell=True)
+			except Exception as e:
+				print(e)
+
+
 	def parser_acordaos(self,texto,cursor):
 		numero = busca(r'\n(.*?)\(clique aqui para visualizar o processo\)', texto)
 		data_disponibilizacao = busca(r'Data do registro do acordão\:\n(\d{2}/\d{2}/\d{4})',texto)
@@ -56,14 +92,14 @@ class crawler_jurisprudencia_tjma():
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjma()
 
-	cursor = cursorConexao()
-	cursor.execute('SELECT id, ementas from justica_estadual.jurisprudencia_ma;')
-	dados = cursor.fetchall()
-	for id_d, dado in dados:
-		try:
-			c.parser_acordaos(dado, cursor)
-		except Exception as e:
-			print(id_d, e)
+	# cursor = cursorConexao()
+	# cursor.execute('SELECT id, ementas from justica_estadual.jurisprudencia_ma;')
+	# dados = cursor.fetchall()
+	# for id_d, dado in dados:
+	# 	try:
+	# 		c.parser_acordaos(dado, cursor)
+	# 	except Exception as e:
+	# 		print(id_d, e)
 
 	# try:
 	# 	for a in c.lista_anos:
@@ -71,3 +107,5 @@ if __name__ == '__main__':
 	# 			c.download_tj('01'+c.lista_meses[m]+a,'28'+c.lista_meses[m]+a)
 	# except Exception as e:
 	# 	print(e)
+
+	c.download_diario_retroativo()
