@@ -21,6 +21,45 @@ class crawler_jurisprudencia_tjrn():
 		self.botao_proximo = '/html/body/table[4]/tbody/tr/td/table/tbody/tr/td/table[1]/tbody/tr/td/input[2]'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_rn (ementas)'
 
+	def download_diario_retroativo(self):
+		# 240 diários por ano. Salvo 2018, que tem, atualmente 121
+
+		link_inicial = 'https://diario.tjrn.jus.br/djonline/pages/repositoriopdfs/%s/%stri/%s/%s_JUD.pdf'
+		datas = []
+		for l in range(len(self.lista_anos)):
+			for i in range(1,10):
+				for j in range(1,10):
+					datas.append(self.lista_anos[l]+'0'+str(i)+'0'+str(j))
+				for j in range(10,32):
+					datas.append(self.lista_anos[l]+'0'+str(i)+str(j))
+			for i in range(11,13):
+				for j in range(1,10):
+					datas.append(self.lista_anos[l]+str(i)+'0'+str(j))
+				for j in range(10,32):
+					datas.append(self.lista_anos[l]+str(i)+str(j))
+		for data in datas:
+			ano = data[:4]
+			mes = data[4:6]
+			dia = data[6:]
+			try:
+				tri = '1'
+				if int(mes) > 3 and int(mes) < 7:
+					tri = '2'
+				elif int(mes) > 6 and int(mes) < 10:
+					tri = '3'
+				elif int(mes) > 9:
+					tri = '4'
+				print(link_inicial % (ano,tri,data,data))
+				response = urllib.request.urlopen(link_inicial % (ano,tri,data,data),timeout=15)
+				file = open(data+'.pdf', 'wb')
+				file.write(response.read())
+				file.close()
+				subprocess.Popen('mv %s/*.pdf %s/Diarios_rn' % (os.getcwd(),path), shell=True)
+			except Exception as e:
+				print(e)
+
+
+
 	def download_tj(self,data_ini,data_fim,termo):
 		cursor = cursorConexao()
 		driver = webdriver.Chrome(self.chromedriver)

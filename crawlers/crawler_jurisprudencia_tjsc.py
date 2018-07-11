@@ -1,10 +1,11 @@
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
+from common.download_path import path, path_hd
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from crawlerJus import crawlerJus
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import sys, re, time
+import sys, re, time, os, urllib.request, subprocess
 
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
@@ -26,16 +27,18 @@ class crawler_jurisprudencia_tjsc():
 	def download_diario_retroativo(self):
 		link_inicial = 'http://busca.tjsc.jus.br/dje-consulta/rest/diario/caderno?edicao=%s&cdCaderno=%s'
 		cadernos = ['1','2','3']
-		for i in range(2853,0,-1):
+		# for i in range(2853,0,-1):
+		for i in range(2474,0,-1):
 			for e in cadernos:
 				try:
 					print(link_inicial % (str(i),e))
 					response = urllib.request.urlopen(link_inicial % (str(i),e),timeout=15)
-					file = open(str(i)+'_'+e'.pdf', 'wb')
+					file = open(str(i)+'_'+e+'.pdf', 'wb')
 					file.write(response.read())
 					file.close()
 					subprocess.Popen('mv %s/*.pdf %s/Diarios_sc' % (os.getcwd(),path), shell=True)
 				except Exception as e:
+					print('erro com ')
 					print(e)
 
 	def download_tj(self,data_ini,data_fim, termo='processo'):
@@ -103,7 +106,7 @@ class crawler_jurisprudencia_tjsc():
 
 def main():
 	c = crawler_jurisprudencia_tjsc()
-	cursor = cursorConexao()
+	# cursor = cursorConexao()
 
 	# print('comecei ',c.__class__.__name__)
 	# for a in c.lista_anos:
@@ -123,11 +126,12 @@ def main():
 	# for i,l in lista_links:
 	# 	c.download_acordao_sc(l, i, cursor)
 
-	cursor.execute('SELECT texto from justica_estadual.jurisprudencia_sc;')
-	dados = cursor.fetchall()
-	for dado in dados:
-		c.parser_acordaos(dado[0], cursor)
+	# cursor.execute('SELECT texto from justica_estadual.jurisprudencia_sc;')
+	# dados = cursor.fetchall()
+	# for dado in dados:
+	# 	c.parser_acordaos(dado[0], cursor)
 
+	c.download_diario_retroativo()
 
 
 if __name__ == '__main__':
