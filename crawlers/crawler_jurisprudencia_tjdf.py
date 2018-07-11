@@ -4,7 +4,7 @@ from crawlerJus import crawlerJus
 from common.conexao_local import cursorConexao
 from common.download_path import path
 from selenium import webdriver
-import sys, re, os, time, docx2txt
+import sys, re, os, time, docx2txt, urllib.request, subprocess
 
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
@@ -22,12 +22,25 @@ class crawler_jurisprudencia_tjdf(crawler_jurisprudencia_tj):
 		# checar o ano e número de diários no ano!!!!
 		# https://dje.tjdft.jus.br/dje/djeletronico?visaoId=tjdf.djeletronico.comum.internet.apresentacao.VisaoDiarioEletronicoInternetPorData
 
-		link_inicial = 'https://dje.tjdft.jus.br/dje/jsp/dje/DownloadDeDiario.jsp?dj=DJ%s_2018-ASSINADO.PDF&statusDoDiario=ASSINADO' #126
-		for i in range(126,0,-1):
+		# 240 diários por ano. Salvo 2018, que tem, atualmente 130
+
+		link_inicial = 'https://dje.tjdft.jus.br/dje/jsp/dje/DownloadDeDiario.jsp?dj=DJ%s_%s-ASSINADO.PDF&statusDoDiario=ASSINADO'
+		for l in range(len(self.lista_anos)-1):
+			for i in range(240,0,-1):
+				try:
+					print(link_inicial % (str(i),self.lista_anos[l]))
+					response = urllib.request.urlopen(link_inicial % (str(i),self.lista_anos[l]),timeout=15)
+					file = open(str(i)+self.lista_anos[l]+'.pdf', 'wb')
+					file.write(response.read())
+					file.close()
+					subprocess.Popen('mv %s/*.pdf %s/Diarios_df' % (os.getcwd(),path), shell=True)
+				except Exception as e:
+					print(e)
+		for i in range(130,0,-1):
 			try:
-				print(link_inicial % (str(i),))
-				response = urllib.request.urlopen(link_inicial % (str(i),),timeout=15)
-				file = open(str(i)+'.pdf', 'wb')
+				print(link_inicial % (str(i),self.lista_anos[l]))
+				response = urllib.request.urlopen(link_inicial % (str(i),self.lista_anos[l]),timeout=15)
+				file = open(str(i)+self.lista_anos[l]+'.pdf', 'wb')
 				file.write(response.read())
 				file.close()
 				subprocess.Popen('mv %s/*.pdf %s/Diarios_df' % (os.getcwd(),path), shell=True)
@@ -86,4 +99,6 @@ def main():
 
 
 if __name__ == '__main__':
-	main()
+	# main()
+	c = crawler_jurisprudencia_tjdf()
+	c.download_diario_retroativo()
