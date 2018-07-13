@@ -1,7 +1,7 @@
-import sys, re, os, time, subprocess
+import sys, re, os, time, subprocess, urllib.request
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
-from common.download_path import path, path_hd
+from common.download_path import path
 from common.image_to_txt import image_to_txt
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
@@ -66,6 +66,7 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 		subprocess.Popen('mv %s/sp_2_inst_*.pdf %s/sp_2_inst' % (path,path), shell=True)
 
 	def download_diario_retroativo(self):
+		path_hd = '/home/danilo/Diarios'
 		cadernos = ['11','12','13','14','15','18']
 		datas = []
 		for l in range(len(self.lista_anos)):
@@ -98,6 +99,33 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 				driver = webdriver.Chrome(self.chromedriver)
 				driver.get('https://www.dje.tjsp.jus.br/cdje/index.do')
 				contador = 0
+
+	def download_diario_oficial_adm_retroativo(self):
+		# link = 'http://diariooficial.imprensaoficial.com.br/doflash/prototipo/2018/Julho/12/exec1/pdf/pg_0098.pdf'
+		link = 'http://diariooficial.imprensaoficial.com.br/doflash/prototipo/%s/%s/%s/%s/pdf/pg_%s.pdf'
+		diarios = ['exce1', 'exec2', 'legislativo', 'cidade']
+		for a in range(len(self.lista_anos)):
+			for m in self.lista_meses_nomes:
+				for d in range(1,32):
+					diretorio = False
+					for diario in diarios:
+						for p in range(1,10000):
+							nome_pasta = str(d)+m+self.lista_anos[a]
+							try:
+								response = urllib.request.urlopen(link % (self.lista_anos[a],m,str(d),diario,'0'*(4-len(str(p))) + str(p)),timeout=15)
+								file = open(nome_pasta+'_'+str(p)+".pdf", 'wb')
+								time.sleep(1)
+								file.write(response.read())
+								file.close()
+								if not diretorio:
+									subprocess.Popen('mkdir %s/Diarios_sp_DO/%s' % (path_hd,nome_pasta), shell=True) 
+									diretorio = True
+								subprocess.Popen('mv %s/*.pdf %s/Diarios_sp_DO/%s' % (os.getcwd(),path_hd,nome_pasta), shell=True)
+								time.sleep(1)
+							except Exception as e:
+								print(nome_pasta)
+								print(e)
+								break
 
 	def parse_sp_dados_1_inst(self,texto,cursor):
 		def parse(texto_decisao,cursor):
@@ -191,6 +219,6 @@ if __name__ == '__main__':
 	# main()
 	c = crawler_jurisprudencia_tjsp()
 	try:
-		c.download_diario_retroativo()
+		c.download_diario_oficial_adm_retroativo()
 	except Exception as e:
 		print(e)
