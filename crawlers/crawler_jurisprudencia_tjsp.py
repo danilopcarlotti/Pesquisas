@@ -68,17 +68,17 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 	def download_diario_retroativo(self):
 		cadernos = ['11','12','13','14','15','18']
 		datas = []
-		for l in range(len(c.lista_anos)):
+		for l in range(len(self.lista_anos)):
 			for i in range(1,10):
 				for j in range(1,10):
-					datas.append('0'+str(j)+'/0'+str(i)+'/'+c.lista_anos[l])
+					datas.append('0'+str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
 				for j in range(10,32):
-					datas.append(str(j)+'/0'+str(i)+'/'+c.lista_anos[l])
+					datas.append(str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
 			for i in range(10,13):
 				for j in range(1,10):
-					datas.append('0'+str(j)+'/'+str(i)+'/'+c.lista_anos[l])
+					datas.append('0'+str(j)+'/'+str(i)+'/'+self.lista_anos[l])
 				for j in range(10,32):
-					datas.append(str(j)+'/'+str(i)+'/'+c.lista_anos[l])
+					datas.append(str(j)+'/'+str(i)+'/'+self.lista_anos[l])
 		contador = 0
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get('https://www.dje.tjsp.jus.br/cdje/index.do')
