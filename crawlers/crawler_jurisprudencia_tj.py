@@ -18,6 +18,7 @@ class crawler_jurisprudencia_tj(crawlerJus):
 		self.lista_anos = [str(i) for i in range(2011,date.today().year+1)]
 		self.lista_meses = ['0'+str(i) for i in range(1,10)]
 		self.lista_meses += ['10','11','12']
+		self.lista_meses_nomes = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
 
 	def captcha_audio(self, path=None):
 		t = transcrever_audio()
