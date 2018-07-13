@@ -1,5 +1,5 @@
 import sys, re, os, urllib.request, time, subprocess
-from common.download_path import path
+from common.download_path import path, path_hd
 from common.conexao_local import cursorConexao
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from bs4 import BeautifulSoup
@@ -60,17 +60,17 @@ class crawler_jurisprudencia_tjal(crawler_jurisprudencia_tj):
 		cadernos = ['2','3']
 		link_inicial = 'http://www2.tjal.jus.br/cdje/index.do'
 		datas = []
-		for l in range(len(c.lista_anos)):
+		for l in range(len(self.lista_anos)):
 			for i in range(1,10):
 				for j in range(1,10):
-					datas.append('0'+str(j)+'/0'+str(i)+'/'+c.lista_anos[l])
+					datas.append('0'+str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
 				for j in range(10,32):
-					datas.append(str(j)+'/0'+str(i)+'/'+c.lista_anos[l])
+					datas.append(str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
 			for i in range(11,13):
 				for j in range(1,10):
-					datas.append('0'+str(j)+'/'+str(i)+'/'+c.lista_anos[l])
+					datas.append('0'+str(j)+'/'+str(i)+'/'+self.lista_anos[l])
 				for j in range(10,32):
-					datas.append(str(j)+'/'+str(i)+'/'+c.lista_anos[l])
+					datas.append(str(j)+'/'+str(i)+'/'+self.lista_anos[l])
 		contador = 0
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(link_inicial)
@@ -82,8 +82,8 @@ class crawler_jurisprudencia_tjal(crawler_jurisprudencia_tj):
 				time.sleep(1)
 			time.sleep(3)
 			nome_pasta = data.replace('/','')
-			subprocess.Popen('mkdir %s/Diarios_al/%s' % (final_path,nome_pasta), shell=True) 
-			subprocess.Popen('mv %s/*.pdf %s/Diarios_al/%s' % (path,final_path,nome_pasta), shell=True)
+			subprocess.Popen('mkdir %s/Diarios_al/%s' % (path_hd,nome_pasta), shell=True) 
+			subprocess.Popen('mv %s/*.pdf %s/Diarios_al/%s' % (path,path_hd,nome_pasta), shell=True)
 			if contador > 10:
 				time.sleep(3)
 				driver.close()
@@ -115,14 +115,16 @@ def main():
 	# 	except Exception as e:
 	# 		print('finalizei o ano ',l)
 	# 		print(e)
-	cursor = cursorConexao()
-	cursor.execute('SELECT id, ementas from justica_estadual.jurisprudencia_al limit 1000000')
-	dados = cursor.fetchall()
-	for id_p, dado in dados:
-		try:
-			c.parser_acordaos(dado, cursor)
-		except:
-			print(id_p)
+	# cursor = cursorConexao()
+	# cursor.execute('SELECT id, ementas from justica_estadual.jurisprudencia_al limit 1000000')
+	# dados = cursor.fetchall()
+	# for id_p, dado in dados:
+	# 	try:
+	# 		c.parser_acordaos(dado, cursor)
+	# 	except:
+	# 		print(id_p)
+
+	c.download_diario_retroativo()
 
 if __name__ == '__main__':
 	main()

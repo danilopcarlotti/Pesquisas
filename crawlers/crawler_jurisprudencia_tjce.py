@@ -1,12 +1,15 @@
-import sys, re
+from bs4 import BeautifulSoup
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from common.conexao_local import cursorConexao
-from bs4 import BeautifulSoup
+from common.download_path import path, path_hd
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+import sys, re, os, urllib.request, time, subprocess
 
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
 
-class crawler_jurisprudencia_tjce():
+class crawler_jurisprudencia_tjce(crawler_jurisprudencia_tj):
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância do Ceará"""
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
@@ -23,17 +26,33 @@ class crawler_jurisprudencia_tjce():
 		cadernos = ['1','2']
 		link_inicial = 'http://esaj.tjce.jus.br/cdje/index.do'
 		datas = []
-		for l in range(len(c.lista_anos)):
-			for i in range(1,10):
+		for l in range(1,2):
+			for i in range(1,2):
+				# for j in range(1,10):
+				# 	datas.append('0'+str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
+				for j in range(18,32):
+					datas.append(str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
+			for i in range(2,10):
 				for j in range(1,10):
-					datas.append('0'+str(j)+'/0'+str(i)+'/'+c.lista_anos[l])
+					datas.append('0'+str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
 				for j in range(10,32):
-					datas.append(str(j)+'/0'+str(i)+'/'+c.lista_anos[l])
+					datas.append(str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
 			for i in range(11,13):
 				for j in range(1,10):
-					datas.append('0'+str(j)+'/'+str(i)+'/'+c.lista_anos[l])
+					datas.append('0'+str(j)+'/'+str(i)+'/'+self.lista_anos[l])
 				for j in range(10,32):
-					datas.append(str(j)+'/'+str(i)+'/'+c.lista_anos[l])
+					datas.append(str(j)+'/'+str(i)+'/'+self.lista_anos[l])
+		for l in range(2,len(self.lista_anos)):
+			for i in range(1,10):
+				for j in range(1,10):
+					datas.append('0'+str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
+				for j in range(10,32):
+					datas.append(str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
+			for i in range(11,13):
+				for j in range(1,10):
+					datas.append('0'+str(j)+'/'+str(i)+'/'+self.lista_anos[l])
+				for j in range(10,32):
+					datas.append(str(j)+'/'+str(i)+'/'+self.lista_anos[l])
 		contador = 0
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(link_inicial)
@@ -45,8 +64,8 @@ class crawler_jurisprudencia_tjce():
 				time.sleep(1)
 			time.sleep(3)
 			nome_pasta = data.replace('/','')
-			subprocess.Popen('mkdir %s/Diarios_ce/%s' % (final_path,nome_pasta), shell=True) 
-			subprocess.Popen('mv %s/*.pdf %s/Diarios_ce/%s' % (path,final_path,nome_pasta), shell=True)
+			subprocess.Popen('mkdir %s/Diarios_ce/%s' % (path_hd,nome_pasta), shell=True) 
+			subprocess.Popen('mv %s/*.pdf %s/Diarios_ce/%s' % (path,path_hd,nome_pasta), shell=True)
 			if contador > 10:
 				time.sleep(3)
 				driver.close()
@@ -83,8 +102,10 @@ if __name__ == '__main__':
 	# except Exception as e:
 	# 	print('finalizei o ano com erro ', e)
 
-	cursor = cursorConexao()
-	cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_ce;')
-	dados = cursor.fetchall()
-	for ementa in dados:
-		c.parser_acordaos(ementa[0], cursor)
+	# cursor = cursorConexao()
+	# cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_ce;')
+	# dados = cursor.fetchall()
+	# for ementa in dados:
+	# 	c.parser_acordaos(ementa[0], cursor)
+
+	c.download_diario_retroativo()
