@@ -121,6 +121,7 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 									subprocess.Popen('mkdir %s/Diarios_sp_DO/%s' % (path_hd,nome_pasta), shell=True) 
 									diretorio = True
 								subprocess.Popen('mv %s/*.pdf %s/Diarios_sp_DO/%s' % (os.getcwd(),path_hd,nome_pasta), shell=True)
+								time.sleep(1)
 							except Exception as e:
 								print(nome_pasta)
 								print(e)
