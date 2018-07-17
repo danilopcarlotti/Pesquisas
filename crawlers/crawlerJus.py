@@ -113,4 +113,31 @@ class crawlerJus():
 		elif texto == 'dezembro':
 			return '12'
 
+	def mes_numero_nome(self,texto):
+		texto = texto.lower()
+		if texto == '01':
+			return 'janeiro'
+		elif texto == '02':
+			return 'fevereiro'
+		elif texto == '03':
+			return 'março'
+		elif texto == '04':
+			return 'abril'
+		elif texto == '05':
+			return 'maio'
+		elif texto == '06':
+			return 'junho'
+		elif texto == '07':
+			return 'julho'
+		elif texto == '08':
+			return 'agosto'
+		elif texto == '09':
+			return 'setembro'
+		elif texto == '10':
+			return 'outubro'
+		elif texto == '11':
+			return 'novembro'
+		elif texto == '12':
+			return 'dezembro'
+
 #comandos: gera relatório, pesquisa tribunal específico

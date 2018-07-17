@@ -4,7 +4,7 @@ from common.conexao_local import cursorConexao
 from common.download_path import path
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import sys, re, time, os, pyautogui
+import sys, re, time, os, pyautogui, subprocess, urllib.request
 
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
@@ -21,6 +21,45 @@ class crawler_jurisprudencia_tjmt():
 		self.botao_pesquisar = '//*[@id="BotaoConsulta"]' 
 		self.botao_proximo_XP = '//*[@id="AcordaoPagination"]/ul/li[%s]/a'  
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_mt (ementas)' 
+
+	def download_diario_retroativo(self):
+		# numero-ano
+		links_2016_2018 = [
+		'http://sistemadje.tjmt.jus.br/publicacoes/{}-{}%20C2%20Comarcas%20-%20Entr%C3%A2ncia%20Especial.pdf',
+		'http://sistemadje.tjmt.jus.br/publicacoes/{}-{}%20C7%20Comarcas%20-%201%C2%AA%202%C2%AA%20e%203%C2%AA%20Entr%C3%A2ncia.pdf',
+		'http://sistemadje.tjmt.jus.br/publicacoes/{}-{}%20C1%20Tribunal%20de%20Justi%C3%A7a.pdf'
+		]
+		links_2011_2015 = [
+		'http://sistemadje.tjmt.jus.br/publicacoes/{}-{}.pdf'
+		]
+		numeros_diarios = {2018 : 10292, 2017 : 10168, 2016 : 9929, 2015 : 9687, 2014 : 9447, 2013 : 9206, 2012 : 8962, 2011 : 8720, 2010 : 8481}
+		# for i in range(2011,2016):
+		# 	for j in range(numeros_diarios[i-1]+1,numeros_diarios[i]+1):
+		# 		for link in links_2011_2015:
+		# 			try:
+		# 				print(link.format(str(j),str(i)))
+		# 				response = urllib.request.urlopen(link.format(str(j),str(i)),timeout=15)
+		# 				file = open(str(i)+str(j)+'.pdf', 'wb')
+		# 				file.write(response.read())
+		# 				file.close()
+		# 				subprocess.Popen('mv %s/*.pdf %s/Diarios_mt' % (os.getcwd(),path), shell=True)
+		# 			except Exception as e:
+		# 				print(e)
+		for i in range(2018,2015,-1):
+			for j in range(numeros_diarios[i-1]+1,numeros_diarios[i]+1):
+				contador = 0
+				for link in links_2016_2018:
+					contador += 1
+					try:
+						print(link.format(str(j),str(i)))
+						response = urllib.request.urlopen(link.format(str(j),str(i)),timeout=15)
+						file = open(str(contador)+'_'+str(i)+str(j)+'.pdf', 'wb')
+						file.write(response.read())
+						file.close()
+						subprocess.Popen('mv %s/*.pdf %s/Diarios_mt' % (os.getcwd(),path), shell=True)
+					except Exception as e:
+						print(e)
+
 
 	def download_tj(self, termo='a'):
 		global contador
@@ -78,13 +117,13 @@ class crawler_jurisprudencia_tjmt():
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjmt()
 	
-	cursor = cursorConexao()
-	p = pdf_to_text()
-	for arq in os.listdir(path+'/mt_2_inst'):
-		try:
-			c.parser_acordaos(path+'/mt_2_inst/'+arq, cursor, p)
-		except Exception as e:
-			print(e)
+	# cursor = cursorConexao()
+	# p = pdf_to_text()
+	# for arq in os.listdir(path+'/mt_2_inst'):
+	# 	try:
+	# 		c.parser_acordaos(path+'/mt_2_inst/'+arq, cursor, p)
+	# 	except Exception as e:
+	# 		print(e)
 
 	# print('comecei ',c.__class__.__name__)
 	# try:
@@ -92,3 +131,5 @@ if __name__ == '__main__':
 	# except Exception as e:
 	# 	print(e)
 	# 	print('finalizei com erro\n')
+
+	c.download_diario_retroativo()

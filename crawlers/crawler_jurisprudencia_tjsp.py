@@ -1,9 +1,10 @@
-import sys, re, os, time, subprocess, urllib.request
+import sys, re, os, time, subprocess, urllib.request, pyautogui
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
-from common.download_path import path
+from common.download_path import path, path_hd
 from common.image_to_txt import image_to_txt
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
+from crawlerJus import crawlerJus
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
@@ -66,7 +67,6 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 		subprocess.Popen('mv %s/sp_2_inst_*.pdf %s/sp_2_inst' % (path,path), shell=True)
 
 	def download_diario_retroativo(self):
-		path_hd = '/home/danilo/Diarios'
 		cadernos = ['11','12','13','14','15','18']
 		datas = []
 		for l in range(len(self.lista_anos)):
@@ -100,11 +100,12 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 				driver.get('https://www.dje.tjsp.jus.br/cdje/index.do')
 				contador = 0
 
+	# Só funciona para a edição da cidade de jun/2017 e para as edições de 2018
+	# REVER PARA OUTROS DIÁRIOS
 	def download_diario_oficial_adm_retroativo(self):
-		# link = 'http://diariooficial.imprensaoficial.com.br/doflash/prototipo/2018/Julho/12/exec1/pdf/pg_0098.pdf'
 		link = 'http://diariooficial.imprensaoficial.com.br/doflash/prototipo/%s/%s/%s/%s/pdf/pg_%s.pdf'
 		diarios = ['exce1', 'exec2', 'legislativo', 'cidade']
-		for a in range(len(self.lista_anos)):
+		for a in range(len(self.lista_anos)-2,len(self.lista_anos)):
 			for m in self.lista_meses_nomes:
 				for d in range(1,32):
 					diretorio = False
@@ -112,20 +113,100 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 						for p in range(1,10000):
 							nome_pasta = str(d)+m+self.lista_anos[a]
 							try:
-								response = urllib.request.urlopen(link % (self.lista_anos[a],m,str(d),diario,'0'*(4-len(str(p))) + str(p)),timeout=15)
+								response = urllib.request.urlopen(link % (self.lista_anos[a],m,str(d),diario,'0'*(4-len(str(p))) + str(p)),timeout=5)
 								file = open(nome_pasta+'_'+str(p)+".pdf", 'wb')
 								time.sleep(1)
 								file.write(response.read())
 								file.close()
 								if not diretorio:
 									subprocess.Popen('mkdir %s/Diarios_sp_DO/%s' % (path_hd,nome_pasta), shell=True) 
+									for diario_pasta in diarios:
+										subprocess.Popen('mkdir %s/Diarios_sp_DO/%s/%s' % (path_hd,nome_pasta,diario_pasta), shell=True) 
 									diretorio = True
-								subprocess.Popen('mv %s/*.pdf %s/Diarios_sp_DO/%s' % (os.getcwd(),path_hd,nome_pasta), shell=True)
+								subprocess.Popen('mv %s/*.pdf %s/Diarios_sp_DO/%s/%s' % (os.getcwd(),path_hd,nome_pasta,diario_pasta), shell=True)
 								time.sleep(1)
 							except Exception as e:
 								print(nome_pasta)
 								print(e)
 								break
+
+	def download_diario_oficial_adm_retrativo_antigos(self):
+		crawler_aux = crawlerJus()
+		datas = []
+		diarios = ['Executivo+I','Executivo+II','Empresarial','Empresarial+2','Legislativo']
+		diarios_secao = {'Executivo+I' : 'i', 'Executivo+II' : 'ii', 'Empresarial' : None,'Empresarial+2' : None,'Legislativo' : None}
+		link_inicial = 'https://www.imprensaoficial.com.br/DO/BuscaDO2001Resultado_11_3.aspx?filtrotipopalavraschavesalvar=FE&filtrodatafimsalvar={}&filtroperiodo={}%2f{}%2f{}+a+{}%2f{}%2f{}&filtrocadernos={}&filtropalavraschave=+&filtrodatainiciosalvar={}s&xhitlist_vpc=first&filtrocadernossalvar=ex1&filtrotodoscadernos=+'
+		primeiro_resultado_xpath = '//*[@id="dtgResultado_lblData_0"]'
+		profile = {"plugins.plugins_list": [{"enabled": False,
+					"name": "Chrome PDF Viewer"}],
+					"download.default_directory": path,
+					"download.extensions_to_open": ""}
+		for l in range(2017,1890,-1):
+			for i in range(1,10):
+				for j in range(1,10):
+					datas.append(str(l)+'0'+str(i)+'0'+str(j))
+				for j in range(10,32):
+					datas.append(str(l)+'0'+str(i)+str(j))
+			for i in range(10,13):
+				for j in range(1,10):
+					datas.append(str(l)+str(i)+'0'+str(j))
+				for j in range(10,32):
+					datas.append(str(l)+str(i)+str(j))
+		for data in datas:
+			ano = data[:4]
+			mes = data[4:6]
+			dia = data[6:]
+			nome_pasta = dia+mes+ano
+			subprocess.Popen('mkdir %s/Diarios_sp_DO_2/%s' % (path_hd,nome_pasta), shell=True) 
+			for diario in diarios:
+				subprocess.Popen('mkdir %s/Diarios_sp_DO_2/%s/%s' % (path_hd,nome_pasta,diario), shell=True) 
+				try:
+					options = webdriver.ChromeOptions()
+					options.add_experimental_option("prefs", profile)
+					driver = webdriver.Chrome(self.chromedriver, chrome_options = options)
+					driver.get(link_inicial.format(data,dia,mes,ano,dia,mes,ano,diario,data))
+					html = driver.page_source
+					pag = BeautifulSoup(html,'lxml')
+					for l in pag.find_all('a', href=True):
+						if re.search(r"javascript\:pop\('\/DO\/BuscaDO2001Documento\_",l['href']):
+							codigo_script = re.search(r'pagnot(.*?)\.',l['href'])
+							if codigo_script:
+								codigo_script = codigo_script.group(1)
+								print('encontrei')
+								break
+					script_base = "pop('/DO/BuscaDO2001Documento_11_4.aspx?link=%2f{}%2f{}%2520secao%2520{}%2f{}%2f{}%2fpagnot{}.pdf&pagina=I&data={}/{}/{}&caderno={}&paginaordenacao=1',738,577,'0','1')"
+					script_base_sem_secao = "pop('/DO/BuscaDO2001Documento_11_4.aspx?link=%2f{}%2f{}%25202%2f{}%2f{}%2fpag{}.pdf&pagina=1&data={}/{}/{}&caderno={}&paginaordenacao=100001',738,577,'0','1');"
+					if diarios_secao[diario]:
+						driver.execute_script(script_base.format(ano,diario.replace('+','').replace('I','').replace('2','').lower(),diarios_secao[diario],crawler_aux.mes_numero_nome(mes),dia,codigo_script,dia,mes,ano,diario.replace('+',' ')))
+					else:
+						driver.execute_script(script_base_sem_secao.format(ano,diario.replace('+','').replace('I','').replace('2','').lower(),crawler_aux.mes_numero_nome(mes),dia,codigo_script,dia,mes,ano,diario.replace('+',' ')))
+					time.sleep(0.5)
+					driver.switch_to.window(driver.window_handles[1])
+					time.sleep(1)
+					driver.switch_to_frame(driver.find_element_by_name('GatewayNavegacao'))
+					ult_pagina = int(driver.find_element_by_id('lblTotalPagina').text)
+					contador = 2
+					while contador < ult_pagina:
+						try:
+							driver.switch_to.window(driver.window_handles[1])
+							driver.switch_to_frame(driver.find_element_by_name('GatewayNavegacao'))
+							time.sleep(1)
+							driver.find_element_by_xpath('//*[@id="txtPagina"]').send_keys(str(contador))
+							driver.find_element_by_xpath('//*[@id="ibtPagina"]').click()
+							time.sleep(1)
+							contador += 1
+							try:
+								subprocess.Popen('mv %s/GatewayPDF.pdf %s/%s.pdf' % (path, path, str(contador-1)), shell=True)
+								time.sleep(1)
+								subprocess.Popen('mv %s/*.pdf %s/Diarios_sp_DO_2/%s/%s' % (path,path_hd,nome_pasta,diario), shell=True)
+							except Exception as e:
+								pass
+						except Exception as e:
+							break
+					driver.switch_to.window(driver.window_handles[1])
+					driver.close()
+				except Exception as e:
+					driver.close()
 
 	def parse_sp_dados_1_inst(self,texto,cursor):
 		def parse(texto_decisao,cursor):
@@ -219,6 +300,6 @@ if __name__ == '__main__':
 	# main()
 	c = crawler_jurisprudencia_tjsp()
 	try:
-		c.download_diario_oficial_adm_retroativo()
+		c.download_diario_oficial_adm_retrativo_antigos()
 	except Exception as e:
 		print(e)

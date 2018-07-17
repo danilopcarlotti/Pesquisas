@@ -1,10 +1,13 @@
-import sys, re
-from crawlerJus import crawlerJus
+import sys, re, urllib.request, subprocess, os
 from bs4 import BeautifulSoup
+from common.download_path import path
+from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
+from crawlerJus import crawlerJus
 
-class crawler_jurisprudencia_tjpe():
+class crawler_jurisprudencia_tjpe(crawler_jurisprudencia_tj):
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de Rio Grande do Norte"""
 	def __init__(self):
+		crawler_jurisprudencia_tj.__init__(self)
 		self.link_inicial = 'http://www.tjpe.jus.br/consultajurisprudenciaweb/xhtml/consulta/consulta.xhtml'
 		self.pesquisa_livre = '//*[@id="formPesquisaJurisprudencia:inputBuscaSimples"]'
 		self.data_julgamento_inicial = '//*[@id="formPesquisaJurisprudencia:j_id59InputDate"]'
@@ -26,16 +29,17 @@ class crawler_jurisprudencia_tjpe():
 					subprocess.Popen('mv %s/*.pdf %s/Diarios_pe' % (os.getcwd(),path), shell=True)
 				except Exception as e:
 					print(e)
-		for i in range(130,0,-1):
-			try:
-				print(link_inicial % (str(i),self.lista_anos[l]))
-				response = urllib.request.urlopen(link_inicial % (str(i),self.lista_anos[l]),timeout=15)
-				file = open(str(i)+self.lista_anos[l]+'.pdf', 'wb')
-				file.write(response.read())
-				file.close()
-				subprocess.Popen('mv %s/*.pdf %s/Diarios_pe' % (os.getcwd(),path), shell=True)
-			except Exception as e:
-				print(e)
+		for l in range(len(self.lista_anos)-1,len(self.lista_anos)):
+			for i in range(130,0,-1):
+				try:
+					print(link_inicial % (str(i),self.lista_anos[l]))
+					response = urllib.request.urlopen(link_inicial % (str(i),self.lista_anos[l]),timeout=15)
+					file = open(str(i)+self.lista_anos[l]+'.pdf', 'wb')
+					file.write(response.read())
+					file.close()
+					subprocess.Popen('mv %s/*.pdf %s/Diarios_pe' % (os.getcwd(),path), shell=True)
+				except Exception as e:
+					print(e)
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjpe()
