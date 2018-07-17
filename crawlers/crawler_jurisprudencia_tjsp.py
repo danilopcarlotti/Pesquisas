@@ -101,8 +101,8 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 				contador = 0
 
 	# Só funciona para a edição da cidade de jun/2017 e para as edições de 2018
+	# REVER PARA OUTROS DIÁRIOS
 	def download_diario_oficial_adm_retroativo(self):
-		# link = 'http://diariooficial.imprensaoficial.com.br/doflash/prototipo/2018/Julho/12/exec1/pdf/pg_0098.pdf'
 		link = 'http://diariooficial.imprensaoficial.com.br/doflash/prototipo/%s/%s/%s/%s/pdf/pg_%s.pdf'
 		diarios = ['exce1', 'exec2', 'legislativo', 'cidade']
 		for a in range(len(self.lista_anos)-2,len(self.lista_anos)):
@@ -133,8 +133,7 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 	def download_diario_oficial_adm_retrativo_antigos(self):
 		crawler_aux = crawlerJus()
 		datas = []
-		# diarios = ['Executivo+I','Executivo+II','Empresarial','Empresarial+2','Legislativo']
-		diarios = ['Empresarial','Empresarial+2','Legislativo']
+		diarios = ['Executivo+I','Executivo+II','Empresarial','Empresarial+2','Legislativo']
 		diarios_secao = {'Executivo+I' : 'i', 'Executivo+II' : 'ii', 'Empresarial' : None,'Empresarial+2' : None,'Legislativo' : None}
 		link_inicial = 'https://www.imprensaoficial.com.br/DO/BuscaDO2001Resultado_11_3.aspx?filtrotipopalavraschavesalvar=FE&filtrodatafimsalvar={}&filtroperiodo={}%2f{}%2f{}+a+{}%2f{}%2f{}&filtrocadernos={}&filtropalavraschave=+&filtrodatainiciosalvar={}s&xhitlist_vpc=first&filtrocadernossalvar=ex1&filtrotodoscadernos=+'
 		primeiro_resultado_xpath = '//*[@id="dtgResultado_lblData_0"]'
@@ -142,11 +141,9 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 					"name": "Chrome PDF Viewer"}],
 					"download.default_directory": path,
 					"download.extensions_to_open": ""}
-
-		# for l in range(2017,1890,-1):
-		for l in range(2016,2015,-1):
-			for i in range(4,10):
-				for j in range(5,10):
+		for l in range(2017,1890,-1):
+			for i in range(1,10):
+				for j in range(1,10):
 					datas.append(str(l)+'0'+str(i)+'0'+str(j))
 				for j in range(10,32):
 					datas.append(str(l)+'0'+str(i)+str(j))
@@ -196,22 +193,19 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 							time.sleep(1)
 							driver.find_element_by_xpath('//*[@id="txtPagina"]').send_keys(str(contador))
 							driver.find_element_by_xpath('//*[@id="ibtPagina"]').click()
-							time.sleep(2)
+							time.sleep(1)
 							contador += 1
 							try:
 								subprocess.Popen('mv %s/GatewayPDF.pdf %s/%s.pdf' % (path, path, str(contador-1)), shell=True)
-								time.sleep(1.5)
+								time.sleep(1)
 								subprocess.Popen('mv %s/*.pdf %s/Diarios_sp_DO_2/%s/%s' % (path,path_hd,nome_pasta,diario), shell=True)
 							except Exception as e:
-								print(e)
+								pass
 						except Exception as e:
-							print(e)
 							break
 					driver.switch_to.window(driver.window_handles[1])
 					driver.close()
 				except Exception as e:
-					print(data)
-					print(e)
 					driver.close()
 
 	def parse_sp_dados_1_inst(self,texto,cursor):
