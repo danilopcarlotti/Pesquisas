@@ -133,7 +133,8 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 	def download_diario_oficial_adm_retrativo_antigos(self):
 		crawler_aux = crawlerJus()
 		datas = []
-		diarios = ['Executivo+I','Executivo+II','Empresarial','Empresarial+2','Legislativo']
+		# diarios = ['Executivo+I','Executivo+II','Empresarial','Empresarial+2','Legislativo']
+		diarios = ['Empresarial','Empresarial+2','Legislativo']
 		diarios_secao = {'Executivo+I' : 'i', 'Executivo+II' : 'ii', 'Empresarial' : None,'Empresarial+2' : None,'Legislativo' : None}
 		link_inicial = 'https://www.imprensaoficial.com.br/DO/BuscaDO2001Resultado_11_3.aspx?filtrotipopalavraschavesalvar=FE&filtrodatafimsalvar={}&filtroperiodo={}%2f{}%2f{}+a+{}%2f{}%2f{}&filtrocadernos={}&filtropalavraschave=+&filtrodatainiciosalvar={}s&xhitlist_vpc=first&filtrocadernossalvar=ex1&filtrotodoscadernos=+'
 		primeiro_resultado_xpath = '//*[@id="dtgResultado_lblData_0"]'
@@ -143,9 +144,9 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 					"download.extensions_to_open": ""}
 
 		# for l in range(2017,1890,-1):
-		for l in range(2017,2016,-1):
-			for i in range(5,10):
-				for j in range(4,10):
+		for l in range(2016,2015,-1):
+			for i in range(4,10):
+				for j in range(5,10):
 					datas.append(str(l)+'0'+str(i)+'0'+str(j))
 				for j in range(10,32):
 					datas.append(str(l)+'0'+str(i)+str(j))
@@ -174,13 +175,14 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 							codigo_script = re.search(r'pagnot(.*?)\.',l['href'])
 							if codigo_script:
 								codigo_script = codigo_script.group(1)
+								print('encontrei')
 								break
 					script_base = "pop('/DO/BuscaDO2001Documento_11_4.aspx?link=%2f{}%2f{}%2520secao%2520{}%2f{}%2f{}%2fpagnot{}.pdf&pagina=I&data={}/{}/{}&caderno={}&paginaordenacao=1',738,577,'0','1')"
 					script_base_sem_secao = "pop('/DO/BuscaDO2001Documento_11_4.aspx?link=%2f{}%2f{}%25202%2f{}%2f{}%2fpag{}.pdf&pagina=1&data={}/{}/{}&caderno={}&paginaordenacao=100001',738,577,'0','1');"
 					if diarios_secao[diario]:
 						driver.execute_script(script_base.format(ano,diario.replace('+','').replace('I','').replace('2','').lower(),diarios_secao[diario],crawler_aux.mes_numero_nome(mes),dia,codigo_script,dia,mes,ano,diario.replace('+',' ')))
 					else:
-						driver.execute_script(script_base_sem_secao.format(ano,diario.replace('+','').replace('I','').replace('2','').lower()),crawler_aux.mes_numero_nome(mes),dia,codigo_script,dia,mes,ano,diario.replace('+',' '))
+						driver.execute_script(script_base_sem_secao.format(ano,diario.replace('+','').replace('I','').replace('2','').lower(),crawler_aux.mes_numero_nome(mes),dia,codigo_script,dia,mes,ano,diario.replace('+',' ')))
 					time.sleep(0.5)
 					driver.switch_to.window(driver.window_handles[1])
 					time.sleep(1)
@@ -205,7 +207,7 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 						except Exception as e:
 							print(e)
 							break
-					driver.switch_to.window(driver.window_handles[0])
+					driver.switch_to.window(driver.window_handles[1])
 					driver.close()
 				except Exception as e:
 					print(data)
