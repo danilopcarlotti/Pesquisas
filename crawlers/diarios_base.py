@@ -1,6 +1,6 @@
 from common.conexao_local import cursorConexao
 from common.download_path_diarios import path
-import re, os
+import re, os, sys
 
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
@@ -63,15 +63,15 @@ if __name__ == '__main__':
 	cursor = cursorConexao()
 	for repositorio_diarios in os.listdir(path):
 		nome_diario = repositorio_diarios.split('Diarios_')[1]
-		for repositorio_dia in repositorio_diarios:
-			for arquivo in repositorio_dia:
-				if re.search(r'txt',arquivo):
+		for repositorio_dia in os.listdir(path+'/'+repositorio_diarios):
+			for arquivo in os.listdir(path+'/'+repositorio_diarios+'/'+repositorio_dia):
+				if re.search(r'txt',path+'/'+repositorio_diarios+'/'+repositorio_dia+'/'+arquivo):
 					diario_texto = '\n'
 					for line in open(path+'/'+repositorio_diarios+'/'+repositorio_dia+'/'+arquivo,'r'):
 						diario_texto += line
-					publicacoes = re.findall(diarios[nome_diario][0],diario,re.DOTALL)
+					publicacoes = re.findall(diarios[nome_diario][0],diario_texto,re.DOTALL)
 					for texto in publicacoes:
-						if len(texto[1]) > 200:
+						if len(texto[1]) > 100:
 							texto = texto[1].strip().replace('\\','').replace('/','').replace('"','')
 							numero = busca(diarios[nome_diario][1],texto,ngroup=0)
 							cursor.execute('INSERT INTO diarios.publicacoes_diarias (tribunal, data, caderno, numero, texto) values ("%s","%s","%s","%s","%s")' % (nome_diario, repositorio_dia, arquivo, numero, texto))
