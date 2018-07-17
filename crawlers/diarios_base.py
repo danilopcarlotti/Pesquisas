@@ -73,4 +73,4 @@ if __name__ == '__main__':
 					if len(texto[1]) > 200:
 						texto = texto[1].strip().replace('\\','').replace('/','').replace('"','')
 						numero = busca(diarios[nome_diario][1],texto,ngroup=0)
-						cursor.execute('INSERT INTO diarios.publicacoes_diarias (tribunal, data, caderno, numero, texto) values ("%s","%s","%s")' % (nome_diario, repositorio_dia, arquivo, numero, texto))
+						cursor.execute('INSERT INTO diarios.publicacoes_diarias (tribunal, data, caderno, numero, texto) values ("%s","%s","%s","%s","%s")' % (nome_diario, repositorio_dia, arquivo, numero, texto))
