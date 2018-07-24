@@ -56,11 +56,15 @@ class parserTextoJuridico():
 		embargos = re.search(r'embargos declaratórios|embargos de declaração|embargante',texto, re.IGNORECASE)
 		if embargos != None and sentenca1 == None:
 			return 'Embargos declaratórios'
-		sentenca = re.search(r'\s*S\s*E\s*N\s*T\s*E\s*N\s*Ç\s*A\s*|Dispensado o relatório',texto)
+		sentenca = re.search(r'\s*S\s*E\s*N\s*T\s*E\s*N\s*Ç\s*A\s*|Dispensado o relatório|julg.*{1,50}PROCEDE|julg.{1,30}extin[guirtoa]?',texto)
 		sentenca3 = re.search(r'FUNDAMENTAÇÃO',texto)
 		sentenca4 = re.search(r'DISPOSITIVO',texto)
 		if sentenca != None or sentenca1 != None or (sentenca3 != None and sentenca4 != None):
 			return 'Sentença'
+		liminar_deferida = re.search(r'( def.{1,18}|concedo) .{1,30}(liminar|tutela antecipada)|presentes os requisitos que autorizam a concessão da liminar|(liminar|tutela antecipada).{1,30}( def.{1,18}|concedo)',texto, re.IGNORECASE)
+		liminar_indeferida = re.search(r'não.{1,50}(concessão|concedo| defiro).{1,30}liminar|indef.{1,18} .{1,30}liminar',texto)
+		if liminar_deferida or liminar_indeferida:
+			return 'Liminar'
 		certidao = re.search(r'C\s*E\s*R\s*T\s*I\s*D\s*Ã\s*O',texto)
 		if certidao != None:
 			return 'Certidão'
@@ -133,6 +137,14 @@ class parserTextoJuridico():
 								resultado[3] = 1
 						elif re.search(r'RECURSO PARCIALMENTE PROVIDO', texto) != None:
 							resultado[4] = 1
+		elif tipo == 'Liminar':
+			resultado = [0]
+			liminar_deferida = re.search(r'( def.{1,18}|concedo) .{1,30}(liminar|tutela antecipada)|presentes os requisitos que autorizam a concessão da liminar|(liminar|tutela antecipada).{1,30}( def.{1,18}|concedo)',texto, re.IGNORECASE)
+			if liminar_deferida:
+				resultado = [1]
+			liminar_indeferida = re.search(r'não.{1,50}(concessão|concedo| defiro).{1,30}liminar|indef.{1,18} .{1,30}liminar',texto)
+			if liminar_indeferida:
+				resultado = [-1]
 		return resultado
 
 	def parser_acordao(self,texto, tipo):

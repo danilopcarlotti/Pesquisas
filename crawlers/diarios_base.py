@@ -64,6 +64,7 @@ if __name__ == '__main__':
 	for repositorio_diarios in os.listdir(path):
 		nome_diario = repositorio_diarios.split('Diarios_')[1]
 		for repositorio_dia in os.listdir(path+'/'+repositorio_diarios):
+			print(repositorio_dia)
 			for arquivo in os.listdir(path+'/'+repositorio_diarios+'/'+repositorio_dia):
 				if re.search(r'txt',path+'/'+repositorio_diarios+'/'+repositorio_dia+'/'+arquivo):
 					diario_texto = '\n'
