@@ -33,6 +33,11 @@ class historico_processo(parserTextoJuridico):
 		self.atualiza_historico(novos_andamentos)
 
 	def criar_historico(self, andamentos):
+		# FALTA
+
+		# perícia
+		# execução
+
 		self.historico = {
 			# tuples com (data,tribunal, texto)
 			'audiencias' : [],
