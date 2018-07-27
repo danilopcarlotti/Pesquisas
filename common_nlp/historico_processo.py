@@ -6,6 +6,8 @@ class historico_processo(parserTextoJuridico):
 	def __init__(self):
 		super().__init__()
 		self.historico = None
+		self.numero_processo = None
+		self.id_processo = None
 
 	def atualiza_historico(self, andamentos):
 		for tribunal, data_pub, texto in andamentos:
@@ -18,6 +20,8 @@ class historico_processo(parserTextoJuridico):
 				self.historico['movimentações processuais'].append((data_pub,tribunal, texto))
 			elif classe == 'Sentença' or classe == 'Homologação de acordo':
 				self.historico['sentença'].append((data_pub, tribunal, texto))
+			elif classe == 'Liminar':
+				self.historico['liminares'].append((data_pub, tribunal, texto))
 			else:
 				self.historico['outras movimentações'].append((data_pub,tribunal, texto))
 		self.tempo_duracao()
@@ -29,6 +33,11 @@ class historico_processo(parserTextoJuridico):
 		self.atualiza_historico(novos_andamentos)
 
 	def criar_historico(self, andamentos):
+		# FALTA
+
+		# perícia
+		# execução
+
 		self.historico = {
 			# tuples com (data,tribunal, texto)
 			'audiencias' : [],
