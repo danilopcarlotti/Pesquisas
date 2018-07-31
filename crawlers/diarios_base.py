@@ -1,9 +1,10 @@
 from common.conexao_local import cursorConexao
 from common.download_path_diarios import path
-import re, os, sys
+import re, os, sys, time
 
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
+from common_nlp.parserTextoJuridico import parserTextoJuridico
 
 re_final_am = r'(\nPROCESSO DIGITAL: |\nDe ordem d[oa]|\nDespacho proferido pel|\n\d+ - Apelação n|\nProcesso n\. (?=\d{7})|\nProcesso :(?=\d{7})|\n\d+\. PROCESSO:(?=\d{7})|\nAutos n(?=\s*?\d{7})|\n\s*?ADV:)'
 re_final_ac = r'(Acórdão n|\n\d+\. Classe|\n\d+ - (?=\d{7})|\nADV:|\nProcesso: |\nProcesso (?=\d+)|\nAutos n\.º|IV - ADMINISTRATIVO)'
@@ -61,10 +62,29 @@ diarios = {
 
 if __name__ == '__main__':
 	cursor = cursorConexao()
+	parser = parserTextoJuridico()
+	classes_publicacoes = {}
+	numeros_processo = {}
+	tribunais = {}
+	cursor.execute('SELECT id, nome from diarios.classes_publicacoes;')
+	classes_pub = cursor.fetchall()
+	for id_c, nome_classe in classes_pub:
+		classes_publicacoes[nome_classe] = id_c
 	for repositorio_diarios in os.listdir(path):
 		nome_diario = repositorio_diarios.split('Diarios_')[1]
+		# print(nome_diario)
+		if nome_diario not in tribunais.keys():
+			cursor.execute('SELECT id from diarios.tribunais where tribunal = "%s";' % (nome_diario,))
+			id_tribunal = cursor.fetchall()
+			if id_tribunal:
+				tribunais[nome_diario] = id_tribunal[0][0]
+			else:
+				cursor.execute('INSERT INTO diarios.tribunais tribunal value ("%s")' % (nome_diario,))
+				time.sleep(1)
+				cursor.execute('SELECT id from diarios.tribunais where tribunal = "%s";' % (nome_diario,))
+				id_tribunal = cursor.fetchall()[0][0]
+				tribunais[nome_diario] = id_tribunal
 		for repositorio_dia in os.listdir(path+'/'+repositorio_diarios):
-			print(repositorio_dia)
 			for arquivo in os.listdir(path+'/'+repositorio_diarios+'/'+repositorio_dia):
 				if re.search(r'txt',path+'/'+repositorio_diarios+'/'+repositorio_dia+'/'+arquivo):
 					diario_texto = '\n'
@@ -74,5 +94,16 @@ if __name__ == '__main__':
 					for texto in publicacoes:
 						if len(texto[1]) > 100:
 							texto = texto[1].strip().replace('\\','').replace('/','').replace('"','')
+							classe_texto = parser.classifica_texto(texto)
 							numero = busca(diarios[nome_diario][1],texto,ngroup=0)
-							cursor.execute('INSERT INTO diarios.publicacoes_diarias (tribunal, data, caderno, numero, texto) values ("%s","%s","%s","%s","%s")' % (nome_diario, repositorio_dia, arquivo, numero, texto))
+							if numero not in numeros_processo.keys():
+								cursor.execute('SELECT id from diarios.numeros_proc where nome = "%s";' % (numero,))
+								id_numero = cursor.fetchall()
+								if id_numero:
+									numeros_processo[numero] = id_numero[0][0]
+								else:
+									cursor.execute('INSERT INTO diarios.numeros_proc numero value ("%s")' % (numero,))
+									cursor.execute('SELECT id from diarios.numeros_proc where numero = "%s";' % (numero,))
+									id_numero = cursor.fetchall()[0][0]
+									numeros_processo[numero] = id_numero
+							cursor.execute('INSERT INTO diarios.publicacoes_diarias (id_tribunal, data, caderno, id_processo, texto, id_classe) values ("%s","%s","%s","%s","%s","%s")' % (tribunais[nome_diario], repositorio_dia, arquivo, numeros_processo[numero], texto, classes_publicacoes[classe_texto]))
