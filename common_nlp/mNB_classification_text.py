@@ -5,6 +5,11 @@ from stopwords_pt import stopwords_pt
 import numpy, pandas as pd, nltk
 # nltk.download('rslp')
 
+
+#CRIAR UMA FORMA DE CATEGORIZAR OS TEXTOS EM VÁRIAS CLASSES. CADA TEXTO SERIA CLASSIFICADO COMO PERTENCENDO OU NÃO
+#A ALGUMA DAS CLASSES POSSÍVEIS. EX.: UM ACÓRDÃO QUE VERSA SOBRE VÁRIOS ASSUNTOS. OUTRA ALTERNATIVA SERIA CLASSIFICAR OS 
+#TRECHOS DOS TEXTOS PARA SABER SE ABORDAM OU NÃO DETERMINADO TEMA
+
 class mNB_classification_text():
 	"""Class to help classify texts with scikit"""
 	def __init__(self,dados):
