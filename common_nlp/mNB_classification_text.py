@@ -5,11 +5,6 @@ from stopwords_pt import stopwords_pt
 import numpy, pandas as pd, nltk
 # nltk.download('rslp')
 
-
-#CRIAR UMA FORMA DE CATEGORIZAR OS TEXTOS EM VÁRIAS CLASSES. CADA TEXTO SERIA CLASSIFICADO COMO PERTENCENDO OU NÃO
-#A ALGUMA DAS CLASSES POSSÍVEIS. EX.: UM ACÓRDÃO QUE VERSA SOBRE VÁRIOS ASSUNTOS. OUTRA ALTERNATIVA SERIA CLASSIFICAR OS 
-#TRECHOS DOS TEXTOS PARA SABER SE ABORDAM OU NÃO DETERMINADO TEMA
-
 class mNB_classification_text():
 	"""Class to help classify texts with scikit"""
 	def __init__(self,dados):
@@ -24,14 +19,20 @@ class mNB_classification_text():
 		word_counts = self.count_vectorizer.fit_transform(self.dataframe['text'].values)
 		return word_counts
 
-	def dataframe_data(self):
+	def dataframe_data(self, target_class = None):
+		# the existence of a "target_class" represents that all other classes should be interpreted as not the target
 		rows = []
 		index = []
 		index_counter = 1
 		for text, class_text in self.dados:
-			rows.append({'text': text, 'class': class_text})
-			index.append(index_counter)
-			index_counter += 1
+			if target_class and class_text != target_class:
+				rows.append({'text': text, 'class': 'OTHER'})
+				index.append(index_counter)
+				index_counter += 1
+			else:
+				rows.append({'text': text, 'class': class_text})
+				index.append(index_counter)
+				index_counter += 1
 		data_frame = pd.DataFrame(rows, index=index)
 		return data_frame
 
