@@ -10,8 +10,9 @@ class historico_processo(parserTextoJuridico):
 		self.id_processo = None
 
 	def atualiza_historico(self, andamentos):
-		for tribunal, data_pub, texto in andamentos:
-			classe = self.classifica_texto(texto)
+		for tribunal, data_pub, texto, classe_publicacao in andamentos:
+			if classe_publicacao == 'NULL' or classe_publicacao == '':
+				classe = self.classifica_texto(texto)
 			if classe == 'Certidão':
 				self.historico['certidões'].append((data_pub,tribunal, texto))
 			elif classe == 'Agravo' or classe == 'Mandado de Segurança' or classe == 'Embargos declaratórios' or classe == 'Recurso':
