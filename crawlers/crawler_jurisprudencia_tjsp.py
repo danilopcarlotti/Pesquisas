@@ -141,18 +141,17 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 					"name": "Chrome PDF Viewer"}],
 					"download.default_directory": path,
 					"download.extensions_to_open": ""}
-		# for i in range(5,10):
-		# 	for j in range(5,10):
-		# 		datas.append('2015'+'0'+str(i)+'0'+str(j))
-		# 	for j in range(15,32):
-		# 		datas.append('2015'+'0'+str(i)+str(j))
-		for i in range(12,13):
+		for i in range(6,10):
 			# for j in range(1,10):
-			# 	datas.append('2015'+str(i)+'0'+str(j))
-			for j in range(24,32):
-				datas.append('2015'+str(i)+str(j))
-		# for l in range(2017,1890,-1):
-		for l in range(2015,1890,-1):
+			# 	datas.append('2013'+'0'+str(i)+'0'+str(j))
+			for j in range(26,32):
+				datas.append('2013'+'0'+str(i)+str(j))
+		for i in range(10,13):
+			for j in range(1,10):
+				datas.append('2013'+str(i)+'0'+str(j))
+			for j in range(28,32):
+				datas.append('2013'+str(i)+str(j))
+		for l in range(2012,1890,-1):
 			for i in range(1,10):
 				for j in range(1,10):
 					datas.append(str(l)+'0'+str(i)+'0'+str(j))
