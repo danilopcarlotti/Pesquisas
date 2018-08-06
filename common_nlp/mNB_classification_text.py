@@ -7,9 +7,9 @@ import numpy, pandas as pd, nltk
 
 class mNB_classification_text():
 	"""Class to help classify texts with scikit"""
-	def __init__(self,dados):
+	def __init__(self,dados,target_class=None):
 		self.dados = dados
-		self.dataframe = self.dataframe_data()
+		self.dataframe = self.dataframe_data(target_class = target_class)
 		self.count_vectorizer = CountVectorizer(analyzer=self.stemmer)
 		self.word_counts = self.count_words()
 		self.targets = self.dataframe['class'].values
