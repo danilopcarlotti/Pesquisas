@@ -141,7 +141,17 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 					"name": "Chrome PDF Viewer"}],
 					"download.default_directory": path,
 					"download.extensions_to_open": ""}
-		for l in range(2017,1890,-1):
+		for i in range(6,10):
+			# for j in range(1,10):
+			# 	datas.append('2013'+'0'+str(i)+'0'+str(j))
+			for j in range(26,32):
+				datas.append('2013'+'0'+str(i)+str(j))
+		for i in range(10,13):
+			for j in range(1,10):
+				datas.append('2013'+str(i)+'0'+str(j))
+			for j in range(28,32):
+				datas.append('2013'+str(i)+str(j))
+		for l in range(2012,1890,-1):
 			for i in range(1,10):
 				for j in range(1,10):
 					datas.append(str(l)+'0'+str(i)+'0'+str(j))
@@ -172,7 +182,6 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 							codigo_script = re.search(r'pagnot(.*?)\.',l['href'])
 							if codigo_script:
 								codigo_script = codigo_script.group(1)
-								print('encontrei')
 								break
 					script_base = "pop('/DO/BuscaDO2001Documento_11_4.aspx?link=%2f{}%2f{}%2520secao%2520{}%2f{}%2f{}%2fpagnot{}.pdf&pagina=I&data={}/{}/{}&caderno={}&paginaordenacao=1',738,577,'0','1')"
 					script_base_sem_secao = "pop('/DO/BuscaDO2001Documento_11_4.aspx?link=%2f{}%2f{}%25202%2f{}%2f{}%2fpag{}.pdf&pagina=1&data={}/{}/{}&caderno={}&paginaordenacao=100001',738,577,'0','1');"
@@ -186,18 +195,20 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 					driver.switch_to_frame(driver.find_element_by_name('GatewayNavegacao'))
 					ult_pagina = int(driver.find_element_by_id('lblTotalPagina').text)
 					contador = 2
-					while contador < ult_pagina:
+					while contador <= ult_pagina:
 						try:
 							driver.switch_to.window(driver.window_handles[1])
 							driver.switch_to_frame(driver.find_element_by_name('GatewayNavegacao'))
 							time.sleep(1)
+							driver.find_element_by_xpath('//*[@id="txtPagina"]').clear()
 							driver.find_element_by_xpath('//*[@id="txtPagina"]').send_keys(str(contador))
 							driver.find_element_by_xpath('//*[@id="ibtPagina"]').click()
-							time.sleep(1)
+							time.sleep(4)
 							contador += 1
 							try:
+								time.sleep(0.1)
 								subprocess.Popen('mv %s/GatewayPDF.pdf %s/%s.pdf' % (path, path, str(contador-1)), shell=True)
-								time.sleep(1)
+								time.sleep(0.1)
 								subprocess.Popen('mv %s/*.pdf %s/Diarios_sp_DO_2/%s/%s' % (path,path_hd,nome_pasta,diario), shell=True)
 							except Exception as e:
 								pass

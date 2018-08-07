@@ -7,9 +7,9 @@ import numpy, pandas as pd, nltk
 
 class mNB_classification_text():
 	"""Class to help classify texts with scikit"""
-	def __init__(self,dados):
+	def __init__(self,dados,target_class=None):
 		self.dados = dados
-		self.dataframe = self.dataframe_data()
+		self.dataframe = self.dataframe_data(target_class = target_class)
 		self.count_vectorizer = CountVectorizer(analyzer=self.stemmer)
 		self.word_counts = self.count_words()
 		self.targets = self.dataframe['class'].values
@@ -19,14 +19,20 @@ class mNB_classification_text():
 		word_counts = self.count_vectorizer.fit_transform(self.dataframe['text'].values)
 		return word_counts
 
-	def dataframe_data(self):
+	def dataframe_data(self, target_class = None):
+		# the existence of a "target_class" represents that all other classes should be interpreted as not the target
 		rows = []
 		index = []
 		index_counter = 1
 		for text, class_text in self.dados:
-			rows.append({'text': text, 'class': class_text})
-			index.append(index_counter)
-			index_counter += 1
+			if target_class and class_text != target_class:
+				rows.append({'text': text, 'class': 'OTHER'})
+				index.append(index_counter)
+				index_counter += 1
+			else:
+				rows.append({'text': text, 'class': class_text})
+				index.append(index_counter)
+				index_counter += 1
 		data_frame = pd.DataFrame(rows, index=index)
 		return data_frame
 
