@@ -1,4 +1,4 @@
-import sys, re, time, pyautogui
+import sys, re, time, pyautogui, os
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj

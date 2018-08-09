@@ -33,7 +33,7 @@ from crawler_jurisprudencia_trf4 import crawler_jurisprudencia_trf4
 from crawler_jurisprudencia_trf5 import crawler_jurisprudencia_trf5
 from crawler_jurisprudencia_stf import crawler_jurisprudencia_stf
 from crawler_jurisprudencia_stj import crawler_jurisprudencia_stj
-import argparse
+import argparse, sys, os
 
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
