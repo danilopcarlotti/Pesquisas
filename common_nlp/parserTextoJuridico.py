@@ -4,7 +4,6 @@ import re, sys
 class parserTextoJuridico():
 	"""Parser for analysing 'acórdãos'"""
 	def __init__(self):
-		self.cursor = cursorConexao()
 		self.marcadores = dicionario_marcadores
 		self.nomes_leis_alternativos = ['Constituição','CLT','CF','CPP','CP','CC']
 		self.re_artigo = r'[\s\.]?art[igo\.]*?\s*?\d+'
