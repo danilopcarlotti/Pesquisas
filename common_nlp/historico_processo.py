@@ -5,9 +5,21 @@ class historico_processo(parserTextoJuridico):
 	"""Classe para obtenção de histórico do processo"""
 	def __init__(self):
 		super().__init__()
+		self.cursor.execute('SELECT count(*) FROM diarios.publicacoes_diarias;')
+		self.numero_publicacoes = self.cursor.fetchall()[0][0]
+		self.batch_publicacoes = 1000
 		self.historico = None
-		self.numero_processo = None
 		self.id_processo = None
+		self.processos_analisados = []
+		self.numero_processo = None
+
+	def andamentos_regex(self, regex,lower_bound=0):
+		for n in range(lower_bound, self.numero_publicacoes, self.batch_publicacoes):
+			publicacoes = self.download_publicacoes(n)
+			for numero, texto in publicacoes:
+				if numero not in self.processos_analisados and re.search(regex,texto):
+					self.processos_analisados.append(numero)
+		# COMO FAÇO PARA ENCONTRAR OS ANDAMENTOS REFERENTES A ESTES PROCESSOS!!??
 
 	def atualiza_historico(self, andamentos):
 		for tribunal, data_pub, texto, classe_publicacao in andamentos:
