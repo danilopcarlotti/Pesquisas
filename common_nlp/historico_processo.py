@@ -66,6 +66,11 @@ class historico_processo(parserTextoJuridico):
 		}
 		self.atualiza_historico(andamentos)
 
+	def download_publicacoes(self, lower_bound):
+		self.cursor.execute('SELECT numero, texto from diarios.publicacoes_diarias limit %s, %s' % (lower_bound, self.batch_publicacoes))
+		dados = self.cursor.fetchall()
+		return dados
+
 	def historico_as_string(self):
 		# para armazenar o histórico como um json
 		return json.dumps(self.historico)
