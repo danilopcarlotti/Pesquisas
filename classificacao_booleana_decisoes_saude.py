@@ -61,8 +61,11 @@ def main():
 	df_saude = pd.read_csv('relatorio_cnj.csv', sep=';')
 	dados = []
 	for column in df_saude:
-		dados.append((df_saude['id'],df_saude['texto_decisao']))
-		break
+		try:
+			dados.append((df_saude['id'],df_saude['texto_decisao']))
+			break
+		except Exception as e:
+			print(e)
 	df = ext.variaveis_textos(ext.var_bool, dados)
 	print(df)
 
