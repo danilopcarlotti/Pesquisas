@@ -49,6 +49,7 @@ class extracao_variaveis():
 				dicionario_df[k] = 0
 			for k,v in dicionario.items():
 				if re.search(v, texto):
+					print(texto)
 					dicionario_df[k] = 1
 			rows.append(dicionario_df)
 			index.append(index_counter)
