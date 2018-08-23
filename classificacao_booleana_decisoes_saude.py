@@ -63,9 +63,6 @@ def main():
 	dados = []
 	for column in df_saude.iterrows():
 		dados.append((df_saude['id'],df_saude['texto_decisao']))
-		print(df_saude['id'])
-		print(df_saude['texto_decisao'])
-		break
 	df = ext.variaveis_textos(ext.var_bool, dados)
 	print(df)
 
