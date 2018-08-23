@@ -62,9 +62,10 @@ def main():
 	df_saude = pd.read_csv('relatorio_cnj.csv', sep=';', quotechar='"')
 	dados = []
 	for column in df_saude.iterrows():
-		dados.append((df_saude['id'],df_saude['texto_decisao']))
-	df = ext.variaveis_textos(ext.var_bool, dados)
-	print(df)
+		print(df_saude['texto_decisao'])
+		# dados.append((df_saude['id'],df_saude['texto_decisao']))
+	# df = ext.variaveis_textos(ext.var_bool, dados)
+	# print(df)
 
 if __name__ == '__main__':
 	main()
