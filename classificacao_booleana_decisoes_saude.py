@@ -58,7 +58,7 @@ class extracao_variaveis():
 
 def main():
 	ext = extracao_variaveis()
-	df_saude = pd.read_csv('relatorio_cnj.csv', separator=';')
+	df_saude = pd.read_csv('relatorio_cnj.csv', sep=';')
 	dados = []
 	for column in df_saude:
 		dados.append(df_saude['id'],df_saude['texto_decisao'])
