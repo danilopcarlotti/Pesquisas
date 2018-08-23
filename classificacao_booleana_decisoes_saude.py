@@ -59,7 +59,7 @@ class extracao_variaveis():
 
 def main():
 	ext = extracao_variaveis()
-	df_saude = pd.read_csv('relatorio_cnj.csv', sep=';', quotechar='"')
+	df_saude = pd.read_csv('relatorio_cnj.csv', sep=';', quotechar='"', encoding = 'utf8')
 	dados = []
 	for column in df_saude.iterrows():
 		print(df_saude['texto_decisao'])
