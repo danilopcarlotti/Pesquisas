@@ -1,4 +1,4 @@
-import time, re
+import time, re, sys, os
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from selenium import webdriver

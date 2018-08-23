@@ -1,10 +1,10 @@
-import sys, re, time
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from common.conexao_local import cursorConexao
+import sys, re, time, os
 
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca

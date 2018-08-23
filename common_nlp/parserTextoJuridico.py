@@ -1,17 +1,16 @@
-import sys
 from dicionario_marcadores import dicionario_marcadores
 import re, sys
 
 class parserTextoJuridico():
 	"""Parser for analysing 'acórdãos'"""
 	def __init__(self):
+		self.marcadores = dicionario_marcadores
+		self.nomes_leis_alternativos = ['Constituição','CLT','CF','CPP','CP','CC']
 		self.re_artigo = r'[\s\.]?art[igo\.]*?\s*?\d+'
 		self.re_lei = r'[\s\.]lei.{,10}[\d/]{1,20}[\.]?[\d]{,10}'
 		self.re_paragrafo = r'(§[\s\dº]+).{1,10}[artleicltp]?'
 		self.re_inciso = r'(inciso\s*?)[A-Z]{,5}([,\.]?)'
 		self.re_completo = r'art[\.\s].{,30}|lei[\sn\.\d/]{,30}|inciso.{,30}'
-		self.nomes_leis_alternativos = ['Constituição','CLT','CF','CPP','CP','CC']
-		self.marcadores = dicionario_marcadores
 
 	def calcula_valor_decisao(self, texto, tipo_decisao):
 		# treinado para ações trabalhistas do TRT02

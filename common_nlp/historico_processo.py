@@ -5,9 +5,25 @@ class historico_processo(parserTextoJuridico):
 	"""Classe para obtenção de histórico do processo"""
 	def __init__(self):
 		super().__init__()
+		self.batch_publicacoes = 1000
 		self.historico = None
-		self.numero_processo = None
 		self.id_processo = None
+		self.processos_analisados = []
+		self.numero_processo = None
+
+	def andamentos_id_regex(self, cursor, regex, upper_bound, lower_bound=0):
+		for n in range(lower_bound, self.batch_publicacoes):
+			publicacoes = self.download_publicacoes(cursor, n)
+			for numero, texto in publicacoes:
+				if numero not in self.processos_analisados and re.search(regex,texto):
+					self.processos_analisados.append(numero)
+		lista_numeros_procurar = '"'
+		for p in self.processos_analisados:
+			lista_numeros_procurar += p + '",'
+		lista_numeros_procurar += '"'
+		cursor.execute('SELECT id from diarios.numero_proc where numero in (%s);' % (lista_numeros_procurar))
+		lista_ids = [i[0] for i in cursor.fetchall()]
+		return lista_ids
 
 	def atualiza_historico(self, andamentos):
 		for tribunal, data_pub, texto, classe_publicacao in andamentos:
@@ -65,6 +81,11 @@ class historico_processo(parserTextoJuridico):
 			}
 		}
 		self.atualiza_historico(andamentos)
+
+	def download_publicacoes(self, cursor, lower_bound):
+		cursor.execute('SELECT numero, texto from diarios.publicacoes_diarias limit %s, %s' % (lower_bound, self.batch_publicacoes))
+		dados = cursor.fetchall()
+		return dados
 
 	def historico_as_string(self):
 		# para armazenar o histórico como um json

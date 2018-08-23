@@ -1,4 +1,4 @@
-import time, re, os
+import time, re, os, sys
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
