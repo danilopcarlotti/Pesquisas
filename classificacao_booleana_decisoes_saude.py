@@ -39,12 +39,12 @@ class extracao_variaveis():
 			"Secretaria Municipal": r"Secretaria.{1,20}Munic.{1,20}Sa.de|Secretaria.{1,20}Sa.de.{1,10}Munic|SMS"
 			# "Sanções": r"multa", r"bloqueio", r"sequestro", r"prisão", r"responsabilização pessoal" #aguardo de exemplos
 		}
-	def variaveis_textos(self, diconario, textos):
+	def variaveis_textos(self, dicionario, dados):
 		rows = []
 		index = []
 		index_counter = 1
-		for texto in textos:
-			dicionario_df = {}
+		for id_p, texto in dados:
+			dicionario_df = {'id':id_p}
 			for k,v in dicionario.items():
 				dicionario_df[k] = 0
 			for k,v in dicionario.items():
@@ -55,3 +55,11 @@ class extracao_variaveis():
 			index_counter += 1
 		data_frame = pd.DataFrame(rows, index=index)
 		return data_frame
+
+def main():
+	ext = extracao_variaveis()
+	df = ext.variaveis_textos(ext.var_bool)
+	print(df)
+
+if __name__ == '__main__':
+	main()

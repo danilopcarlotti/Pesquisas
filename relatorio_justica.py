@@ -180,8 +180,10 @@ def main():
 	# dados = rel.query_padrao(parametros='*',condicoes='where classificacao_auto = "1"')
 	# rel.resultados_2_df(dados, rel.colunas_2_inst).to_csv(path_or_buf='relatorio_cnj.csv', sep=';', quotechar='"')
 
-	print('fazendo estatistica descritiva')
-	df = pd.read_csv('relatorio_cnj.csv', sep=';', quotechar='"')
+
+	# ESTATÍSTICA DESCRITIVA
+	# print('fazendo estatistica descritiva')
+	# df = pd.read_csv('relatorio_cnj.csv', sep=';', quotechar='"')
 	
 	# ESTATÍSTICA DESCRITIVA PARA CADA ESTADO
 	# estatistica_d = {}
@@ -189,12 +191,12 @@ def main():
 	# 	estatistica_d[k] = rel.estatistica_descritiva(v)
 
 	# ESTATÍSTICA DESCRITIVA PARA CADA ESTADO x ANO
-	estatistica_d = {}
-	for k,v in rel.dicionario_estatisticas(df).items():
-		estatistica_d[k] = {} 
-	for k,v in rel.dicionario_estatisticas_ano(df).items():
-		for k1, v1 in v.items():
-			estatistica_d[k][k1] = rel.estatistica_descritiva(v1)
+	# estatistica_d = {}
+	# for k,v in rel.dicionario_estatisticas(df).items():
+	# 	estatistica_d[k] = {} 
+	# for k,v in rel.dicionario_estatisticas_ano(df).items():
+	# 	for k1, v1 in v.items():
+	# 		estatistica_d[k][k1] = rel.estatistica_descritiva(v1)
 
 	# TOPIC MODELLING PARA CADA ESTADO
 	# tp = topicModelling()
@@ -224,22 +226,22 @@ def main():
 
 	# TEXTO DO RELATÓRIO POR ANO
 		# TEXTO DO RELATÓRIO
-	relatorio_final = open('relatorio_cnj_06_2018_por_ano.txt','w',encoding='utf-8')
-	relatorio_final.write('Relatorio final\n\n\n')
-	relatorio_final.write('Estatistica descritiva sobre os processos nos tribunais\n\n\n')
-	for k,v in estatistica_d.items():
-		relatorio_final.write('Estado: ')
-		relatorio_final.write(k)
-		relatorio_final.write('\n\n')
-		for ano,dados_ano in v.items():
-			relatorio_final.write('ANO: ')
-			relatorio_final.write(str(ano))
-			relatorio_final.write('\n\n')
-			for m,n in dados_ano.items():
-				relatorio_final.write(m)
-				relatorio_final.write(' : ')
-				relatorio_final.write(str(n))
-				relatorio_final.write('\n')
+	# relatorio_final = open('relatorio_cnj_06_2018_por_ano.txt','w',encoding='utf-8')
+	# relatorio_final.write('Relatorio final\n\n\n')
+	# relatorio_final.write('Estatistica descritiva sobre os processos nos tribunais\n\n\n')
+	# for k,v in estatistica_d.items():
+	# 	relatorio_final.write('Estado: ')
+	# 	relatorio_final.write(k)
+	# 	relatorio_final.write('\n\n')
+	# 	for ano,dados_ano in v.items():
+	# 		relatorio_final.write('ANO: ')
+	# 		relatorio_final.write(str(ano))
+	# 		relatorio_final.write('\n\n')
+	# 		for m,n in dados_ano.items():
+	# 			relatorio_final.write(m)
+	# 			relatorio_final.write(' : ')
+	# 			relatorio_final.write(str(n))
+	# 			relatorio_final.write('\n')
 			# relatorio_final.write('\nPrincipais tópicos das ações relacionadas à saúde neste tribunal:\n\n')
 			# relatorio_final.write(topicos[k])
 
