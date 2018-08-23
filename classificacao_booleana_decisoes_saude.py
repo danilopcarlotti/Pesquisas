@@ -1,4 +1,4 @@
-import re, pandas as pd
+import re, pandas as pd, sys
 from crawlers.common.conexao_local import cursorConexao
 
 
@@ -61,7 +61,7 @@ def main():
 	ext = extracao_variaveis()
 	df_saude = pd.read_csv('relatorio_cnj.csv', sep=';', quotechar='"')
 	dados = []
-	for column in df_saude:
+	for column in df_saude.iterrows():
 		dados.append((df_saude['id'],df_saude['texto_decisao']))
 		print(df_saude['id'])
 		print(df_saude['texto_decisao'])
