@@ -1,4 +1,4 @@
-import re, pandas as pd, sys
+import re, pandas as pd, csv
 from crawlers.common.conexao_local import cursorConexao
 
 
@@ -59,10 +59,14 @@ class extracao_variaveis():
 
 def main():
 	ext = extracao_variaveis()
-	df_saude = pd.read_csv('relatorio_cnj.csv', sep=';', quotechar='"', encoding = 'utf8')
+	arq_saude = open('relatorio_cnj.csv','r')
+	reader_saude = csv.reader(arq_saude, delimiter=';', quotechar='"')
+	# df_saude = pd.read_csv('relatorio_cnj.csv', sep=';', quotechar='"', encoding = 'utf8')
 	dados = []
-	for column in df_saude.iterrows():
-		print(df_saude['texto_decisao'])
+	next(reader_saude)
+	for row in reader_saude:
+		print(row)
+		break
 		# dados.append((df_saude['id'],df_saude['texto_decisao']))
 	# df = ext.variaveis_textos(ext.var_bool, dados)
 	# print(df)
