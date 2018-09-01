@@ -1,10 +1,64 @@
-from dicionario_marcadores import dicionario_marcadores
 import re, sys
 
 class parserTextoJuridico():
 	"""Parser for analysing 'acórdãos'"""
 	def __init__(self):
-		self.marcadores = dicionario_marcadores
+		self.marcadores = {
+			'conclusões':[r'^Acolhe.{1,5}se.*?[\.\:]', 
+			r'^(Ante|Por todo|Pelo|Diante).{1,30}exposto.*?[\.\:]', 
+			r'^Assim.*?[\.\:]', 
+			r'^Dado.{0,20}que.*?[\.\:]', 
+			r'^Em conclusão.*?[\.\:]', 
+			r'^Em suma.*?[\.\:]', 
+			r'^Finalmente.*?[\.\:]', 
+			r'^No mais.*?[\.\:]', 
+			r'^Por fim.*?[\.\:]',
+			r'^Por ser deste modo.*?[\.\:]',
+			r'^Rejeitam-se.*?[\.\:]',
+			r'^Posto is.o.*?[\.\:]',
+			r'^Is.o posto.*?[\.\:]'
+			],
+			'continuidade do argumento' : [r'^Ademais.*?[\.\:]', 
+			r'^Ainda.*?[\.\:]', 
+			r'^Além disso.*?[\.\:]', 
+			r'^Com efeito.*?[\.\:]',
+			r'^Contudo.*?[\.\:]',
+			r'^De igual modo.*?[\.\:]', 
+			r'^De outra parte.*?[\.\:]', 
+			r'^De qualquer forma.*?[\.\:]',
+			r'^Des.e modo.*?[\.\:]', 
+			r'^Destarte.*?[\.\:]', 
+			r'^Em suma.*?[\.\:]',
+			r'^Igualmente.*?[\.\:]', 
+			r'^Logo.*?[\.\:]', 
+			r'^Na esteira desse entendimento.*?[\.\:]',
+			r'^Nesse sentido,.*?[\.\:]',
+			r'^No caso dos autos.*?[\.\:]', 
+			r'^Ora.*?[\.\:]', 
+			r'^Outrossim.*?[\.\:]', 
+			r'^Porém.*?[\.\:]',
+			r'^Portanto.*?[\.\:]', 
+			r'^Registre\-se.*?[\.\:]', 
+			r'^Também.*?[\.\:]', 
+			r'^Todavia.*?[\.\:]'
+			],
+			'dispositivo':r'\n.{0,20}dispositivo|\n.{0,20}DISPOSITIVO|\n.{0,20}ACORDAM',
+			'fundamentação':r'\n.{0,20}RELATÓRIO|\n.{0,20}FUNDAMENTAÇÃO|\n.{0,20}É o relatório',
+			'fundamentação_dispositivo':r'\n.{0,20}.{0,20}dispositivo|\n.{0,20}DISPOSITIVO|\n.{0,20}ACORDAM|\n.{0,20}É O RELATÓRIO|\n.{0,20}FUNDAMENTAÇÃO|\n.{0,20}É o relatório',
+			'indicação de tópico' : [r'^Quanto [àao].*?[\.\:],', 
+			r'^Alega .*?[\.\:]',
+			r'^Antes de mais nada.*?[\.\:]', 
+			r'^Com.{1,30}vênia.*?[\.\:]', 
+			r'^Conforme verificado.*?[\.\:]', 
+			r'^No que (tange|se refere|diz respeito|toca).*?[\.\:]', 
+			r'^No sentido d.*?[\.\:]', 
+			r'^(Ocorre|Consta) que.*?[\.\:]', 
+			r'^Trata-se de.*?[\.\:]',
+			r'^Vale (salientar|ressaltar).*?[\.\:]',
+			r'^Consta que.*?[\.\:]'
+			],
+			'início de parágrafo' : r'\n\s+'
+		}
 		self.nomes_leis_alternativos = ['Constituição','CLT','CF','CPP','CP','CC']
 		self.re_artigo = r'[\s\.]?art[igo\.]*?\s*?\d+'
 		self.re_lei = r'[\s\.]lei.{,10}[\d/]{1,20}[\.]?[\d]{,10}'
@@ -145,6 +199,12 @@ class parserTextoJuridico():
 			if liminar_indeferida:
 				resultado = [-1]
 		return resultado
+
+	def justica_gratuita(self,texto):
+		justica_gratuita = '0'
+		if re.search(r'(concedo|concessão| defiro).{1,30}justiça gratuita',texto,re.I):
+			justica_gratuita = '1'
+		return justica_gratuita
 
 	def parser_acordao(self,texto, tipo):
 		# Método que pode ser aplicada a sentenças e recursos atualmente

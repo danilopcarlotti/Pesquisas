@@ -60,6 +60,12 @@ diarios = {
 	'trt':[r'(\nProcesso Nº|\nPROCESSO Nº|\nProcesso RO|\nPROCESSO N\.)(.*?)(\nProcesso Nº|\nPROCESSO Nº|\nProcesso RO|\nPROCESSO N\.)',re_num_trf_trt]
 	}
 
+def encontra_publicacoes(diarios, tribunal, texto):
+	return re.findall(diarios[tribunal][0],texto,re.DOTALL)
+
+def encontra_numero(diarios, tribunal, texto):
+	return busca(diarios[tribunal][1],texto,ngroup=0)
+
 if __name__ == '__main__':
 	cursor = cursorConexao()
 	parser = parserTextoJuridico()

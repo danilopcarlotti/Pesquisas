@@ -137,6 +137,7 @@ class relatorio_justica():
 
 def main():
 	rel = relatorio_justica()
+	
 	# termos_excluir_saude = ['Saúde animal','Inadimplemento por motivo de saúde','Ação de Interdição','Interditanda','Funasa','Atividades nocivas à saúde do trabalhador','Regime Celetista','Trabalhista','Execução fiscal','Crédito fazendário','Improbidade administrativa','Tráfico','Fazenda Pública','Tributo','Curatela','PREVIDENCIA PRIVADA','VARA DE FAMILIA','SUCESSOES','DIREITO PREVIDENCIARIO','GUARDA PROVISÓRIA','TESTAMENTO','AÇÃO PREVIDENCIÁRIA','PRISÃO DOMICILIAR','ALIMENTOS PROVISÓRIOS','adicional de insalubridade','PISO SALARIAL','Trabalhadores Sindicalizados da Área de Saúde','penal pública incondicionada','PENSÃO POR MORTE','licença para tratamento de saúde','concurso','REDUÇÃO DA JORNADA DE TRABALHO','Coordenador de Finanças do Sindicato dos Trabalhadores em Saúde no Estado do Pará - SINDSAÚDE','RECLAMAÇÃO TRABALHISTA']
 	# query_rel_saude = 'select * from jurisprudencia_2_inst.jurisprudencia_2_inst where lower(texto_decisao) like "%saúde%" and '
 	# for t in termos_excluir_saude:
