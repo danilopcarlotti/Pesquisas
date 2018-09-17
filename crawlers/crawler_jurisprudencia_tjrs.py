@@ -98,7 +98,7 @@ class crawler_jurisprudencia_tjrs():
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjrs()
 
-	c.download_diario_retroativo()
+	# c.download_diario_retroativo()
 
 	# print('comecei ',c.__class__.__name__)
 	# try:
@@ -118,11 +118,11 @@ if __name__ == '__main__':
 	# except Exception as e:
 	# 	print('finalizei o ano com erro ',e)
 
-	# cursor = cursorConexao()
+	cursor = cursorConexao()
 
-	# cursor.execute('SELECT id, ementas from justica_estadual.jurisprudencia_rs;')
-	# links = cursor.fetchall()
-	# c.parser_acordaos(links)
+	cursor.execute('SELECT id, ementas from justica_estadual.jurisprudencia_rs;')
+	links = cursor.fetchall()
+	c.parser_acordaos(links)
 
 		
 
