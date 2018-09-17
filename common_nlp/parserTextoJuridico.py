@@ -131,8 +131,8 @@ class parserTextoJuridico():
 			# VETOR RESULTADO SENTENÇA POSSUI 4 POSIÇÕES (IMPROCEDENTE, PARCIALMENTE PROCEDENTE, PROCEDENTE, EXTINTO)
 			resultado = [0,0,0,0]
 			resultadoProcesso = re.search(r'julg.{1,30}IMPROCEDE',texto,re.IGNORECASE)
-			resultadoProcessop = re.search(r'julg.*{1,30} PROCEDE',texto,re.IGNORECASE)
-			resultadoProcessopp = re.search(r'julg.*{1,30}PARCIALMENTE\s*PROCEDENTE[S\s]?',texto,re.IGNORECASE)
+			resultadoProcessop = re.search(r'julg.{1,30} PROCEDE',texto,re.IGNORECASE)
+			resultadoProcessopp = re.search(r'julg.{1,30}PARCIALMENTE\s*PROCEDENTE[S\s]?',texto,re.IGNORECASE)
 			resultadoExtincao = re.search(r'julg.{1,30}extin[guirtoa]?',texto,re.IGNORECASE)
 			if resultadoProcesso:
 				resultado[0] = 1 

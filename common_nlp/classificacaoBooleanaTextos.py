@@ -1,0 +1,30 @@
+import re, pandas as pd
+from parserTextoJuridico import parserTextoJuridico
+
+class classificacaoBooleanaTextos():
+	"""docstring for classificacaoBooleanaTextos
+"""
+	def __init__(self, dicionario_bool):
+		self.var_bool = dicionario_bool
+	
+	def variaveis_textos(self, dicionario_outros, dados, to_csv=False, titulo=None):
+		rows = []
+		index = []
+		index_counter = 1
+		for id_p, texto in dados:
+			est_ou_fed = 'estadual'
+			if re.search(r'trf',tribunal):
+				est_ou_fed = 'federal'
+			dicionario_df = {'numero':id_p}
+			for k,v in dicionario.items():
+				dicionario_df[k] = 0
+			for k,v in dicionario.items():
+				if re.search(v, texto):
+					dicionario_df[k] = 1
+			rows.append(dicionario_df)
+			index.append(index_counter)
+			index_counter += 1
+		data_frame = pd.DataFrame(rows, index=index)
+		if to_csv and titulo:
+			data_frame.to_csv(titulo+'.csv',quotechar='"', index= False)
+		return data_frame

@@ -1,4 +1,4 @@
-import re, pandas as pd, csv, sys, os
+import re, pandas as pd
 from crawlers.common.conexao_local import cursorConexao
 from common_nlp.parserTextoJuridico import parserTextoJuridico
 
