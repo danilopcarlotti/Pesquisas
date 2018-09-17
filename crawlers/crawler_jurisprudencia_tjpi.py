@@ -108,10 +108,10 @@ if __name__ == '__main__':
 	# except:
 	# 	print('finalizei com erro\n')
 
-	# cursor = cursorConexao()
-	# cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_pi limit 1000000')
-	# dados = cursor.fetchall()
-	# for dado in dados:
-	# 	c.parser_acordaos(dado[0], cursor)
+	cursor = cursorConexao()
+	cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_pi;')
+	dados = cursor.fetchall()
+	for dado in dados:
+		c.parser_acordaos(dado[0], cursor)
 
-	c.download_diario_retroativo()
+	# c.download_diario_retroativo()

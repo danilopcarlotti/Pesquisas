@@ -89,7 +89,7 @@ class crawler_jurisprudencia_tjrs():
 				texto = crawler.baixa_texto_html(link).strip().replace('\\','').replace('/','').replace('"','')
 				if texto != '':
 					numero = busca(r'\n?Nº\s*?(.*?)\n', texto)
-					cursor.execute('INSERT INTO justica_estadual.jurisprudencia_rs_2 (numero, texto_decisao) values ("%s","%s");' % (numero, texto))
+					cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (numero, texto_decisao) values ("%s","%s");' % (numero, texto))
 				print(contador)
 				contador += 1
 			except Exception as e:
