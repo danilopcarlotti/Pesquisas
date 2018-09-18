@@ -1,81 +1,96 @@
-import re, time, urllib.request, ssl
+import re, time, urllib.request, ssl, logging, subprocess, os
 from bs4 import BeautifulSoup
+from common.download_path import path
+from common.download_path_diarios import path as path_diarios
+from crawlerJus import crawlerJus
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from crawlerJus import crawlerJus
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
 class publicacoes_diarios_oficiais(crawlerJus):
-	"""docstring for ClassName"""
-	def __init__(self):
+	def __init__(self, data=None):
 		crawlerJus.__init__(self)
 		logging.basicConfig(filename=self.cwd+self.dia+self.mes+self.ano+'.log',level=logging.INFO)
 		self.diarios_a_baixar = [self.baixa_stf,self.baixa_ro,self.baixa_rr,self.baixa_pa,self.baixa_ma,self.baixa_to,self.baixa_pi,self.baixa_stj,self.baixa_trf1,
 		self.baixa_trf5,self.baixa_go,self.baixa_rs,self.baixa_ac,self.baixa_trf4,self.baixa_df,self.baixa_sc,self.baixa_rn,self.baixa_trf3,self.baixa_pe,
 		self.baixa_sp,self.baixa_ce,self.baixa_al,self.baixa_ms,self.baixa_am,self.baixa_pr,self.baixa_trt,self.baixa_es,self.baixa_ap,self.baixa_pb,self.baixa_se,
 		self.baixa_mt,self.baixa_trf2]		
+		self.data = data
+		if self.data:
+			self.ano_pesquisar = self.data[:4]
+			self.mes_pesquisar = self.data[4:6]
+			self.dia_pesquisar = self.data[6:]
 
 		# FALTA MG, RJ, BA
 
 	def baixa_stf(self):
-		stf_dje = "http://www.stf.jus.br/portal/diarioJustica/verDiarioAtual.asp"
-		pag_stf = self.baixa_pag(stf_dje)
-		pag_stf_bs = BeautifulSoup(pag_stf, 'html.parser')
-		pag_stf_bs_f = pag_stf_bs.find('th',text=re.compile(r"DJ Nr. \d+"))
-		n_diario_stf_i = str(pag_stf_bs_f.text)
-		n_diario_stf_f = re.findall(r"\d+",n_diario_stf_i)
-		link_final_stf = ("https://www.stf.jus.br/arquivo/djEletronico/DJE_%s_%s.pdf" % (self.ano+self.mes+self.dia,n_diario_stf_f[0]))
-		response = urllib.request.urlopen(link_final_stf,timeout=1)
-		file1 = open(self.dia+self.mes+self.ano+"STF.pdf", 'wb')
-		time.sleep(1)
-		file1.write(response.read())
-		file1.close()
+		if self.data:
+			link_final_stf = ("https://www.stf.jus.br/arquivo/djEletronico/DJE_%s_%s.pdf" % (self.ano_pesquisar+self.mes_pesquisar+self.dia_pesquisar,n_diario_stf_f[0]))
+			response = urllib.request.urlopen(link_final_stf,timeout=1)
+			file = open(self.dia_pesquisar+self.mes_pesquisar+self.ano_pesquisar+"STF.pdf", 'wb')
+			time.sleep(1)
+			file.write(response.read())
+			file.close()
+		else:
+			stf_dje = "http://www.stf.jus.br/portal/diarioJustica/verDiarioAtual.asp"
+			pag_stf = self.baixa_pag(stf_dje)
+			pag_stf_bs = BeautifulSoup(pag_stf, 'html.parser')
+			pag_stf_bs_f = pag_stf_bs.find('th',text=re.compile(r"DJ Nr. \d+"))
+			n_diario_stf_i = str(pag_stf_bs_f.text)
+			n_diario_stf_f = re.findall(r"\d+",n_diario_stf_i)
+			link_final_stf = ("https://www.stf.jus.br/arquivo/djEletronico/DJE_%s_%s.pdf" % (self.ano+self.mes+self.dia,n_diario_stf_f[0]))
+			response = urllib.request.urlopen(link_final_stf,timeout=1)
+			file = open(self.dia+self.mes+self.ano+"STF.pdf", 'wb')
+			time.sleep(1)
+			file.write(response.read())
+			file.close()
 
 	def baixa_ro(self):
-		ro_dje = "https://www.tjro.jus.br/novodiario/"
-		pag_ro = self.baixa_pag(ro_dje)
-		pag_ro_bs = BeautifulSoup(pag_ro,'html.parser')
-		find_ro = ano+"/"+self.ano+self.mes+self.dia
-		link_final_ro_i = pag_ro_bs.find('a',href=re.compile(find_ro))
-		link_final_ro_f = "https://www.tjro.jus.br/novodiario/"+str(link_final_ro_i['href'])
-		response = urllib.request.urlopen(link_final_ro_f,timeout=1)
-		file4 = open(self.dia+self.mes+self.ano+"RO.pdf", 'wb')
+		response = urllib.request.urlopen('https://portal.tjro.jus.br/diario-api/ultimo-diario.php',timeout=5)
+		file = open(self.dia+self.mes+self.ano+"RO.pdf", 'wb')
 		time.sleep(1)
-		file4.write(response.read())
-		file4.close()
+		file.write(response.read())
+		file.close()
 		
 	def baixa_rr(self):
-		link_final_rr = "http://diario.tjrr.jus.br/dpj/dpj-"+self.ano+self.mes+self.dia+".pdf"
+		if self.data:
+			link_final_rr = "http://diario.tjrr.jus.br/dpj/dpj-"+self.ano_pesquisar+self.mes_pesquisar+self.dia_pesquisar+".pdf"
+			file5 = open(self.dia_pesquisar+self.mes_pesquisar+self.ano_pesquisar+"RR.pdf", 'wb')
+		else:
+			link_final_rr = "http://diario.tjrr.jus.br/dpj/dpj-"+self.ano+self.mes+self.dia+".pdf"
+			file5 = open(self.dia+self.mes+self.ano+"RR.pdf", 'wb')
 		response = urllib.request.urlopen(link_final_rr,timeout=1)
-		file5 = open(self.dia+self.mes+self.ano+"RR.pdf", 'wb')
 		time.sleep(1)
 		file5.write(response.read())
 		file5.close()
 
 	def baixa_pa(self):
 		pa_dje = "http://dje.tjpa.jus.br/"
-		pag_pa = self.baixa_pag(pa_dje)
-		pag_pa_bs = BeautifulSoup(pag_pa,'html.parser')
-		link_pa_i = pag_pa_bs.find('a',href=re.compile('.+DownloadDeDiario\.jsp.+'))
-		link_pa_f = str(link_pa_i['href'])
-		response = urllib.request.urlopen(link_pa_f,timeout=1)
-		file9 = open(self.dia+self.mes+self.ano+"PA.pdf", 'wb')
-		time.sleep(1)
-		file9.write(response.read())
-		file9.close()
+		driver = webdriver.Chrome(self.chromedriver)
+		driver.get(pa_dje)
+		time.sleep(4)
+		driver.find_element_by_css_selector("a[ng-click='abrirPDFGrid(urlUltimoDiario)']").click()
+		time.sleep(7)
+		driver.close()	
 
 	def baixa_ma(self):
+		if self.data:
+			from crawler_jurisprudencia_tjma import crawler_jurisprudencia_tjma
+			c = crawler_jurisprudencia_tjma()
+			c.download_diario_retroativo(data_especifica=self.dia_pesquisar+self.mes_pesquisar+self.ano_pesquisar)
+			return
 		ma_dje = "http://www.tjma.jus.br/inicio/diario"
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(ma_dje)
 		driver.find_element_by_xpath('//*[@id="btnConsultar"]').click()
 		driver.find_element_by_xpath('//*[@id="table1"]/tbody/tr[2]/td[3]/a[1]').click()
-		time.sleep(1)
+		time.sleep(3)
+		driver.close()
 
 	def baixa_to(self):
 		link_diario_TO_f = []
-		to_dje = "http://wwa.tjto.jus.br/consultadiario/Inicio_lista.aspx"
+		to_dje = "https://wwa.tjto.jus.br/diario/pesquisa"
 		pag_to = self.baixa_pag(to_dje)
 		pag_to_bs = BeautifulSoup(pag_to,'html.parser')
 		link_to_i = pag_to_bs.find('a',href=re.compile('http://wwa\.tjto\.jus\.br/diario/diariopublicado/.+'))
@@ -91,6 +106,11 @@ class publicacoes_diarios_oficiais(crawlerJus):
 			cont_to += 1
 
 	def baixa_pi(self):
+		if self.data:
+			from crawler_jurisprudencia_tjpi import crawler_jurisprudencia_tjpi
+			c = crawler_jurisprudencia_tjpi()
+			c.download_diario_retroativo(data_especifica=self.dia_pesquisar+self.mes_pesquisar+self.ano_pesquisar)
+			return
 		pi_dje = "http://www.tjpi.jus.br/site/modules/diario/Init.mtw"
 		pag_pi = self.baixa_pag(pi_dje)
 		pag_pi_bs = BeautifulSoup(pag_pi,'html.parser')
@@ -103,15 +123,19 @@ class publicacoes_diarios_oficiais(crawlerJus):
 		file7.close()
 
 	def baixa_stj(self):
-		link_stj_f = "http://dj.stj.jus.br/"+self.ano+self.mes+self.dia+".pdf"
+		if self.data:
+			link_stj_f = "http://dj.stj.jus.br/"+self.data+".pdf"
+			file = open(self.dia_pesquisar+self.mes_pesquisar+self.ano_pesquisar+"STJ.pdf", 'wb')
+		else:
+			link_stj_f = "http://dj.stj.jus.br/"+self.ano+self.mes+self.dia+".pdf"
+			file = open(self.dia+self.mes+self.ano+"STJ.pdf", 'wb')
 		response = urllib.request.urlopen(link_stj_f,timeout=30)
-		file2 = open(self.dia+self.mes+self.ano+"STJ.pdf", 'wb')
 		time.sleep(2)
-		file2.write(response.read())
-		file2.close()
+		file.write(response.read())
+		file.close()
 
 	def baixa_trf1(self):
-		pag_trf1 = "https://edj.trf1.jus.br/edj/handle/123/471"
+		pag_trf1 = "https://edj.trf1.jus.br/edj/"
 		pag_trf1_ini = self.baixa_pag(pag_trf1)
 		pag_trf1_ini_bs = BeautifulSoup(pag_trf1_ini,'html.parser')
 		links_trf1_i = pag_trf1_ini_bs.find_all('a',href=re.compile(r"/edj/handle/123/.+"))
@@ -127,10 +151,10 @@ class publicacoes_diarios_oficiais(crawlerJus):
 			cont = 0
 		for lk in links_trf1_f: 
 			response = urllib.request.urlopen(lk,timeout=5)
-			file1 = open(str(cont)+self.dia+self.mes+self.ano+"TRF1.pdf", 'wb')
+			file = open(str(cont)+self.dia+self.mes+self.ano+"TRF1.pdf", 'wb')
 			time.sleep(5)
-			file1.write(response.read())
-			file1.close()
+			file.write(response.read())
+			file.close()
 			cont += 1
 
 	def baixa_trf5(self):
@@ -139,7 +163,7 @@ class publicacoes_diarios_oficiais(crawlerJus):
 		'Seção Judiciária do Rio Grande do Norte','Seção Judiciária do sergipe']
 		def trf5_baixa_diarios(orgao):  
 			driver = webdriver.Chrome(self.chromedriver)
-			trf5_dje = "https://www.trf5.jus.br/diarioeletinternet/"
+			trf5_dje = "https://www4.trf5.jus.br/diarioeletinternet/"
 			driver.get(trf5_dje)
 			org_trf5 = Select(driver.find_element_by_id("frmVisao:orgao"))
 			edicao_trf5_opt = Select(driver.find_element_by_id("frmVisao:edicao"))
@@ -148,22 +172,18 @@ class publicacoes_diarios_oficiais(crawlerJus):
 			edicao_trf5_opt.select_by_visible_text('Judicial')
 			ano_trf5_opt.select_by_visible_text(self.ano)
 			time.sleep(1)
-			mes_trf5_lista = []
-			mes_trf5_opt = Select(driver.find_element_by_id("frmVisao:meses"))
-			for i in mes_trf5_opt.options:
-				mes_trf5_lista.append(i.text)
-				mes_trf5 = mes_trf5_lista[int(mes)]
-				mes_trf5_opt.select_by_visible_text(mes_trf5)
-				driver.find_element_by_xpath("//*[@id=\"frmVisao:j_id48\"]").click()
-				time.sleep(1)
-				driver.find_element_by_xpath("//*[@id=\"frmPesquisa:tDiarios:0:j_id64\"]/a/img").click()
-				time.sleep(1)
+			driver.find_element_by_xpath("//*[@id=\"frmVisao:j_id48\"]").click()
+			time.sleep(1)
+			driver.execute_script("return oamSubmitForm('frmPesquisa','frmPesquisa:tDiarios:0:j_id67','_blank',[]);")
+			time.sleep(3)
 			driver.close()
 		for o in orgaos_trf5:
 			try:
 				trf5_baixa_diarios(o)
-			except:
-				pass
+				subprocess.Popen('cp %s/Diário.pdf %s/%s.pdf' % (path,path_diarios,o.replace(' ','')+str(self.dia)+str(self.mes)+str(self.ano)), shell=True)
+				subprocess.Popen('rm %s/*.pdf' % (path), shell=True)
+			except Exception as e:
+				print(e)
 
 	def baixa_go(self):
 		go_dje = "http://www.tjgo.jus.br/index.php/tribunal/tribunal-servicos/tribunal-servicos-djeletronico"
@@ -193,6 +213,9 @@ class publicacoes_diarios_oficiais(crawlerJus):
 		lista_rs = ['5','6','7','8']
 		for i in lista_rs:
 			driver.get("http://www3.tjrs.jus.br/servicos/diario_justica/download_edicao.php?tp="+i+"&ed="+n_edicao_rs_f)
+			time.sleep(8)
+			subprocess.Popen('cp %s/*.pdf %s/%s.pdf' % (path,path_diarios,i+'_TJRS_'+str(self.dia)+str(self.mes)+str(self.ano)), shell=True)
+			subprocess.Popen('rm %s/*.pdf' % (path), shell=True)
 
 	def baixa_ac(self):
 		driver = webdriver.Chrome(self.chromedriver)
@@ -202,25 +225,40 @@ class publicacoes_diarios_oficiais(crawlerJus):
 		link_ac_i = pag_ac_bs.find('a',attrs={'title':'Baixar'})
 		link_ac_f = "http://diario.tjac.jus.br"+str(link_ac_i['href'])
 		driver.get(link_ac_f)
+		time.sleep(5)
+		subprocess.Popen('cp %s/*.pdf %s/%s.pdf' % (path,path_diarios,'TJAC_'+str(self.dia)+str(self.mes)+str(self.ano)), shell=True)
+		subprocess.Popen('rm %s/*.pdf' % (path), shell=True)
 
 	def baixa_trf4(self):
-		driver = webdriver.Chrome(self.chromedriver)
-		trf4_dje = "http://www2.trf4.jus.br/trf4/diario/consulta_diario.php"
-		pag_trf4 = self.baixa_pag(trf4_dje)
-		pag_trf4_bs = BeautifulSoup(pag_trf4,'html.parser')
-		link_trf4_i = pag_trf4_bs.find_all('td',attrs={"width":"48%"})
-		link_trf4_i_2 = re.findall(r"href=.+\.pdf\"",str(link_trf4_i[0]),re.DOTALL)
-		link_trf4_f = "http://www2.trf4.jus.br/trf4/diario/"+link_trf4_i_2[0][6:len(link_trf4_i_2[0])-1]
-		driver.get(link_trf4_f)
+		if self.data:
+			ano = self.ano_pesquisar
+			mes = self.mes_pesquisar
+			dia = self.dia_pesquisar
+		else:
+			ano = self.ano
+			mes = self.mes
+			dia = self.dia
+		try:
+			link_inicial = 'https://www2.trf4.jus.br/trf4/diario/download.php?arquivo=%2Fvar%2Fwww%2Fhtml%2Fdiario%2Fdocsa%2Fde_jud_{}1645{}_{}_a.pdf'
+			marcador = {'2018' : '01', '2017' : '01', '2016' : '02', '2015' : '02', '2014' : '02', '2013' : '01', '2012' : '06', '2011' : '01'}
+			response = urllib.request.urlopen(link_inicial.format(ano+mes+dia, marcador[ano],ano+'_'+mes+'_'+dia),timeout=5)
+			file = open(dia+mes+ano+'.pdf', 'wb')
+			file.write(response.read())
+			file.close()
+			subprocess.Popen('mv %s/*.pdf %s/TRF4_%s' % (os.getcwd(),path_diarios,dia+mes+ano), shell=True)
+		except Exception as e:
+			print(e)
 
 	def baixa_df(self):
 		driver = webdriver.Chrome(self.chromedriver)
-		df_dje = "https://tjdf199.tjdft.jus.br/dje/djeletronico?visaoId=tjdf.djeletronico.comum.internet.apresentacao.VisaoDiarioEletronicoInternetPorData"
+		df_dje = "https://dje.tjdft.jus.br/dje/djeletronico?visaoId=tjdf.djeletronico.comum.internet.apresentacao.VisaoDiarioEletronicoInternetPorData"
 		pag_df = self.baixa_pag(df_dje)
 		pag_df_bs = BeautifulSoup(pag_df,'html.parser')
-		link_df_i = pag_df_bs.find('a',href=re.compile('http://tjdf11\.tjdft\.jus\.br:.+'))
+		link_df_i = pag_df_bs.find('a',href=re.compile('https://dje.tjdft.jus.br/dje/jsp/dje/DownloadDeDiario.jsp'))
 		link_df_f = str(link_df_i['href'])
 		driver.get(link_df_f)
+		time.sleep(15)
+		subprocess.Popen('mv %s/*.PDF %s/TJDF_%s.pdf' % (path,path_diarios,str(self.dia)+str(self.mes)+str(self.ano)), shell=True)
 
 	def baixa_pe(self):
 		driver = webdriver.Chrome(self.chromedriver)
@@ -230,6 +268,8 @@ class publicacoes_diarios_oficiais(crawlerJus):
 		link_pe_i = pag_pe_bs.find('a',attrs={"class":"downloadPdf"})
 		link_pe_f = str(link_pe_i['href'])
 		driver.get(link_pe_f)
+		time.sleep(15)
+		subprocess.Popen('mv %s/*.PDF %s/TJPE_%s.pdf' % (path,path_diarios,str(self.dia)+str(self.mes)+str(self.ano)), shell=True)
 
 	def baixa_sc(self):
 		sc_dje = "http://busca.tjsc.jus.br/dje-consulta/#/main"
@@ -237,9 +277,23 @@ class publicacoes_diarios_oficiais(crawlerJus):
 		driver.get(sc_dje)
 		time.sleep(1)
 		driver.find_element_by_xpath("//*[@id=\"div_diarios_publicados\"]/span[2]/span/div/ul/li/span/a").click()
-		time.sleep(1)
+		time.sleep(5)
+		driver.switch_to.window(driver.window_handles[-1])
+		response = urllib.request.urlopen(driver.current_url,timeout=1)
+		file = open('TJSC_'+self.dia+self.mes+self.ano+".pdf", 'wb')
+		file.write(response.read())
+		file.close()
+		subprocess.Popen('mv %s/*.pdf %s' % (os.getcwd(),path_diarios), shell=True)
 
 	def baixa_rn(self):
+		if self.data:
+			ano = self.ano_pesquisar
+			mes = self.mes_pesquisar
+			dia = self.dia_pesquisar 
+		else:
+			ano = self.ano
+			mes = self.mes
+			dia = self.dia
 		tri = "1tri"
 		if int(mes)>=4 and int(mes)<=6:
 			tri="2tri"
@@ -247,29 +301,32 @@ class publicacoes_diarios_oficiais(crawlerJus):
 			tri="3tri"
 		elif int(mes)>=10 and int(mes)<=12:
 			tri="4tri"
-		link_rn_f = "https://www.diario.tjrn.jus.br/djonline/pages/repositoriopdfs/"+self.ano+"/"+tri+"/"+self.ano+self.mes+self.dia+"/"+self.ano+self.mes+self.dia+"_JUD.pdf"
 		rn_dje = "https://www.diario.tjrn.jus.br/"
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(rn_dje)
 		driver.find_element_by_xpath("/html/body/table/tbody/tr/td/table/tbody/tr[4]/td/table[2]/tbody/tr/td/div/a").click()
 		driver.find_element_by_xpath("//*[@id=\"menu:formMenu:_id16\"]").click()
 		driver.find_element_by_xpath("//*[@id=\"pesquisarEdicaoCompletaBean:pesquisa_:_id45\"]").click()
-		time.sleep(1)
+		time.sleep(3)
+		link_rn_f = "https://www.diario.tjrn.jus.br/djonline/pages/repositoriopdfs/"+ano+"/"+tri+"/"+ano+mes+dia+"/"+ano+mes+dia+"_JUD.pdf"
+		driver.switch_to.window(driver.window_handles[-1])
 		driver.get(link_rn_f)
-		response3 = urllib.request.urlopen(link_rn_f,timeout=1)
-		file3 = open(self.dia+self.mes+self.ano+"RN.pdf", 'wb')
-		time.sleep(1)
-		file3.write(response3.read())
-		file3.close()
-
+		time.sleep(5)
+		
 	def baixa_trf3(self):
 		trf3_dje = "http://web.trf3.jus.br/diario/Consulta"
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(trf3_dje)
-		for i in range(2,10):
+		for i in range(2,3):
 			driver.find_element_by_xpath("//*[@id=\"botao-ultima\"]/a").click()
 			driver.find_element_by_xpath("//*[@id=\"ultimaEdicao\"]/li["+str(i)+"]/a").click()
-			time.sleep(5)
+			time.sleep(17)
+			subprocess.Popen('mv %s/*.pdf %s/TRF3_%s.pdf' % (path,path_diarios,str(i)+self.ano+self.mes+self.dia), shell=True)
+		for i in range(3,10):
+			driver.find_element_by_xpath("//*[@id=\"botao-ultima\"]/a").click()
+			driver.find_element_by_xpath("//*[@id=\"ultimaEdicao\"]/li["+str(i)+"]/a").click()
+			time.sleep(10)
+			subprocess.Popen('mv %s/*.pdf %s/TRF3_%s.pdf' % (path,path_diarios,str(i)+self.ano+self.mes+self.dia), shell=True)
 		driver.close()
 
 	def baixaEsaj(self,inicio, fim, pag):
@@ -284,33 +341,70 @@ class publicacoes_diarios_oficiais(crawlerJus):
 			time.sleep(1)
 
 	def baixa_al(self):
-		pag_al = "http://www2.tjal.jus.br/cdje/index.do"
-		baixaEsaj(1,3,pag_al)
+		if self.data:
+			from crawler_jurisprudencia_tjal import crawler_jurisprudencia_tjal
+			c = crawler_jurisprudencia_tjal()
+			c.download_diario_retroativo(data_especifica=self.dia_pesquisar+'/'+self.mes_pesquisar+'/'+self.ano_pesquisar)
+		else:
+			pag_al = "http://www2.tjal.jus.br/cdje/index.do"
+			baixaEsaj(1,3,pag_al)
+			subprocess.Popen('mv %s/*.pdf %s/TJAL_%s.pdf' % (path,path_diarios,self.dia+self.mes+self.ano), shell=True)
 
 	def baixa_sp(self):
-		pag_sp = "http://www.dje.tjsp.jus.br/cdje/index.do"
-		baixaEsaj(2,7,pag_sp)
+		if self.data:
+			from crawler_jurisprudencia_tjsp import crawler_jurisprudencia_tjsp
+			c = crawler_jurisprudencia_tjsp()
+			c.download_diario_retroativo(data_especifica=self.dia_pesquisar+'/'+self.mes_pesquisar+'/'+self.ano_pesquisar)
+		else:
+			pag_sp = "http://www.dje.tjsp.jus.br/cdje/index.do"
+			baixaEsaj(2,7,pag_sp)
+			subprocess.Popen('mv %s/*.pdf %s/TJSP_%s.pdf' % (path,path_diarios,self.dia+self.mes+self.ano), shell=True)
 		
 	def baixa_ce(self):
-		pag_ce = "http://esaj.tjce.jus.br/cdje/index.do"
-		baixaEsaj(2,3,pag_ce)
+		if self.data:
+			from crawler_jurisprudencia_tjce import crawler_jurisprudencia_tjce
+			c = crawler_jurisprudencia_tjce()
+			c.download_diario_retroativo(data_especifica=self.dia_pesquisar+'/'+self.mes_pesquisar+'/'+self.ano_pesquisar)
+		else:
+			pag_ce = "http://esaj.tjce.jus.br/cdje/index.do"
+			baixaEsaj(2,3,pag_ce)
+			subprocess.Popen('mv %s/*.pdf %s/TJCE_%s.pdf' % (path,path_diarios,self.dia+self.mes+self.ano), shell=True)
 
 	def baixa_ms(self):
-		pag_ms = "https://www.tjms.jus.br/cdje/index.do"
-		baixaEsaj(3,5,pag_ms)
+		if self.data:
+			from crawler_jurisprudencia_tjms import crawler_jurisprudencia_tjms
+			c = crawler_jurisprudencia_tjms()
+			c.download_diario_retroativo(data_especifica=self.dia_pesquisar+'/'+self.mes_pesquisar+'/'+self.ano_pesquisar)
+		else:
+			pag_ms = "https://www.tjms.jus.br/cdje/index.do"
+			baixaEsaj(3,5,pag_ms)
+			subprocess.Popen('mv %s/*.pdf %s/TJCE_%s.pdf' % (path,path_diarios,self.dia+self.mes+self.ano), shell=True)
 
 	def baixa_am(self):
-		pag_am = "http://consultasaj.tjam.jus.br/cdje/index.do"
-		baixaEsaj(2,5,pag_am)
+		if self.data:
+			from crawler_jurisprudencia_tjam import crawler_jurisprudencia_tjam
+			c = crawler_jurisprudencia_tjam()
+			c.download_diario_retroativo(data_especifica=self.dia_pesquisar+'/'+self.mes_pesquisar+'/'+self.ano_pesquisar)
+		else:
+			pag_am = "http://consultasaj.tjam.jus.br/cdje/index.do"
+			baixaEsaj(2,5,pag_am)
+			subprocess.Popen('mv %s/*.pdf %s/TJCE_%s.pdf' % (path,path_diarios,self.dia+self.mes+self.ano), shell=True)
 
 	def baixa_pr(self):
 		pag_pr = "https://portal.tjpr.jus.br/e-dj/publico/diario/pesquisar/filtro.do"
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(pag_pr)
-		driver.find_element_by_name("dataVeiculacao").send_keys("09/08/2016")
+		if self.data:
+			driver.find_element_by_name("dataVeiculacao").send_keys(self.dia_pesquisar+'/'+self.mes_pesquisar+'/'+self.ano_pesquisar)
+		else:
+			driver.find_element_by_name("dataVeiculacao").send_keys(self.dia+'/'+self.mes+'/'+self.ano)
 		driver.find_element_by_xpath("//*[@id=\"searchButton\"]").click()
 		driver.find_element_by_xpath("//*[@id=\"diarioPesquisaForm\"]/fieldset/table[3]/tbody/tr/td[3]/a").click()
-		time.sleep(15)
+		time.sleep(5)
+		if self.data:
+			subprocess.Popen('mv %s/*.pdf %s/TJPR_%s.pdf' % (path,path_diarios,self.dia_pesquisar+self.mes_pesquisar+self.ano_pesquisar), shell=True)
+		else:
+			subprocess.Popen('mv %s/*.pdf %s/TJPR_%s.pdf' % (path,path_diarios,self.dia+self.mes+self.ano), shell=True)
 
 	def baixa_trt(self):
 		dje_trt = 'https://aplicacao.jt.jus.br/dejt.html'
@@ -342,28 +436,34 @@ class publicacoes_diarios_oficiais(crawlerJus):
 		'https://aplicacao.jt.jus.br/Diario_J_24.pdf'
 		]
 		response = urllib.request.urlopen(links_trt[0],timeout=1)
-		file = open('Diario_TST.pdf', 'wb')
+		file = open('Diario_TST_%s.pdf' % (self.dia+self.mes+self.ano,), 'wb')
 		file.write(response.read())
 		file.close()
+		subprocess.Popen('mv %s/*.pdf %s/%s' % (os.getcwd(),path_diarios,'Diario_TST_%s.pdf' % (self.dia+self.mes+self.ano,)), shell=True)
 		for l in range(1,len(links_trt)):
 			response = urllib.request.urlopen(links_trt[l],timeout=1)
-			file = open('Diario_J_'+str(l)+"_TRT.pdf", 'wb')
+			filename = 'TRT_%s.pdf' % (str(l)+'_'+self.dia+self.mes+self.ano,)
+			file = open(filename, 'wb')
 			file.write(response.read())
 			file.close()
+			subprocess.Popen('mv %s/*.pdf %s/%s' % (os.getcwd(),path_diarios,filename), shell=True)
 
 	def baixa_ap(self):
-		ap_dje = "http://app.tjap.jus.br/tucujuris/publico/dje/"
+		ap_dje = "http://tucujuris.tjap.jus.br/tucujuris/pages/consultar-dje/consultar-dje.html?refer=java"
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(ap_dje)
-		driver.find_element_by_xpath("//*[@id=\"formLista\"]/table/tbody/tr[1]/td[3]/a").click()
+		time.sleep(3)
+		driver.find_element_by_xpath('//*[@id="dje-2498"]').click()
 		time.sleep(5)
+		subprocess.Popen('mv %s/*.pdf %s/TJAP_%s.pdf' % (path,path_diarios,self.dia+self.mes+self.ano), shell=True)
 
 	def baixa_pb(self):
 		pb_dje = "https://app.tjpb.jus.br/dje/paginas/diario_justica/publico/buscas.jsf"
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(pb_dje)
 		driver.find_element_by_xpath("//*[@id=\"dje-pdf-recentes\"]/li[1]/a").click()
-		time.sleep(5)
+		time.sleep(15)
+		subprocess.Popen('mv %s/*.pdf %s/TJPB_%s.pdf' % (path,path_diarios,self.dia+self.mes+self.ano), shell=True)
 
 	def baixa_se(self):
 		dje_se = "http://www.diario.tjse.jus.br/diario/internet/pesquisar.wsp?tmp.origem=EXTERNA"
@@ -371,11 +471,12 @@ class publicacoes_diarios_oficiais(crawlerJus):
 		pag_se_bs = BeautifulSoup(pag_se,'html.parser')
 		link_se_i = pag_se_bs.find_all('a', attrs={"href":"#"})
 		link_se_f = "http://www.diario.tjse.jus.br/diario/diarios/"+link_se_i[-1].text.split("(")[0]+".pdf"
-		response4 = urllib.request.urlopen(link_se_f,timeout=30)
-		file4 = open(self.dia+self.mes+self.ano+"SE.pdf", 'wb')
+		response = urllib.request.urlopen(link_se_f.replace('\n',''),timeout=30)
+		file = open(self.dia+self.mes+self.ano+"SE.pdf", 'wb')
 		time.sleep(5)
-		file4.write(response4.read())
-		file4.close()
+		file.write(response.read())
+		file.close()
+		subprocess.Popen('mv %s/*.pdf %s/TJSE_%s.pdf' % (os.getcwd(),path_diarios,self.dia+self.mes+self.ano), shell=True)
 
 	def baixa_mt(self):
 		dje_mt = "http://www.tjmt.jus.br/dje"
@@ -388,11 +489,13 @@ class publicacoes_diarios_oficiais(crawlerJus):
 			link_mt_f[l] = re.sub(r'ç','%C3%A7',link_mt_f[l])
 			link_mt_f[l] = re.sub(r'â','%C3%A2',link_mt_f[l])
 			link_mt_f[l] = re.sub(r'ª','%C2%AA',link_mt_f[l])
-			response4 = urllib.request.urlopen(link_mt_f[l],timeout=30)
-			file4 = open(str(l)+self.dia+self.mes+self.ano+"MT.pdf", 'wb')
-			time.sleep(15)
-			file4.write(response4.read())
-			file4.close()
+			response = urllib.request.urlopen(link_mt_f[l],timeout=30)
+			filename = 'TJMT_'+str(l)+'_'+self.dia+self.mes+self.ano+".pdf"
+			file = open(filename, 'wb')
+			file.write(response.read())
+			file.close()
+			time.sleep(5)
+			subprocess.Popen('mv %s/*.pdf %s/%s.pdf' % (os.getcwd(),path_diarios,filename), shell=True)
 
 	def baixa_trf2(self):
 		trf2_dje = "http://dje.trf2.jus.br/DJE/Paginas/Externas/inicial.aspx"
@@ -402,6 +505,7 @@ class publicacoes_diarios_oficiais(crawlerJus):
 		driver.find_element_by_xpath("//*[@id=\"ctl00_ContentPlaceHolder_ctrInicial_ctrCadernosPorAreaJudicial_lkbCadJudSJRJ\"]").click()
 		driver.find_element_by_xpath("//*[@id=\"ctl00_ContentPlaceHolder_ctrInicial_ctrCadernosPorAreaJudicial_lkbCadJudSJES\"]").click()
 		time.sleep(15)
+		subprocess.Popen('mv %s/*.pdf %s' % (path,path_diarios), shell=True)
 
 	def baixa_es(self):
 		diario_es = open(self.dia+self.mes+self.ano+"es.txt","a",encoding='utf-8')
@@ -429,6 +533,13 @@ class publicacoes_diarios_oficiais(crawlerJus):
 			except:
 				pass
 		diario_es.close()
+		subprocess.Popen('mv %s/%s*.pdf %s' % (os.getcwd(),self.dia+self.mes+self.ano+"es.txt",path_diarios), shell=True)
+
+	def baixa_rj(self):
+		pass
+
+	def baixa_mg(self):
+		pass
 
 	def baixa_ba(self):
 		pass
@@ -436,4 +547,4 @@ class publicacoes_diarios_oficiais(crawlerJus):
 if __name__ == '__main__':
 	publicacoes = publicacoes_diarios_oficiais()
 	for d in publicacoes.diarios_a_baixar:
-		publicacoes.baixa_diario(d)
+		d()

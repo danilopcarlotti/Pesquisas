@@ -34,7 +34,6 @@ class crawler_jurisprudencia_trf4():
 					datas.append((str(self.lista_anos[a]), self.lista_meses[m],str(d)))
 		for ano, mes, dia in datas:
 			try:
-				print(link_inicial.format(ano+mes+dia, marcador[ano],ano+'_'+mes+'_'+dia))
 				response = urllib.request.urlopen(link_inicial.format(ano+mes+dia, marcador[ano],ano+'_'+mes+'_'+dia),timeout=5)
 				file = open(dia+mes+ano+'.pdf', 'wb')
 				file.write(response.read())

@@ -1,148 +1,37 @@
-falta completar e/ou impossível completar
+diários passíveis de serem baixados por data específica
 
-ap - não funciona o botão de "mais resultados"
-pe - Só há 500 acórdãos disponíveis nos processos do TJPE
-trf2 - não foi encontrado termo que gere uma pesquisa viável
-trf3 (links para html) porque não está funcionando, apesar de funcionar manualmente?
+  stf
+  rr
+  ma
+  pi
+  stj
+  trf5
+  trf4
+  rn
+  al
+  sp
+  ms
+  am
+  pr
 
-Sentenças de 1º grau disponível
+diários NÃO passíveis de serem baixados por data específica
 
-ac - https://www.tjac.jus.br/tribunal/administrativo/coger/banco-de-sentencas/
-al - http://www.tjal.jus.br/corregedoria/?pag=sentencas
-ba - http://www5.tjba.jus.br/unicorp/index.php/publicacoes/banco-de-sentencas/19-publicacoes/banco-de-sentencas/95-banco-de-sentencas-tjba
-pa - http://www.tjpa.jus.br/PortalExterno/institucional/Central-de-Pesquisa-e-Apoio-a-Magistratura/1165-BANCO-DE-SENTENcAS.xhtml
-pe - http://www.tjpe.jus.br/web/juizados-especiais/banco-de-sentencas
+  ro
+  pa
+  trf1
+  go
+  ac
+  trt
+  ap
+  trf2
+  es
 
-rs - https://www.tjrs.jus.br/site/processos/acoes_coletivas/banco_de_acoes/ (captcha inviável por ora)
-sp - https://esaj.tjsp.jus.br/cjpg/
-
-*** Parsers ***
-
-Parser pronto e rodado
-
-ac - ok
-al - ok
-am - ok
-ba - ok
-ce - ok
-df - ok
-es - ok
-go - ok
-ma - ok
-mg - ok
-ms - ok
-mt - ok
-pa - ok
-pb - ok
-pi - ok
-pr - ok
-rj - ok
-rn - ok
-ro - ok
-rr - ok
-se - ok
-sc - ok
-sp 1 inst - esc0 - 4
-STJ - ok
-STF - ok
-to - encontrar download!
-trf1 - ok
-trf4  - ok
-trf5 - ok
-
-Parser a fazer
-
-rs - rever download
-sp 2 inst - rever download e rever ocr
-
-*** TABELAS JURISPRUDENCIA ***
-
-1ª Instância
-
-CREATE TABLE `jurisprudencia_1_inst` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tribunal` varchar(45) DEFAULT NULL,
-  `numero` varchar(45) DEFAULT NULL,
-  `assunto` text,
-  `classe` text,
-  `data_decisao` text,
-  `orgao_julgador` text,
-  `julgador` text,
-  `texto_decisao` longtext,
-  `relatorio` longtext,
-  `fundamentacao` longtext,
-  `dispositivo` longtext,
-  `polo_ativo` text,
-  `polo_passivo` text,
-  `comarca` text,
-  `justica_gratuita` varchar(45) DEFAULT NULL,
-  `procedencia` text,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-
-
-2ª Instância
-
-CREATE TABLE `jurisprudencia_2_inst` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tribunal` varchar(45) DEFAULT NULL,
-  `numero` varchar(45) DEFAULT NULL,
-  `assunto` text,
-  `classe` text,
-  `data_decisao` varchar(45) DEFAULT NULL,
-  `orgao_julgador` text,
-  `julgador` text,
-  `texto_decisao` longtext,
-  `relatorio` longtext,
-  `fundamentacao` longtext,
-  `dispositivo` longtext,
-  `polo_ativo` text,
-  `polo_passivo` text,
-  `origem` text,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-
-**** LOAD FILE
-
-LOAD DATA INFILE '/var/lib/mysql-files/trf4.csv' 
-INTO TABLE jurisprudencia_2_inst.jurisprudencia_2_inst
-FIELDS TERMINATED BY ',' 
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 ROWS
-(tribunal, numero, assunto, classe, data_decisao, orgao_julgador, julgador, texto_decisao, relatorio, fundamentacao, dispositivo, polo_ativo, polo_passivo, origem);
-
-Diários a baixar
-
-SP - aparentemente sim
-STF - aparentemente não
-STJ - sim
-RO - sim
-RR - sim
-PA - não (recaptcha)
-MA - aparentemente sim
-TO - aparentemente sim
-PI - aparentemente sim
-TRF1 - aparentemente sim
-TRF5 - aparentemente sim
-GO - aparentemente sim
-RS - aparentemente sim
-AC - aparentemente sim
-TRF4 - aparentemente sim
-DF - aparentemente não
-PE - aparentemente sim
-SC - sim
-RN - sim
-TRF3 - sim
-AL - aparentemente sim
-CE - aparentemente sim
-MS - aparentemente sim
-AM -aparentemente sim
-PR - aparentemente sim
-TRT - não necessário
-AP - não (recaptcha)
-PB - aparentemente sim
-SE - aparentemente sim
-MT - aparentemente sim
-TRF2 - aparentemente sim
-ES - não
+  diários que baixam retroativamente apesar da restrição acima
+    
+    to
+    rs
+    df
+    pe
+    sc
+    trf3
+    se

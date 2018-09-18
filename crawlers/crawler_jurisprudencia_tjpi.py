@@ -37,29 +37,39 @@ class crawler_jurisprudencia_tjpi():
 					break
 		driver.close()
 
-	def download_diario_retroativo(self):
+	def download_diario_retroativo(self, data_especifica=None):
 		botao_refresh = '//*[@id="diarioInitForm"]/img[2]'
 		data_xpath = '//*[@id="dataDiario"]'
 		download_xpath = '//*[@id="theContent"]/div[1]/table/tbody/tr/td/a'
 		link_inicial = 'http://www.tjpi.jus.br/site/modules/diario/Init.download.mtw'
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(link_inicial)
+		if data_especifica:
+			time.sleep(1)
+			driver.find_element_by_xpath(data_xpath).clear()
+			for letter in data_especifica:
+				driver.find_element_by_xpath(data_xpath).send_keys(letter)
+			driver.find_element_by_xpath(botao_refresh).click()
+			try:
+				driver.find_element_by_xpath(download_xpath).click()
+				driver.switch_to.window(driver.window_handles[-1])
+				time.sleep(1)
+				pyautogui.hotkey('ctrl','s')
+				time.sleep(1)
+				pyautogui.press('enter')
+				time.sleep(1)
+				pyautogui.hotkey('ctrl','w')
+				driver.switch_to.window(driver.window_handles[0])
+				subprocess.Popen('mkdir %s/Diarios_pi/%s' % (path_hd,data_especifica), shell=True) 
+				subprocess.Popen('mv %s/*.pdf %s/Diarios_pi/%s' % (path,path_hd,data_especifica), shell=True)
+			except Exception as e:
+				driver.close()
+			return
 		datas = []
-		for l in range(0,1):
-			for i in range(6,10):
-				for j in range(1,10):
-					datas.append('0'+str(j)+'0'+str(i)+''+self.lista_anos[l])
-				for j in range(10,32):
-					datas.append(str(j)+'0'+str(i)+self.lista_anos[l])
-			for i in range(10,13):
-				for j in range(1,10):
-					datas.append('0'+str(j)+str(i)+self.lista_anos[l])
-				for j in range(10,32):
-					datas.append(str(j)+str(i)+self.lista_anos[l])
-		for l in range(1,len(self.lista_anos)):
+		for l in range(len(self.lista_anos)):
 			for i in range(1,10):
 				for j in range(1,10):
-					datas.append('0'+str(j)+'0'+str(i)+''+self.lista_anos[l])
+					datas.append('0'+str(j)+'0'+str(i)+self.lista_anos[l])
 				for j in range(10,32):
 					datas.append(str(j)+'0'+str(i)+self.lista_anos[l])
 			for i in range(10,13):

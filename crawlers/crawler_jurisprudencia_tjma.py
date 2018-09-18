@@ -46,7 +46,7 @@ class crawler_jurisprudencia_tjma(crawler_jurisprudencia_tj):
 				print(e)
 				break
 
-	def download_diario_retroativo(self):
+	def download_diario_retroativo(self, data_especifica=None):
 		data_ini_xpath = 'dtaInicio'
 		data_fim_xpath = 'dtaTermino'
 		download_xpath = '//*[@id="table1"]/tbody/tr[2]/td[3]/a[1]'
@@ -56,10 +56,22 @@ class crawler_jurisprudencia_tjma(crawler_jurisprudencia_tj):
 		driver.get(link_inicial)
 		time.sleep(3)
 		datas = []
+		if data_especifica:
+			driver.find_element_by_id(data_ini_xpath).send_keys(data_especifica)
+			driver.find_element_by_id(data_fim_xpath).send_keys(data_especifica)
+			driver.find_element_by_xpath(pesquisar_xpath).click()
+			try:
+				driver.find_element_by_xpath(download_xpath).click()
+				time.sleep(3)
+				subprocess.Popen('mkdir %s/Diarios_ma/%s' % (path_hd,nome_pasta), shell=True) 
+				subprocess.Popen('mv %s/*.pdf %s/Diarios_ma/%s' % (path,path_hd,nome_pasta), shell=True)
+			except Exception as e:
+				print(e)
+			return
 		for l in range(len(self.lista_anos)):
 			for i in range(1,10):
 				for j in range(1,10):
-					datas.append('0'+str(j)+'0'+str(i)+''+self.lista_anos[l])
+					datas.append('0'+str(j)+'0'+str(i)+self.lista_anos[l])
 				for j in range(10,32):
 					datas.append(str(j)+'0'+str(i)+self.lista_anos[l])
 			for i in range(10,13):

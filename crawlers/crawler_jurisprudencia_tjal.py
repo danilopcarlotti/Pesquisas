@@ -1,5 +1,6 @@
 import sys, re, os, urllib.request, time, subprocess
 from common.download_path import path, path_hd
+from common.download_path_diarios import path as path_diarios
 from common.conexao_local import cursorConexao
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from bs4 import BeautifulSoup
@@ -56,21 +57,24 @@ class crawler_jurisprudencia_tjal(crawler_jurisprudencia_tj):
 				loop_counter += 1
 				print(e)
 
-	def download_diario_retroativo(self):
+	def download_diario_retroativo(self, data_especifica=None):
 		cadernos = ['2','3']
 		link_inicial = 'http://www2.tjal.jus.br/cdje/index.do'
 		datas = []
-		for l in range(len(self.lista_anos)):
-			for i in range(1,10):
-				for j in range(1,10):
-					datas.append('0'+str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
-				for j in range(10,32):
-					datas.append(str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
-			for i in range(11,13):
-				for j in range(1,10):
-					datas.append('0'+str(j)+'/'+str(i)+'/'+self.lista_anos[l])
-				for j in range(10,32):
-					datas.append(str(j)+'/'+str(i)+'/'+self.lista_anos[l])
+		if data_especifica:
+			datas.append(data_especifica)			
+		else:
+			for l in range(len(self.lista_anos)):
+				for i in range(1,10):
+					for j in range(1,10):
+						datas.append('0'+str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
+					for j in range(10,32):
+						datas.append(str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
+				for i in range(11,13):
+					for j in range(1,10):
+						datas.append('0'+str(j)+'/'+str(i)+'/'+self.lista_anos[l])
+					for j in range(10,32):
+						datas.append(str(j)+'/'+str(i)+'/'+self.lista_anos[l])
 		contador = 0
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(link_inicial)
@@ -82,8 +86,8 @@ class crawler_jurisprudencia_tjal(crawler_jurisprudencia_tj):
 				time.sleep(1)
 			time.sleep(3)
 			nome_pasta = data.replace('/','')
-			subprocess.Popen('mkdir %s/Diarios_al/%s' % (path_hd,nome_pasta), shell=True) 
-			subprocess.Popen('mv %s/*.pdf %s/Diarios_al/%s' % (path,path_hd,nome_pasta), shell=True)
+			subprocess.Popen('mkdir %s/Diarios_al/%s' % (path_diarios,nome_pasta), shell=True) 
+			subprocess.Popen('mv %s/*.pdf %s/Diarios_al/%s' % (path,path_diarios,nome_pasta), shell=True)
 			if contador > 10:
 				time.sleep(3)
 				driver.close()

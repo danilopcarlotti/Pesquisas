@@ -2,6 +2,7 @@ import sys, re, os, time, subprocess, urllib.request, pyautogui
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from common.download_path import path, path_hd
+from common.download_path_diarios import path as path_diarios
 from common.image_to_txt import image_to_txt
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from crawlerJus import crawlerJus
@@ -66,20 +67,23 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 		crawler_jurisprudencia_tj.download_pdf_acordao_captcha_image(self,dados_baixar,'//*[@id="valorCaptcha"]','//*[@id="pbEnviar"]','sp_2_inst')
 		subprocess.Popen('mv %s/sp_2_inst_*.pdf %s/sp_2_inst' % (path,path), shell=True)
 
-	def download_diario_retroativo(self):
+	def download_diario_retroativo(self, data_especifica=None):
 		cadernos = ['11','12','13','14','15','18']
 		datas = []
-		for l in range(len(self.lista_anos)):
-			for i in range(1,10):
-				for j in range(1,10):
-					datas.append('0'+str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
-				for j in range(10,32):
-					datas.append(str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
-			for i in range(10,13):
-				for j in range(1,10):
-					datas.append('0'+str(j)+'/'+str(i)+'/'+self.lista_anos[l])
-				for j in range(10,32):
-					datas.append(str(j)+'/'+str(i)+'/'+self.lista_anos[l])
+		if data_especifica:
+			datas.append(data_especifica)
+		else:
+			for l in range(len(self.lista_anos)):
+				for i in range(1,10):
+					for j in range(1,10):
+						datas.append('0'+str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
+					for j in range(10,32):
+						datas.append(str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
+				for i in range(10,13):
+					for j in range(1,10):
+						datas.append('0'+str(j)+'/'+str(i)+'/'+self.lista_anos[l])
+					for j in range(10,32):
+						datas.append(str(j)+'/'+str(i)+'/'+self.lista_anos[l])
 		contador = 0
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get('https://www.dje.tjsp.jus.br/cdje/index.do')
@@ -91,8 +95,8 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 				time.sleep(1)
 			time.sleep(15)
 			nome_pasta = data.replace('/','')
-			subprocess.Popen('mkdir %s/Diarios_sp/%s' % (path_hd,nome_pasta), shell=True) 
-			subprocess.Popen('mv %s/*.pdf %s/Diarios_sp/%s' % (path,path_hd,nome_pasta), shell=True)
+			subprocess.Popen('mkdir %s/Diarios_sp/%s' % (path_diarios,nome_pasta), shell=True) 
+			subprocess.Popen('mv %s/*.pdf %s/Diarios_sp/%s' % (path,path_diarios,nome_pasta), shell=True)
 			if contador > 10:
 				time.sleep(10)
 				driver.close()

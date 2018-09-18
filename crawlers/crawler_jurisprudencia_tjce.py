@@ -22,37 +22,24 @@ class crawler_jurisprudencia_tjce(crawler_jurisprudencia_tj):
 		self.botao_proximo = '//*[@id="paginacaoSuperior-A"]/table/tbody/tr[1]/td[2]/div/a[6]'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_ce (ementas)'
 
-	def download_diario_retroativo(self):
+	def download_diario_retroativo(self, data_especifica=None):
 		cadernos = ['1','2']
 		link_inicial = 'http://esaj.tjce.jus.br/cdje/index.do'
 		datas = []
-		for l in range(1,2):
-			for i in range(1,2):
-				# for j in range(1,10):
-				# 	datas.append('0'+str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
-				for j in range(18,32):
-					datas.append(str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
-			for i in range(2,10):
-				for j in range(1,10):
-					datas.append('0'+str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
-				for j in range(10,32):
-					datas.append(str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
-			for i in range(11,13):
-				for j in range(1,10):
-					datas.append('0'+str(j)+'/'+str(i)+'/'+self.lista_anos[l])
-				for j in range(10,32):
-					datas.append(str(j)+'/'+str(i)+'/'+self.lista_anos[l])
-		for l in range(2,len(self.lista_anos)):
-			for i in range(1,10):
-				for j in range(1,10):
-					datas.append('0'+str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
-				for j in range(10,32):
-					datas.append(str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
-			for i in range(11,13):
-				for j in range(1,10):
-					datas.append('0'+str(j)+'/'+str(i)+'/'+self.lista_anos[l])
-				for j in range(10,32):
-					datas.append(str(j)+'/'+str(i)+'/'+self.lista_anos[l])
+		if data_especifica:
+			datas.append(data_especifica)
+		else:
+			for l in range(len(self.lista_anos)):
+				for i in range(1,10):
+					for j in range(1,10):
+						datas.append('0'+str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
+					for j in range(10,32):
+						datas.append(str(j)+'/0'+str(i)+'/'+self.lista_anos[l])
+				for i in range(11,13):
+					for j in range(1,10):
+						datas.append('0'+str(j)+'/'+str(i)+'/'+self.lista_anos[l])
+					for j in range(10,32):
+						datas.append(str(j)+'/'+str(i)+'/'+self.lista_anos[l])
 		contador = 0
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(link_inicial)
