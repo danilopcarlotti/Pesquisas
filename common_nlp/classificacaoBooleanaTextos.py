@@ -12,19 +12,17 @@ class classificacaoBooleanaTextos():
 		index = []
 		index_counter = 1
 		for id_p, texto in dados:
-			est_ou_fed = 'estadual'
-			if re.search(r'trf',tribunal):
-				est_ou_fed = 'federal'
 			dicionario_df = {'numero':id_p}
-			for k,v in dicionario.items():
-				dicionario_df[k] = 0
-			for k,v in dicionario.items():
+			for k,v in dicionario_outros.items():
 				if re.search(v, texto):
 					dicionario_df[k] = 1
+				else:
+					dicionario_df[k] = 0
 			rows.append(dicionario_df)
 			index.append(index_counter)
 			index_counter += 1
 		data_frame = pd.DataFrame(rows, index=index)
 		if to_csv and titulo:
 			data_frame.to_csv(titulo+'.csv',quotechar='"', index= False)
-		return data_frame
+		else:
+			return data_frame
