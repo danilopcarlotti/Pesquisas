@@ -59,7 +59,7 @@ class parserTextoJuridico():
 			],
 			'início de parágrafo' : r'\n\s+'
 		}
-		self.nomes_leis_alternativos = ['Constituição','CLT','CF','CPP','CP','CC']
+		self.nomes_leis_alternativos = ['Constituição','CLT','CF','CPP','CP','CC','CPC']
 		self.re_artigo = r'[\s\.]?art[igo\.]*?\s*?\d+'
 		self.re_lei = r'[\s\.]lei.{,10}[\d/]{1,20}[\.]?[\d]{,10}'
 		self.re_paragrafo = r'(§[\s\dº]+).{1,10}[artleicltp]?'
@@ -87,7 +87,7 @@ class parserTextoJuridico():
 
 	def classifica_texto(self, texto):
 		# Treinado com um set de decisões trabalhistas
-		acordo = re.search(r'homolog[oar\-se]\s*o\s*acordo',texto, re.IGNORECASE)
+		acordo = re.search(r'homolog[oar\-se]\s*?o\s*?acordo',texto, re.IGNORECASE)
 		if acordo != None:
 			return 'Homologação de acordo'
 		recurso = re.search(r'RECORRENTE',texto)
@@ -109,7 +109,7 @@ class parserTextoJuridico():
 		embargos = re.search(r'embargos declaratórios|embargos de declaração|embargante',texto, re.IGNORECASE)
 		if embargos != None and sentenca1 == None:
 			return 'Embargos declaratórios'
-		sentenca = re.search(r'\s*S\s*E\s*N\s*T\s*E\s*N\s*Ç\s*A\s*|Dispensado o relatório|julg.*{1,50}PROCEDE|julg.{1,30}extin[guirtoa]?',texto)
+		sentenca = re.search(r'\s*S\s*E\s*N\s*T\s*E\s*N\s*Ç\s*A\s*|Dispensado o relatório|julg.{1,50}PROCEDE|julg.{1,30}extin[guirtoa]?',texto)
 		sentenca3 = re.search(r'FUNDAMENTAÇÃO',texto)
 		sentenca4 = re.search(r'DISPOSITIVO',texto)
 		if sentenca != None or sentenca1 != None or (sentenca3 != None and sentenca4 != None):
@@ -148,48 +148,16 @@ class parserTextoJuridico():
 			# VETOR RESULTADO RECURSOS POSSUI 5 POSIÇÕES
 			# (INTEMPESTIVO, NÃO CONHECIDO, CONHECIDO E PROVIDO, CONHECIDO E NEGADO, CONHECIDO PARCIALMENTE PROVIDO)
 			resultado = [0,0,0,0,0]
-			# Caso em que o resultado aparece no corpo do acórdão
-			resultadoProcesso = re.findall(r'ACORDAM(.+)\.',texto, flags=re.IGNORECASE|re.DOTALL)
-			if len(resultadoProcesso):
-				for r in resultadoProcesso:
-					if re.search(r'intempestivo',r, flags=re.IGNORECASE|re.DOTALL) != None:
-						resultado[0] = 1
-					else:
-						if re.search(r'(NÃO CONHECER.{1,30}DO RECURSO)|(RECURSO NÃO CONHECIDO)|RECURSO DESPROVIDO',r, flags=re.IGNORECASE|re.DOTALL) != None:
-							resultado[1] = 1
-						elif re.search(r'CONHECER.{1,30}[D]?O[S]? RECURSO[S]?',r, flags=re.IGNORECASE|re.DOTALL) != None:
-							if re.search(r'DAR PROVIMENTO|DOU PROVIMENTO', r, flags=re.IGNORECASE|re.DOTALL) != None:
-								resultado[2] = 1
-							elif re.search(r'NEGAR PROVIMENTO', r, flags=re.IGNORECASE|re.DOTALL) != None:
-								resultado[3] = 1
-						elif re.search(r'CONHECER.{1,30}E PROVER O[S]? RECURSO[S]?',r, flags=re.IGNORECASE|re.DOTALL) != None:
-							resultado[2] = 1
-						elif re.search(r'CONHECER.{1,30}E NEGAR[-LHES]? PROVIMENTO',r, flags=re.IGNORECASE|re.DOTALL) != None:
-							resultado[3] = 1
-						elif re.search(r'RECURSO PARCIALMENTE PROVIDO', r) != None:
-							resultado[4] = 1
-			# Caso em que o resultado aparece na ementa ou nada identificado no texto acima
-			if resultado == [0,0,0,0,0]:
-				if re.search(r'recurso.{1,30}intempestivo',texto, flags=re.IGNORECASE|re.DOTALL) != None:
-					resultado[0] = 1
-				else:
-					if re.search(r'(NÃO CONHECER.{1,30}DO RECURSO)|(RECURSO NÃO CONHECIDO)|RECURSO DESPROVIDO|\.\s*?IMPROCEDÊNCIA\.',texto, flags=re.IGNORECASE|re.DOTALL) != None:
-						resultado[1] = 1
-					else:
-						conhecer = re.search(r'CONHECER [D]?O[S]? RECURSO[S]?(.*?)\.',texto, flags=re.IGNORECASE|re.DOTALL)
-						conhecer_1 = re.search(r'RECURSO CONHECIDO(.*?)\.',texto, flags=re.IGNORECASE|re.DOTALL)
-						if conhecer and conhecer.group(1) != None:
-							if re.search(r'(DAR PROVIMENTO)|( PROVIDO)|(DOU PROVIMENTO)', conhecer.group(1)) != None:
-								resultado[2] = 1
-							elif re.search(r'(NEGAR PROVIMENTO)|( DESPROVIDO)', conhecer.group(1)) != None:
-								resultado[3] = 1
-						elif conhecer_1 and conhecer_1.group(1) != None:
-							if re.search(r'(DAR PROVIMENTO)|( PROVIDO)|(DOU PROVIMENTO)', conhecer_1.group(1)) != None:
-								resultado[2] = 1
-							elif re.search(r'(NEGAR PROVIMENTO)|( DESPROVIDO)', conhecer_1.group(1)) != None:
-								resultado[3] = 1
-						elif re.search(r'RECURSO PARCIALMENTE PROVIDO', texto) != None:
-							resultado[4] = 1
+			if re.search(r'recurso.{1,30}intempestivo|INTEMPESTIVIDADE',texto, flags=re.IGNORECASE|re.DOTALL) != None:
+				resultado[0] = 1
+			elif re.search(r'N.O CONHEC.{1,30}DO RECURSO|RECURSO.{1,10}N.O.{1,10}CONHECIDO',texto, flags=re.IGNORECASE|re.DOTALL) != None:
+				resultado[1] = 1
+			elif re.search(r'PROV.{1,20}RECURSO|DAR PROVIMENTO|DOU PROVIMENTO|RECURSO.{0,30} PROVIDO|ORDEM.{1,10}CONCEDIDA|SEGURANÇA.{1,10}CONCEDIDA|REEXAME NECESSÁRIO.{1,20}PROVIDO|SENTEN.A.{1,20}REFORMADA|DECIS.O.{1,20}REFORMADA',texto, flags=re.IGNORECASE|re.DOTALL) != None:
+				resultado[2] = 1
+			elif re.search(r'NEGA.{1,20}PROVIMENTO|REGIMENTAL.{1,20}IMPROVIDO|RECURSO.{1,30}IMPROVIDO|RECURSO.{1,30}DESPROVIDO|N.O PROVIDO|SENTEN.A.{1,30}MANTIDA|DECIS.O.{1,30}MANTIDA|SENTEN.A.{1,30}CONFIRMADA|SENTEN.A.{1,30}RATIFICADA|ORDEM.{1,10}NEGADA|CONHECID.{1,40}IMPROVIDO|REJEITADOS.{0,5}\.|REEXAME.{1,20}IMPROVIDO',texto, flags=re.IGNORECASE|re.DOTALL) != None:
+				resultado[3] = 1
+			elif re.search(r'PARCIAL.{1,30}PROVIDO|REEXAME NECESSÁRIO.{1,10}PARCIALMENTE.{1,10}PROVIDO|EMBARGOS ACOLHIDOS EM PARTE|EMBARGOS ACOLHIDOS.{1,10}PARCIALMENTE', texto, flags=re.IGNORECASE|re.DOTALL) != None:
+				resultado[4] = 1
 		elif tipo == 'Liminar':
 			resultado = [0]
 			liminar_deferida = re.search(r'( def.{1,18}|concedo) .{1,30}(liminar|tutela antecipada)|presentes os requisitos que autorizam a concessão da liminar|(liminar|tutela antecipada).{1,30}( def.{1,18}|concedo)',texto, re.IGNORECASE)
