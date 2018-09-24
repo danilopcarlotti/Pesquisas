@@ -9,4 +9,4 @@ class stopwords_pt():
 		except:
 			import os
 			stpwrds = open(os.getcwd()+'/common_nlp/stopwords_pt.txt','r')
-		return [line for line in stpwrds]
+		return [line.strip() for line in stpwrds]
