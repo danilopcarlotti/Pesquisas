@@ -4,5 +4,9 @@ class stopwords_pt():
 		pass
 
 	def stopwords(self):
-		stpwrds = open('stopwords_pt.txt','r')
+		try:
+			stpwrds = open('stopwords_pt.txt','r')
+		except:
+			import os
+			stpwrds = open(os.getcwd()+'/common_nlp/stopwords_pt.txt','r')
 		return [line for line in stpwrds]
