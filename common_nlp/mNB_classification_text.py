@@ -1,7 +1,10 @@
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import cross_val_score
 from sklearn.naive_bayes import MultinomialNB
-from stopwords_pt import stopwords_pt
+try:
+    from stopwords_pt import stopwords_pt
+except:
+    from common_nlp.stopwords_pt import stopwords_pt
 import numpy, pandas as pd, nltk
 # nltk.download('rslp')
 
@@ -55,7 +58,9 @@ class mNB_classification_text():
 	def stemmer(self, words):
 		analyzer = CountVectorizer().build_analyzer()
 		stemmer = nltk.stem.RSLPStemmer()
-		return (stemmer.stem(w) for w in analyzer(words) if w not in [line.strip() for line in open('stopwords_pt.txt','r')])
+		stpwrds = stopwords_pt()
+		stp = stpwrds.stopwords()
+		return (stemmer.stem(w) for w in analyzer(words) if w not in stp)
 
 	def validate_score(self, cv=None, mean=False):
 		mNB = MultinomialNB()
