@@ -66,7 +66,7 @@ class crawlerJus():
 		driver.close()
 
 	def encontrar_links_html(self, link, links_baixar, re_href):
-		pag = BeautifulSoup(self.baixa_pag(link),'lxml')
+		pag = BeautifulSoup(self.baixa_pag(link),'html.parser')
 		for l in pag.find_all('a', href=True):
 			if re.search(re_href,l['href']):
 				links_baixar.append(l['href'])

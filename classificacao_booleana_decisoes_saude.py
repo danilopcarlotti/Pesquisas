@@ -14,6 +14,12 @@ class extracao_variaveis():
 			"Coletiva relatório": r"A..o Civil P.blica|Mandado de Segurança Coletivo|A..o Popular",
 			"Coletiva fundamentação": r"coletivo|coletiva|difusos|estrutural",
 			"Medicamento": r"medicamento|farmaco",
+			"Medicamentos selecionados": r"Teriparatide|Clopidogrel|insulin|rituximabe|infliximabe|bevacizumabe|sunitinib|adalimubabe|etanercept|rituximab|infliximab|bevacizumab|adalimubab|Carbamazepina|Pimecrolimo|asparte",
+			"Medicamentos não incorporados": r"insulin.{1,3}glargin",
+			"Diabetes": r"Diabetes",
+			"HIV": r"antiretroviral|dolutegravir|efavirenz",
+			"Hepatite C": r"veruprevir|ritonavir|ombitasvir|dasabuvir",
+			"Mucopolissacaridose": r"laronidase|idursulfase|galsulfase",
 			"Dietas": r"dieta|alimento|suplemento|enteral|f.rmula nutricional",
 			"Insumo ou materiais": r"material|seringas|tiras|insumos|bomba",
 			"Procedimentos": r"procedimento|procedimento cirurgico|cirurgia",
@@ -28,7 +34,7 @@ class extracao_variaveis():
 			"Dever do Estado": r"dever do Estado|dever Constitucional|assistencia terapeutica integral|art. 196|artigo 196|direito a saude|direito a vida|inciso II do art. 198|inciso II do artigo 198",
 			"Anvisa": r"Anvisa",
 			"Protocolos Clínicos": r"Protocolo|PCDT",
-			"RENAME": r"RENAME|Rela..o Nacional de Medicamentos Essenciais",
+			"RENAME": r"RENAME|Medicamento.{1,3}Essencia|Política Nacional de Medicamentos|Política Nacional de Assistência Farmacêutica|1.897, de 26 de junho de 2017|Portaria n. 01/GM/MS, de 2 de janeiro de 2015|Componente Básico da Assistência Farmacêutica|Componente Estratégico da Assistência Farmacêutica|Componente Especializado da Assistência Farmacêutica|Relação Nacional de Insumos|Relação Nacional de Medicamentos de Uso Hospitalar",
 			"RENUME": r"RENUME",
 			"RENASE": r"RENASE",
 			"RENEM":r"RENEM|Relacao Nacional de Equipamentos e Materiais permanentes financiaveis pelo SUS",
@@ -43,6 +49,7 @@ class extracao_variaveis():
 			"Secretaria Estadual": r"Secretaria.{1,20}Est.{1,20}Sa.de|Secretaria.{1,20}Sa.de.{1,10}Estad|SES",
 			"Secretaria Municipal": r"Secretaria.{1,20}Munic.{1,20}Sa.de|Secretaria.{1,20}Sa.de.{1,10}Munic|SMS"
 		}
+		self.var_bool['Rename - remédio'] = '|'.join([i.replace(' + ','.{1,20}').strip() for i in open('rename.txt','r')])
 		self.parser = parserTextoJuridico()
 
 	def variaveis_textos(self, dicionario, dados):
@@ -53,12 +60,17 @@ class extracao_variaveis():
 			est_ou_fed = 'estadual'
 			if re.search(r'trf',tribunal):
 				est_ou_fed = 'federal'
-			dicionario_df = {'numero':id_p, 'tribunal':tribunal, 'data_decisao':data_decisao,'polo_ativo':polo_ativo,'polo_passivo':polo_passivo,'origem':origem,'estadual_federal':est_ou_fed,'resultado':self.parser.indicaResultado(texto,'Recurso'),'justica_gratuita':self.parser.justica_gratuita(texto)}
-			for k,v in dicionario.items():
-				dicionario_df[k] = 0
+			ano_processo = re.search(r'\d{4}',str(data_decisao))
+			if ano_processo:
+				ano_processo = ano_processo.group(0)
+			else:
+				ano_processo = ''
+			dicionario_df = {'numero':id_p, 'ano': ano_processo, 'tribunal':tribunal, 'data_decisao':data_decisao,'polo_ativo':polo_ativo,'polo_passivo':polo_passivo,'origem':origem,'estadual_federal':est_ou_fed,'resultado':self.parser.indicaResultado(texto,'Recurso'),'justica_gratuita':self.parser.justica_gratuita(texto)}
 			for k,v in dicionario.items():
 				if re.search(v, texto):
 					dicionario_df[k] = 1
+				else:
+					dicionario_df[k] = 0
 			rows.append(dicionario_df)
 			index.append(index_counter)
 			index_counter += 1
@@ -72,6 +84,7 @@ def main():
 	for row in df_saude.itertuples():
 		dados.append((getattr(row,'numero'),getattr(row,'texto_decisao'),getattr(row,'tribunal'),getattr(row,'data_decisao'),getattr(row,'polo_ativo'),getattr(row,'polo_passivo'),getattr(row,'origem')))
 	df = ext.variaveis_textos(ext.var_bool, dados)
+	df['data_decisao'] = pd.to_datetime(df['data_decisao'], format='%d/%m/%Y', errors='coerce')
 	df.to_csv('relatorio_booleano_cnj_01_set_2018.csv',quotechar='"', index= False)
 
 if __name__ == '__main__':
