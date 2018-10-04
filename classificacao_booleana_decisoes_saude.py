@@ -47,9 +47,17 @@ class extracao_variaveis():
 			"Sanções - bool": r"inibitoria|multa aplicada|aplicacao de multa|imposicao multa cominatoria|astreintes|ASTREINTE|bloqueio|sequestro de verba publica|prisão|responsabilização pessoal|BLOQUEIO DE VERBAS|pena de constricao de valores|ARTIGO 538 DO CPC|sancionatório-coercitivo",
 			'medicamentos sem registro sanitário ou com uso "off-label"':r"Food and Drug Administration|FDA|European Medicines Agency",
 			"Secretaria Estadual": r"Secretaria.{1,20}Est.{1,20}Sa.de|Secretaria.{1,20}Sa.de.{1,10}Estad|SES",
-			"Secretaria Municipal": r"Secretaria.{1,20}Munic.{1,20}Sa.de|Secretaria.{1,20}Sa.de.{1,10}Munic|SMS"
+			"Secretaria Municipal": r"Secretaria.{1,20}Munic.{1,20}Sa.de|Secretaria.{1,20}Sa.de.{1,10}Munic|SMS",
+			"Excentricidades" : r'Achocolatado diet|Água de coco|Suco de cramberry|Agua mineral|Leite de vaca integral e desnatado–líquido e em pó|Bebida à base de soja (Tipo Ades/ Sollys)|Bebida láctea sabor chocolate (tipoToddynho)|Granola|Açúcar mascavo|Bala de glicose líquida|instantânea|Mucilagem para o preparo de mingau|Papinhas infantis|Iogurte com fitoesteróis|Sopas Herbalife|Sabonete neutro|Shampoo neutro|Condicionador infantil para cabelos claros|Lenços umedecidos|Pomada contra assadura (tipoHipoglós)|Fraldas|Talco|Hasteflexivel (“cotonete”)|Águas termais|Hidratante “Davene”|Hidratantes importados|Absorventes intimos|Imunossupressor para cachorro|Fosfoetanolamina',
+			"Hipossuficiência" : r"pessoa carente|insuficiência de renda|baixa renda",
+			"Insumos" : r'água para injetáveis|álcool etílico|diafragma|dispositivo intrauterino plástico com cobre|gel lubrificante|glutaral|hipoclorito de sódio|iodo + iodeto de potássio|lancetas para punção digital|preservativo feminino|preservativo masculino|seringas com agulha acoplada para aplicação de insulina|tiras reagentes de medida de glicemia capilar',
+			"Doenças prevalentes - S CODES" : r'diabetes mellitus insulino-dependente|diabetes mellitus não especificado|diabetes mellitus não insulino-dependente|intolerância a lactose|distúrbios do metabolismo de lipoproteínas e outras dislipidemias|doença de Alzheimer|distúrbios do sono|paralisia cerebral|epilepsia|esclerose múltipla|hipertensão essencial|acidente vascular cerebral não especificado como hemorrágico ou isquêmico|insuficiência cardíaca|sequelas de doenças cerebrovasculares|varizes dos membros inferiores|transtornos hipercinéticos|episódios depressivos|esquizofrenia|transtornos mentais e comportamentais devidos ao uso de múltiplas drogas e ao uso de outras substancias psicoativas|transtorno depressivo recorrente|osteoporose sem fratura patológica|gonartrose|outras artroses|osteoporose com fratura patológica|artrite reumatóide soro positiva',
+			"Indicativo da existência de multa" : r'(imposição|aplicação|fixação|substitu).{1,15}multa'
 		}
 		self.var_bool['Rename - remédio'] = '|'.join([i.replace(' + ','.{1,20}').strip() for i in open('rename.txt','r')])
+		self.var_bool['Medicamentos atenção básica'] = '|'.join([i.replace(' + ','.{1,20}').strip() for i in open('medicamentos_atencao_basica.txt','r')])
+		self.var_bool['Medicamentos componente especializado'] = '|'.join([i.replace(' + ','.{1,20}').strip() for i in open('medicamentos_componente_especializado.txt','r')])
+		self.var_bool['Medicamentos estratégicos'] = '|'.join([i.replace(' + ','.{1,20}').strip() for i in open('medicamentos_estrategicos.txt','r')])
 		self.parser = parserTextoJuridico()
 
 	def variaveis_textos(self, dicionario, dados):
@@ -85,7 +93,7 @@ def main():
 		dados.append((getattr(row,'numero'),getattr(row,'texto_decisao'),getattr(row,'tribunal'),getattr(row,'data_decisao'),getattr(row,'polo_ativo'),getattr(row,'polo_passivo'),getattr(row,'origem')))
 	df = ext.variaveis_textos(ext.var_bool, dados)
 	df['data_decisao'] = pd.to_datetime(df['data_decisao'], format='%d/%m/%Y', errors='coerce')
-	df.to_csv('relatorio_booleano_cnj_01_set_2018.csv',quotechar='"', index= False)
+	df.to_csv('relatorio_booleano_cnj_03_out_2018.csv',quotechar='"', index= False)
 
 if __name__ == '__main__':
 	main()

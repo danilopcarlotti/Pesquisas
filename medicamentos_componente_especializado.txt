@@ -1,0 +1,159 @@
+acetato de desmopressina
+ácido paraminossalicílico
+ácido tranexâmico
+albendazol
+anfotericina B (complexo lipídico)
+anfotericina B (desoxicolato)
+anfotericina B (lipossomal)
+antimoniato de meglumina
+anidra, cloreto de potássio,
+artemeter
+antirrábica
+artemeter + lumefantrina
+artesunato
+artesunato + cloridrato de mefloquina
+azitromicina
+benzilpenicilina benzatina
+benzilpenicilina potássica
+benznidazol
+capreomicina
+citrato de dietilcarbamazina
+claritromicina
+clofazimina
+cloranfenicol
+cloreto de sódio
+cloridrato de minociclina
+cloridrato de bupropiona
+cloridrato de etambutol
+cloridrato de moxifloxacino
+cloridrato de piridoxina
+cloridrato de hidroxocobalamina
+complexo protrombínico humano (fatores de coagulação II, VII, IX, X em combinação)
+complexo protrombínico parcialmente ativado (fatores de coagulação II, VIIa, IX, X em combinação)
+dapsona
+darunavir
+desoproxila + lamivudina
+dicloridrato de quinina
+dicloridrato de sapropterina
+didanosina
+difosfato de cloroquina
+difosfato de primaquina
+dolutegravir sódico
+doxiciclina
+efavirenz
+enfuvirtida
+espiramicina
+estavudina
+estolato de eritromicina
+etionamida
+etravirina
+fator IX de coagulação
+fator VII ativado recombinante (alfaeptacogue ativado)
+fator VIII de coagulação
+fator VIII associado a fator de von Willebrand
+fator VIII para doenaç de von Willebrand
+fator VIII recombinante alfaoctocogue
+fator XIII de coagulação
+fenoximetilpenicilina potássica
+fibrinogênio
+fluconazol
+fosamprenavir
+fosfato de clindamicina
+fosfato de oseltamivir
+fumarato de tenofovir
+fumarato de tenofovir desoproxila
+fumarato de tenofovir desoproxila+ lamivudina 
+fumarato de tenofovir desoproxila + lamivudina + efavirenz
+imunoglobulina antitetânica
+imunoglobulina humana anti-hepatite B
+imunoglobulina humana antirrábica
+imunoglobulina humana antivaricela zoster
+imunotolerância
+isetionato de pentamidina
+isoniazida
+itraconazol
+lamivudina
+levofloxacino
+linezolida
+lopinavir + ritonavir
+Loxosceles laeta, Loxosceles gauchoe Loxosceles intermedia 15 DMN/mL
+maraviroque
+mefloquina
+micronutrientes
+nevirapina
+nicotina
+ofloxacino
+oxamniquina
+palivizumabe
+palmitato de retinol
+paracetamol
+pentoxifilina
+pirazinamida
+pirimetamina
+praziquantel
+prednisona
+raltegravir potássico
+rifabutina
+rifampicina
+rifampicina + isoniazida
+rifampicina + isoniazida + pirazinamida + cloridrato de etambutol
+ritonavir
+rubéola
+sais para reidratação oral
+saquinavir
+solução ringer + lactato
+soro antiaracnídico (Loxosceles, Phoneutria e Tityus)
+soro antibotrópico (pentavalente)
+soro antibotrópico (pentavalente) e anticrotálico
+soro antibotrópico (pentavalente) e antilaquético
+soro antibotulínico AB bivalente
+soro anticrotálico
+soro antidiftérico
+soro antielapídico (bivalente)
+soro antiescorpiônico
+soro antilonômico
+soro antiloxoscélico (trivalente)
+soro antirrábico
+soro antitetânico
+sulfadiazina
+sulfato de abacavir
+sulfato de amicacina
+sulfato de atazanavir
+sulfato de estreptomicina
+sulfato de quinina
+talidomida
+terizidona
+tétano e pertussis
+tétano infantil
+tipranavir
+vacina adsorvida difteria e
+vacina adsorvida difteria e tétano adulto
+vacina adsorvida difteria,
+vacina adsorvida difteria, tétano e pertussis acelular adulto
+vacina adsorvida difteria, tétano e pertussis acelular infantil
+vacina adsorvida difteria, tétano, pertussis, hepatite B recombinante e Haemophilus influenzae B
+vacina adsorvida hepatite A
+vacina adsorvida hepatite A inativada adulto
+vacina BCG
+vacina cólera inativada
+vacina febre amarela atenuada
+vacina febre tifoide
+vacina Haemophilus influenzae B conjugada
+vacina hepatite B
+vacina influenza trivalente fragmentada, inativada
+vacina meningocócica C
+vacina papilomavírus humano 6, 11, 16 e 18 recombinante
+vacina pneumocócica
+vacina pneumocócica
+vacina poliomielite 1 e 3 atenuada
+vacina poliomielite 1, 2 e 3 inativada
+vacina raiva inativada
+vacina rotavírus humano G1P
+vacina sarampo, caxumba,
+vacina sarampo, caxumba, rubéola e varicela atenuada
+vacina varicela atenuada
+valente polissacarídica
+vitamina B6 0,5 mg,
+zanamivir
+zidovudina
+zidovudina + lamivudina
