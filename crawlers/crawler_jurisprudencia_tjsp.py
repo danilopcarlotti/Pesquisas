@@ -11,7 +11,7 @@ from selenium.webdriver.common.keys import Keys
 
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
-# from common_nlp.pdf_to_text import pdf_to_text
+from common_nlp.pdf_to_text import pdf_to_text
 from common_nlp.textNormalization import textNormalization
 
 class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
@@ -247,23 +247,21 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 			except:
 				pass
 		
-	def parse_sp_dados_2_inst(self, cursor, lista_arquivos = None):
-		if not lista_arquivos:
-			lista_arquivos = os.listdir(path+'/sp_2_inst')
+	def parse_sp_dados_2_inst(self, path_arquivos = path+'/sp_2_inst/'):
+		cursor = cursorConexao()
 		p = pdf_to_text()
-		for arq in lista_arquivos:
+		for arq in os.listdir(path_arquivos):
 			try:
 				if re.search(r'\.pdf',arq):
-					texto = p.convert_pdfminer(path+'/sp_2_inst/'+arq).strip().replace('\\','').replace('/','').replace('"','')
+					texto = p.convert_pdfminer(path_arquivos+arq).strip().replace('\\','').replace('/','').replace('"','')
 					tribunal = 'sp'
-					numero = busca(r'[\d\.-]{15,25}',texto,ngroup=0)
+					numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}',texto,ngroup=0)
 					polo_ativo = busca(r'apelante\s*?\:(.*?)\n',texto, args=re.I)
 					polo_passivo = busca(r'apelado\s*?\:(.*?)\n',texto, args=re.I)
-					cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst_antonio (tribunal, numero, texto_decisao, polo_ativo, polo_passivo) values ("%s","%s","%s","%s","%s");' % (tribunal, numero, texto, polo_ativo, polo_passivo))
+					cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst_societario_processos (tribunal, numero, texto_decisao, polo_ativo, polo_passivo) values ("%s","%s","%s","%s","%s");' % (tribunal, numero, texto, polo_ativo, polo_passivo))
 			except Exception as e:
 				print(arq)
 				print(e)
-				# print(numero)
 
 
 def main():
