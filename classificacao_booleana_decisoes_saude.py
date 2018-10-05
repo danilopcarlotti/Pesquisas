@@ -7,18 +7,18 @@ class extracao_variaveis():
 	def __init__(self):
 		self.var_bool = {
 			"Privado": r"suplementar|seguro-sa.de|ANS|plano de sa.de|cooperativa m.dica",
-			"Público": r"Secretaria|Minist.rio|Prefeitura|Munic.pio|Estado",
+			"Público": r"Secretaria|Minist.rio|Prefeitura|Munic.pio|Estado|SUS|Sistema .nico de Sa.de",
 			"Representação": r"defensor|Defensoria",
-			"ANS": r"ANS|Agencia Nacional de Saude",
+			"ANS": r"ANS|Agencia Nacional de Sa.de",
 			"Pedido Administrativo": r"administrativa|administrativo",
 			"Coletiva relatório": r"A..o Civil P.blica|Mandado de Segurança Coletivo|A..o Popular",
 			"Coletiva fundamentação": r"coletivo|coletiva|difusos|estrutural",
-			"Medicamento": r"medicamento|farmaco",
-			"Medicamentos selecionados": r"Teriparatide|Clopidogrel|insulin|rituximabe|infliximabe|bevacizumabe|sunitinib|adalimubabe|etanercept|rituximab|infliximab|bevacizumab|adalimubab|Carbamazepina|Pimecrolimo|asparte",
+			"Medicamento": r"medicamento|f.rmaco",
+			"Medicamentos selecionados (mais demandados)": r"Teriparatide|Clopidogrel|insulin|rituximabe|infliximabe|bevacizumabe|sunitinib|adalimubabe|etanercept|rituximab|infliximab|bevacizumab|adalimubab|Carbamazepina|Pimecrolimo|asparte",
 			"Medicamentos não incorporados": r"insulin.{1,3}glargin",
 			"Diabetes": r"Diabetes",
-			"HIV": r"antiretroviral|dolutegravir|efavirenz",
-			"Hepatite C": r"veruprevir|ritonavir|ombitasvir|dasabuvir",
+			"HIV": r"HIV|AIDS|antiretroviral|dolutegravir|efavirenz",
+			"Hepatite C": r"hepatite c|veruprevir|ritonavir|ombitasvir|dasabuvir",
 			"Mucopolissacaridose": r"laronidase|idursulfase|galsulfase",
 			"Dietas": r"dieta|alimento|suplemento|enteral|f.rmula nutricional",
 			"Insumo ou materiais": r"material|seringas|tiras|insumos|bomba",
@@ -26,33 +26,40 @@ class extracao_variaveis():
 			"Exames": r"exame|ultrassom|resson.ncia|diagn.stico por imagem|ultrassonografia|radiografia|medicina|nuclear|tomografia",
 			"Internação": r"interna..o",
 			"Vagas": r"vaga",
+			"Consultas": r"consulta.{1,20}m.dic",
 			"Leitos": r"leito|unidade de isolamento|UTI|unidade de terapia intensiva|UCI|unidade de cuidados intermedi.rios",
-			"Orteses, Proteses, Meios auxiliares de locomoção": r"ortese|protese|cadeira de rodas",
+			"Orteses, Proteses, Meios auxiliares de locomoção": r".rtese|pr.tese|cadeira de rodas|stent",
+			"Máfia das próteses": r"m.fia",
 			"Transplante": r"transplante",
 			"Imunização": r"vacina|imuniza..o|imunobiol.gicos|imunoglobinas",
-			"Pericia médica judicial": r"per.cia|perit.|laudo pericial|laudo medico",
-			"Dever do Estado": r"dever do Estado|dever Constitucional|assistencia terapeutica integral|art. 196|artigo 196|direito a saude|direito a vida|inciso II do art. 198|inciso II do artigo 198",
-			"Anvisa": r"Anvisa",
+			"Pericia médica judicial": r"per.cia|perit.|laudo pericial|laudo m.dico",
+			"Dever do Estado": r"dever do Estado|dever Constitucional|assist.ncia terapeutica integral|art. 196|artigo 196|direito a sa.de|direito a vida|inciso II do art. 198|inciso II do artigo 198",
+			"Anvisa": r"Anvisa|ag.ncia nacional de vigil.ncia sanit.ria",
 			"Protocolos Clínicos": r"Protocolo|PCDT",
-			"RENAME": r"RENAME|Medicamento.{1,3}Essencia|Política Nacional de Medicamentos|Política Nacional de Assistência Farmacêutica|1.897, de 26 de junho de 2017|Portaria n. 01/GM/MS, de 2 de janeiro de 2015|Componente Básico da Assistência Farmacêutica|Componente Estratégico da Assistência Farmacêutica|Componente Especializado da Assistência Farmacêutica|Relação Nacional de Insumos|Relação Nacional de Medicamentos de Uso Hospitalar",
-			"RENUME": r"RENUME",
-			"RENASE": r"RENASE",
-			"RENEM":r"RENEM|Relacao Nacional de Equipamentos e Materiais permanentes financiaveis pelo SUS",
-			"Pedido médico - bool":r"pedido médico|prescrição médica|requerimento médico|indicação médica|receita médica",
-			"CONITEC - Bool" : r"CONITEC|Comissao Nacional de Incorporacao de Tecnologias no SUS|Camara Tecnica do Ministerio da Saude|lei 12.401",
-			"NAT - Bool": r"N.cleo de Apoio T.cnico|NAT|NAT\-Jus",
+			"RENAME": r"RENAME|Medicamento.{1,3}Ess.ncia|Pol.tica Nacional de Medicamentos|Pol.tica Nacional de Assist.ncia Farmac.utica|Portaria.{1,15}1.897|Portaria n. 01/GM/MS|Componente B.sico da Assist.ncia Farmac.utica|Componente Estrat.gico da Assist.ncia Farmac.utica|Componente Especializado da Assist.ncia Farmac.utica|Rela..o Nacional de Insumos|Rela..o Nacional de Medicamentos de Uso Hospitalar",
+			"RENUME": r"RENUME|Rela..o municipal de medicamentos",
+			"RENASE": r"RENASE|Rel..o nacional de servi.os",
+			"RENEM":r"RENEM|Rela..o Nacional de Equipamentos e Materiais permanentes financi.veis pelo SUS",
+			"Pedido médico - bool":r"pedido m.dico|prescri..o m.dica|requerimento m.dico|indica..o m.dica|receita m.dica",
+			"CONITEC - Bool" : r"CONITEC|Comiss.o Nacional de Incorpora..o de Tecnologias|C.mara T.cnica do Minist.rio da Sa.de|lei 12.401",
+			"NAT - Bool": r"N.cleo de Apoio T.cnico|NAT",
 			"Registro Nacional de Implantes": r"RNI|Registro Nacional de Implantes",
 			"Medicamento importado": r"importado|importa..o",
 			"Erro Médico": r"erro m.dico|neglig.ncia|imper.cia|imprud.ncia",
-			"Sanções - bool": r"inibitoria|multa aplicada|aplicacao de multa|imposicao multa cominatoria|astreintes|ASTREINTE|bloqueio|sequestro de verba publica|prisão|responsabilização pessoal|BLOQUEIO DE VERBAS|pena de constricao de valores|ARTIGO 538 DO CPC|sancionatório-coercitivo",
-			'medicamentos sem registro sanitário ou com uso "off-label"':r"Food and Drug Administration|FDA|European Medicines Agency",
+			"Sanções - bool": r"inibit.ria|multa aplicada|aplica..o de multa|imposi..o multa cominat.ria|astreintes|ASTREINTE|bloqueio|sequestro de verba p.blica|pris.o|responsabiliza..o pessoal|BLOQUEIO DE VERBAS|pena de constri..o de valores|ARTIGO 538 DO CPC|sancionat.rio\-coercitivo",
+			'medicamentos sem registro sanitário no Brasil':r"Food and Drug Administration|FDA|European Medicines Agency",
+			"off-label": r"off-label",
 			"Secretaria Estadual": r"Secretaria.{1,20}Est.{1,20}Sa.de|Secretaria.{1,20}Sa.de.{1,10}Estad|SES",
 			"Secretaria Municipal": r"Secretaria.{1,20}Munic.{1,20}Sa.de|Secretaria.{1,20}Sa.de.{1,10}Munic|SMS",
-			"Excentricidades" : r'Achocolatado diet|Água de coco|Suco de cramberry|Agua mineral|Leite de vaca integral e desnatado–líquido e em pó|Bebida à base de soja (Tipo Ades/ Sollys)|Bebida láctea sabor chocolate (tipoToddynho)|Granola|Açúcar mascavo|Bala de glicose líquida|instantânea|Mucilagem para o preparo de mingau|Papinhas infantis|Iogurte com fitoesteróis|Sopas Herbalife|Sabonete neutro|Shampoo neutro|Condicionador infantil para cabelos claros|Lenços umedecidos|Pomada contra assadura (tipoHipoglós)|Fraldas|Talco|Hasteflexivel (“cotonete”)|Águas termais|Hidratante “Davene”|Hidratantes importados|Absorventes intimos|Imunossupressor para cachorro|Fosfoetanolamina',
-			"Hipossuficiência" : r"pessoa carente|insuficiência de renda|baixa renda",
-			"Insumos" : r'água para injetáveis|álcool etílico|diafragma|dispositivo intrauterino plástico com cobre|gel lubrificante|glutaral|hipoclorito de sódio|iodo + iodeto de potássio|lancetas para punção digital|preservativo feminino|preservativo masculino|seringas com agulha acoplada para aplicação de insulina|tiras reagentes de medida de glicemia capilar',
-			"Doenças prevalentes - S CODES" : r'diabetes mellitus insulino-dependente|diabetes mellitus não especificado|diabetes mellitus não insulino-dependente|intolerância a lactose|distúrbios do metabolismo de lipoproteínas e outras dislipidemias|doença de Alzheimer|distúrbios do sono|paralisia cerebral|epilepsia|esclerose múltipla|hipertensão essencial|acidente vascular cerebral não especificado como hemorrágico ou isquêmico|insuficiência cardíaca|sequelas de doenças cerebrovasculares|varizes dos membros inferiores|transtornos hipercinéticos|episódios depressivos|esquizofrenia|transtornos mentais e comportamentais devidos ao uso de múltiplas drogas e ao uso de outras substancias psicoativas|transtorno depressivo recorrente|osteoporose sem fratura patológica|gonartrose|outras artroses|osteoporose com fratura patológica|artrite reumatóide soro positiva',
-			"Indicativo da existência de multa" : r'(imposição|aplicação|fixação|substitu).{1,15}multa'
+			"Excentricidades" : r'Achocolatado diet|.gua de coco|Suco de cramberry|.gua mineral|Leite.{1,20}pasteurizado|Bebida . base de soja|Bebida l.ctea sabor chocolate|Toddynho|Granola|A..car mascavo|Bala de glicose líquida|instant.nea|Mucilagem para o preparo de mingau|Papinhas infantis|Iogurte com fitoester.is|Sopas Herbalife|Sabonete neutro|Shampoo neutro|Condicionador infantil para cabelos claros|Lenços umedecidos|Pomada contra assadura (tipoHipogl.s)|Fraldas|Talco|Hasteflexivel \(“cotonete”\)|.guas termais|Hidratante “Davene”|Hidratantes importados|Absorventes .ntimos|Imunossupressor para cachorro|Fosfoetanolamina',
+			"Insuficiência de renda" : r"pessoa carente|insufici.ncia de renda|baixa renda",
+			"Hipossuficiência": r"hipossufici",
+			"Insumos" : r'.gua para injet.veis|.lcool et.lico|diafragma|dispositivo intrauterino pl.stico com cobre|gel lubrificante|glutaral|hipoclorito de s.dio|iodo.{1,15}iodeto de pot.ssio|lancetas para pun..o digital|preservativo feminino|preservativo masculino|seringas com agulha acoplada para aplica..o de insulina|tiras reagentes de medida de glicemia capilar',
+			"Doenças prevalentes - S CODES" : r'diabetes mellitus insulino-dependente|diabetes mellitus n.o especificado|diabetes mellitus n.o insulino-dependente|intoler.ncia . lactose|dist.rbios do metabolismo de lipoprote.nas e outras dislipidemias|Alzheimer|dist.rbios do sono|paralisia cerebral|epilepsia|esclerose m.ltipla|hipertens.o essencial|acidente vascular cerebral n.o especificado como hemorr.gico ou isqu.mico|insufici.ncia card.aca|sequela.{1,10}doen.a.{1,10}cerebrovascular|varizes dos membros inferiores|transtornos hipercin.ticos|epis.dios depressivos|esquizofrenia|transtornos mentais e comportamentais devidos ao uso de m.ltiplas drogas e ao uso de outras subst.ncias psicoativas|transtorno depressivo recorrente|osteoporose sem fratura patol.gica|gonartrose|outras artroses|osteoporose com fratura patol.gica|artrite reumat.ide soro positiva',
+			"Indicativo da existência de multa" : r'(imposi..o|aplica..o|fixa..o|substitu).{1,15}multa',
+			"ADPF 45": r"ADPF.{1,10}45",
+			"Súmula 75, 182, 469 STJ": r"S.mula.{1,10}(75|182|469)",
+			"CNJ": r"CNJ|Conselho nacional de justi.a"
 		}
 		self.var_bool['Rename - remédio'] = '|'.join([i.replace(' + ','.{1,20}').strip() for i in open('rename.txt','r')])
 		self.var_bool['Medicamentos atenção básica'] = '|'.join([i.replace(' + ','.{1,20}').strip() for i in open('medicamentos_atencao_basica.txt','r')])
@@ -75,7 +82,7 @@ class extracao_variaveis():
 				ano_processo = ''
 			dicionario_df = {'numero':id_p, 'ano': ano_processo, 'tribunal':tribunal, 'data_decisao':data_decisao,'polo_ativo':polo_ativo,'polo_passivo':polo_passivo,'origem':origem,'estadual_federal':est_ou_fed,'resultado':self.parser.indicaResultado(texto,'Recurso'),'justica_gratuita':self.parser.justica_gratuita(texto)}
 			for k,v in dicionario.items():
-				if re.search(v, texto):
+				if re.search(v, texto, re.DOTALL):
 					dicionario_df[k] = 1
 				else:
 					dicionario_df[k] = 0
