@@ -1,31 +1,20 @@
-# from common_nlp.pdf_to_text import pdf_to_text
-# # from crawlers.diarios_base import *
-# import os
+from crawlers.common.conexao_local import cursorConexao
+from common_nlp.parser_json import parser_json
+import os
 
-# contador = 0
-# arqs_i = os.listdir('/home/danilo/Documents/Diários_trt_2017')
-# pdf_2_txt = pdf_to_text()
-# contador = 2345
-# for arq in arqs_i:
-# 	contador -= 1
-# 	if contador < 993:
-# 		try:
-# 			arq_trt = open("/home/danilo/Documents/Diários_trt_2017_txt/trt{}.txt".format(str(contador)),'a',encoding="utf-8")
-# 			arq_trt.write(pdf_2_txt.convert_pdfminer('/home/danilo/Documents/Diários_trt_2017/'+arq))
-# 			arq_trt.close()
-# 			print(contador)
-# 		except Exception as e:
-# 			print(e)
-# 			print(arq)
+cursor = cursorConexao()
 
-from crawlers.crawlerJus import crawlerJus
+cursor.execute('select numero_oc from bec.dados_basicos;')
+numeros_existentes = [i[0].strip() for i in cursor.fetchall()]
 
-crw = crawlerJus()
-link = 'http://www.cadastro.pregao.sp.gov.br/ua024000.nsf/Pregoes-Natureza?OpenView&Start=1&Count=100&Collapse=2#2'
-link2 = 'http://www.cadastro.pregao.sp.gov.br/ua024000.nsf/Pregoes-Natureza?OpenView&Start=1&Count=100&Expand=1#'
-
-hrefs = []
-
-crw.encontrar_links_html(link2, hrefs, r'.')
-
-print(hrefs)
+p = parser_json()
+for f in os.listdir('/home/danilo/Downloads/BEC_json'):
+	n_oc = f.split('_')[-1][:-5]
+	if n_oc not in numeros_existentes:
+		try:
+			resultados = p.parse_bec_basico('/home/danilo/Downloads/BEC_json/'+f)
+			for numero_oc, uf, modalidade, ente_federativo, responsaveis, equipe_apoio, data_ini, data_fim in resultados:
+				cursor.execute('INSERT INTO bec.dados_basicos (numero_oc, uf, modalidade, ente_federativo, responsaveis, equipe_apoio, data_ini, data_fim) values ("%s","%s","%s","%s","%s","%s","%s","%s")' % (numero_oc, uf, modalidade, ente_federativo, responsaveis.replace('\'','').replace('"','').replace('\\',''), equipe_apoio.replace('\'','').replace('"','').replace('\\',''), data_ini, data_fim))
+		except Exception as e:
+			print(e)
+			print(f)
