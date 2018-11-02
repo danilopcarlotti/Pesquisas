@@ -66,50 +66,62 @@ def encontra_publicacoes(diarios, tribunal, texto):
 def encontra_numero(diarios, tribunal, texto):
 	return busca(diarios[tribunal][1],texto,ngroup=0)
 
-if __name__ == '__main__':
-	cursor = cursorConexao()
-	parser = parserTextoJuridico()
-	classes_publicacoes = {}
-	numeros_processo = {}
-	tribunais = {}
-	cursor.execute('SELECT id, nome from diarios.classes_publicacoes;')
-	classes_pub = cursor.fetchall()
-	for id_c, nome_classe in classes_pub:
-		classes_publicacoes[nome_classe] = id_c
-	for repositorio_diarios in os.listdir(path):
-		nome_diario = repositorio_diarios.split('Diarios_')[1]
-		# print(nome_diario)
-		if nome_diario not in tribunais.keys():
-			cursor.execute('SELECT id from diarios.tribunais where tribunal = "%s";' % (nome_diario,))
-			id_tribunal = cursor.fetchall()
-			if id_tribunal:
-				tribunais[nome_diario] = id_tribunal[0][0]
-			else:
-				cursor.execute('INSERT INTO diarios.tribunais tribunal value ("%s")' % (nome_diario,))
-				time.sleep(1)
-				cursor.execute('SELECT id from diarios.tribunais where tribunal = "%s";' % (nome_diario,))
-				id_tribunal = cursor.fetchall()[0][0]
-				tribunais[nome_diario] = id_tribunal
-		for repositorio_dia in os.listdir(path+'/'+repositorio_diarios):
-			for arquivo in os.listdir(path+'/'+repositorio_diarios+'/'+repositorio_dia):
-				if re.search(r'txt',path+'/'+repositorio_diarios+'/'+repositorio_dia+'/'+arquivo):
-					diario_texto = '\n'
-					for line in open(path+'/'+repositorio_diarios+'/'+repositorio_dia+'/'+arquivo,'r'):
-						diario_texto += line
-					publicacoes = re.findall(diarios[nome_diario][0],diario_texto,re.DOTALL)
-					for texto in publicacoes:
-						if len(texto[1]) > 100:
-							texto = texto[1].strip().replace('\\','').replace('/','').replace('"','')
-							classe_texto = parser.classifica_texto(texto)
-							numero = busca(diarios[nome_diario][1],texto,ngroup=0)
-							if numero not in numeros_processo.keys():
-								cursor.execute('SELECT id from diarios.numeros_proc where nome = "%s";' % (numero,))
-								id_numero = cursor.fetchall()
-								if id_numero:
-									numeros_processo[numero] = id_numero[0][0]
-								else:
-									cursor.execute('INSERT INTO diarios.numeros_proc numero value ("%s")' % (numero,))
-									cursor.execute('SELECT id from diarios.numeros_proc where numero = "%s";' % (numero,))
-									id_numero = cursor.fetchall()[0][0]
-									numeros_processo[numero] = id_numero
-							cursor.execute('INSERT INTO diarios.publicacoes_diarias (id_tribunal, data, caderno, id_processo, texto, id_classe) values ("%s","%s","%s","%s","%s","%s")' % (tribunais[nome_diario], repositorio_dia, arquivo, numeros_processo[numero], texto, classes_publicacoes[classe_texto]))
+def encontra_data():
+	return
+
+# if __name__ == '__main__':
+# 	cursor = cursorConexao()
+# 	parser = parserTextoJuridico()
+# 	classes_publicacoes = {}
+# 	numeros_processo = {}
+# 	tribunais = {}
+# 	cursor.execute('SELECT id, nome from diarios.classes_publicacoes;')
+# 	classes_pub = cursor.fetchall()
+# 	for id_c, nome_classe in classes_pub:
+# 		classes_publicacoes[nome_classe] = id_c
+# 	for repositorio_diarios in os.listdir(path):
+# 		nome_diario = repositorio_diarios.split('Diarios_')[1]
+# 		# print(nome_diario)
+# 		if nome_diario not in tribunais.keys():
+# 			cursor.execute('SELECT id from diarios.tribunais where tribunal = "%s";' % (nome_diario,))
+# 			id_tribunal = cursor.fetchall()
+# 			if id_tribunal:
+# 				tribunais[nome_diario] = id_tribunal[0][0]
+# 			else:
+# 				cursor.execute('INSERT INTO diarios.tribunais tribunal value ("%s")' % (nome_diario,))
+# 				time.sleep(1)
+# 				cursor.execute('SELECT id from diarios.tribunais where tribunal = "%s";' % (nome_diario,))
+# 				id_tribunal = cursor.fetchall()[0][0]
+# 				tribunais[nome_diario] = id_tribunal
+# 		for repositorio_dia in os.listdir(path+'/'+repositorio_diarios):
+# 			for arquivo in os.listdir(path+'/'+repositorio_diarios+'/'+repositorio_dia):
+# 				if re.search(r'txt',path+'/'+repositorio_diarios+'/'+repositorio_dia+'/'+arquivo):
+# 					diario_texto = '\n'
+# 					for line in open(path+'/'+repositorio_diarios+'/'+repositorio_dia+'/'+arquivo,'r'):
+# 						diario_texto += line
+# 					publicacoes = re.findall(diarios[nome_diario][0],diario_texto,re.DOTALL)
+# 					for texto in publicacoes:
+# 						if len(texto[1]) > 100:
+# 							texto = texto[1].strip().replace('\\','').replace('/','').replace('"','')
+# 							classe_texto = parser.classifica_texto(texto)
+# 							numero = busca(diarios[nome_diario][1],texto,ngroup=0)
+# 							if numero not in numeros_processo.keys():
+# 								cursor.execute('SELECT id from diarios.numeros_proc where nome = "%s";' % (numero,))
+# 								id_numero = cursor.fetchall()
+# 								if id_numero:
+# 									numeros_processo[numero] = id_numero[0][0]
+# 								else:
+# 									cursor.execute('INSERT INTO diarios.numeros_proc numero value ("%s")' % (numero,))
+# 									cursor.execute('SELECT id from diarios.numeros_proc where numero = "%s";' % (numero,))
+# 									id_numero = cursor.fetchall()[0][0]
+# 									numeros_processo[numero] = id_numero
+# 							cursor.execute('INSERT INTO diarios.publicacoes_diarias (id_tribunal, data, caderno, id_processo, texto, id_classe) values ("%s","%s","%s","%s","%s","%s")' % (tribunais[nome_diario], repositorio_dia, arquivo, numeros_processo[numero], texto, classes_publicacoes[classe_texto]))
+
+for arq in os.listdir('/media/danilo/66F5773E19426C79/Diários_trt'):
+	if re.search(r'txt',arq):
+		texto = ''.join([line for line in open('/media/danilo/66F5773E19426C79/Diários_trt/'+arq)])
+		publicacoes = encontra_publicacoes(diarios, 'trt', texto)
+		numero = encontra_numero(diarios, 'trt', texto)
+		for pub in publicacoes:
+			cursor.execute('insert into diarios.publicacoes_diarias (tribunal, numero, texto, data) values ("%s","%s","%s","%s")' % ('trt', numero, pub, arq))
+		break

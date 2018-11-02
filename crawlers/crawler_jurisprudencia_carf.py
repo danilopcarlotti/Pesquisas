@@ -35,15 +35,13 @@ class crawler_jurisprudencia_carf(crawlerJus):
 		while True:
 			try:
 				driver.execute_script("document.getElementById('conteudo_principal').style.display='inline-block';")
-				time.sleep(1)
+				time.sleep(1.5)
 				texto = driver.page_source
 				pag = BeautifulSoup(texto,'html.parser')
 				if len(pag.find_all('div', {'id': re.compile(r'tblJurisprudencia\:\d{,3}\:j_')})):
 					self.parsear_html(texto)
 				else:
-					print(texto)
-					return
-				# cursor.execute('insert into jurisprudencia_carf.html_decisoes (html_decisoes) values ("%s")' % (driver.page_source.replace('"',''),))
+					cursor.execute('insert into jurisprudencia_carf.html_decisoes (html_decisoes) values ("%s")' % (driver.page_source.replace('"',''),))
 				driver.find_element_by_xpath(self.botao_proximo_xp).click()
 				while driver.page_source == texto:
 					time.sleep(1)
@@ -55,7 +53,12 @@ class crawler_jurisprudencia_carf(crawlerJus):
 		cursor = cursorConexao()
 		pag = BeautifulSoup(html,'html.parser')
 		numeros = []
-		for div in pag.find_all('div', {'id': re.compile(r'tblJurisprudencia\:\d{,3}\:j_')}):
+		decisoes = pag.find_all('div', {'id': re.compile(r'tblJurisprudencia\:\d{,3}\:j_')})
+		# if not decisoes:
+		# 	print(html)
+		# 	sys.exit()
+		# return
+		for div in decisoes:
 			for script in div(["script", "style"]):
 				script.extract()
 			texto_parseado = div.get_text().replace('\t','')

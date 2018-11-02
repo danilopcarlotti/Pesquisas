@@ -311,8 +311,22 @@ def main():
 
 if __name__ == '__main__':
 	# main()
-	c = crawler_jurisprudencia_tjsp()
-	try:
-		c.download_diario_oficial_adm_retrativo_antigos()
-	except Exception as e:
-		print(e)
+	# c = crawler_jurisprudencia_tjsp()
+	# try:
+	# 	c.download_diario_oficial_adm_retrativo_antigos()
+	# except Exception as e:
+	# 	print(e)
+	cursor = cursorConexao()
+	# p = pdf_to_text()
+	for arq in os.listdir('/home/danilo/Downloads/sp_2_inst/sp_2_inst_saude'):
+		try:
+			if re.search(r'\.txt',arq):
+				texto = ''.join([line for line in open('/home/danilo/Downloads/sp_2_inst/sp_2_inst_saude/'+arq,'r')])
+				tribunal = 'sp'
+				numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}',texto,ngroup=0)
+				polo_ativo = busca(r'apelante\s*?\:(.*?)\n',texto, args=re.I)
+				polo_passivo = busca(r'apelado\s*?\:(.*?)\n',texto, args=re.I)
+				cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst_sp_saude (tribunal, numero, texto_decisao, polo_ativo, polo_passivo) values ("%s","%s","%s","%s","%s");' % (tribunal, numero, texto.replace('"','').replace('\\',''), polo_ativo.replace('"',''), polo_passivo.replace('"','')))
+		except Exception as e:
+			print(arq)
+			print(e)
