@@ -146,9 +146,9 @@ def main():
 
 	# print('rodando o classificador em toda a base')
 	# # CLASSE DO CLASSIFICADOR
-	# model = utils.load_model('modelo.pickle')
+	model = utils.load_model('modelo.pickle')
 
-	# cursor = cursorConexao()
+	cursor = cursorConexao()
 
 	# for i in range(0,int(numero_textos),1000):
 	# 	try:
@@ -179,7 +179,7 @@ def main():
 
 	print('exportando a classificacao para um csv')
 	dados = rel.query_padrao(parametros='*',condicoes='where classificacao_auto = "1"')
-	rel.resultados_2_df(dados, rel.colunas_2_inst).to_csv(path_or_buf='relatorio_cnj_final.csv', sep=';', quotechar='"')
+	rel.resultados_2_df(dados, rel.colunas_2_inst).to_csv(path_or_buf='relatorio_cnj_final_teste.csv', sep=';', quotechar='"')
 
 
 	# ESTATÍSTICA DESCRITIVA
