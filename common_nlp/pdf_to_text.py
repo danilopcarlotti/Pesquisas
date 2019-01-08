@@ -4,7 +4,8 @@ from pdfminer.pdfpage import PDFPage
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import PDFPageAggregator
 from pdfminer.layout import LAParams, LTTextBox, LTTextLine
-import PyPDF2
+from tikapp import TikaApp
+import PyPDF2, subprocess
 
 class pdf_to_text():
     """Converts pdf to text with pdfminer"""
@@ -36,6 +37,10 @@ class pdf_to_text():
             pageObj = pdfReader.getPage(i)
             text += pageObj.extractText() + '\n'
         return text
+
+    def convert_Tika(self,fname):
+        tika_client = TikaApp(file_jar=os.getcwd()+'/tika-app-1.20.jar')
+        return tika_client.extract_only_content(fname)
 
 if __name__ == '__main__':
     pass
