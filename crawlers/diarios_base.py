@@ -1,10 +1,10 @@
-from common.conexao_local import cursorConexao
-from common.download_path_diarios import path
+# from common.conexao_local import cursorConexao
+# from common.download_path_diarios import path
 import re, os, sys, time
 
 sys.path.append(os.path.dirname(os.getcwd()))
-from common_nlp.parse_texto import busca
-from common_nlp.parserTextoJuridico import parserTextoJuridico
+from Pesquisas.common_nlp.parse_texto import busca
+from Pesquisas.common_nlp.parserTextoJuridico import parserTextoJuridico
 
 re_final_am = r'(\nPROCESSO DIGITAL: |\nDe ordem d[oa]|\nDespacho proferido pel|\n\d+ - Apelação n|\nProcesso n\. (?=\d{7})|\nProcesso :(?=\d{7})|\n\d+\. PROCESSO:(?=\d{7})|\nAutos n(?=\s*?\d{7})|\n\s*?ADV:)'
 re_final_ac = r'(Acórdão n|\n\d+\. Classe|\n\d+ - (?=\d{7})|\nADV:|\nProcesso: |\nProcesso (?=\d+)|\nAutos n\.º|IV - ADMINISTRATIVO)'
@@ -60,14 +60,18 @@ diarios = {
 	'trt':[r'(\nProcesso Nº|\nPROCESSO Nº|\nProcesso RO|\nPROCESSO N\.)(.*?)(\nProcesso Nº|\nPROCESSO Nº|\nProcesso RO|\nPROCESSO N\.)',re_num_trf_trt]
 	}
 
-def encontra_publicacoes(diarios, tribunal, texto):
+def encontra_publicacoes(tribunal, texto):
 	return re.findall(diarios[tribunal][0],texto,re.DOTALL)
 
-def encontra_numero(diarios, tribunal, texto):
+def encontra_numero(tribunal, texto):
 	return busca(diarios[tribunal][1],texto,ngroup=0)
 
-def encontra_data():
-	return
+def encontra_data(texto):
+	data = re.search(r'\d{2}/\d{2}/\d{4}|\d{2}-\d{2}-\d{4}',texto)
+	if data:
+		return data.group(0)
+	else:
+		return ''
 
 # if __name__ == '__main__':
 # 	cursor = cursorConexao()
@@ -116,12 +120,3 @@ def encontra_data():
 # 									id_numero = cursor.fetchall()[0][0]
 # 									numeros_processo[numero] = id_numero
 # 							cursor.execute('INSERT INTO diarios.publicacoes_diarias (id_tribunal, data, caderno, id_processo, texto, id_classe) values ("%s","%s","%s","%s","%s","%s")' % (tribunais[nome_diario], repositorio_dia, arquivo, numeros_processo[numero], texto, classes_publicacoes[classe_texto]))
-
-for arq in os.listdir('/media/danilo/66F5773E19426C79/Diários_trt'):
-	if re.search(r'txt',arq):
-		texto = ''.join([line for line in open('/media/danilo/66F5773E19426C79/Diários_trt/'+arq)])
-		publicacoes = encontra_publicacoes(diarios, 'trt', texto)
-		numero = encontra_numero(diarios, 'trt', texto)
-		for pub in publicacoes:
-			cursor.execute('insert into diarios.publicacoes_diarias (tribunal, numero, texto, data) values ("%s","%s","%s","%s")' % ('trt', numero, pub, arq))
-		break
