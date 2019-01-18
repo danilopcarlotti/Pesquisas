@@ -1,5 +1,6 @@
-from nltk.tokenize import RegexpTokenizer
+from collections import Counter
 from gensim import corpora, models
+from nltk.tokenize import RegexpTokenizer
 import gensim, nltk
 
 class textNormalization():
@@ -41,7 +42,7 @@ class textNormalization():
 		elif text == 'dezembro':
 			return '12'
 
-	def normalize_texts(self,texts,one_text = False):
+	def normalize_texts(self,texts,one_text=False):
 		normal_texts = []
 		tk = self.tokenizer()
 		stopwords = nltk.corpus.stopwords.words('portuguese')
@@ -52,8 +53,11 @@ class textNormalization():
 			tokens = tk.tokenize(texto_bruto)
 			texto_processado = []
 			for tkn in tokens:
-				if tkn not in stopwords:
-					texto_processado.append(tkn)
+				if len(tkn) > 3 and tkn not in stopwords:
+					try:
+						float(tkn)
+					except:
+						texto_processado.append(tkn)
 			normal_texts.append(texto_processado)
 		if one_text:
 			return texto_processado
@@ -69,6 +73,10 @@ class textNormalization():
 				else:
 					dicionario_i[w] = [id_]
 		return dicionario_i
+
+	def text_to_hist(self, text):
+		list_words = self.normalize_texts(text, one_text=True)
+		return dict(Counter(list_words))
 
 	def tokenizer(self):
 		return RegexpTokenizer(r'\w+')

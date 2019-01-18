@@ -1,8 +1,0 @@
-Campos desejáveis em MongoDB
-
-Competência territorial = [(tipo de justiça, tipo de instância, Estado, órgão julgador)]
-Classificacao = {classe,assunto}
-Número do processo = [número CNJ oficial,outros]
-Pólo ativo = [(parte,adv,instância)]
-Pólo passivo = [(parte,adv,instância)]
-Texto decisão em partes = [(tipo de texto,instância,data da decisão,julgador,texto)]

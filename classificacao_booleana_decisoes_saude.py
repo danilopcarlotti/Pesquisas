@@ -42,7 +42,7 @@ class extracao_variaveis():
 			"RENEM":r"RENEM|Rela..o Nacional de Equipamentos e Materiais permanentes financi.veis pelo SUS",
 			"Pedido médico - bool":r"pedido m.dico|prescri..o m.dica|requerimento m.dico|indica..o m.dica|receita m.dica",
 			"CONITEC - Bool" : r"CONITEC|Comiss.o Nacional de Incorpora..o de Tecnologias|C.mara T.cnica do Minist.rio da Sa.de|lei 12.401",
-			"NAT - Bool": r"N.cleo de Apoio T.cnico|NAT",
+			"NAT - Bool": r'N.cleo de Apoio T.cnico|(\s|\.|,)NAT(\s|\.|,)',
 			"Registro Nacional de Implantes": r"RNI|Registro Nacional de Implantes",
 			"Medicamento importado": r"importado|importa..o",
 			"Erro Médico": r"erro m.dico|neglig.ncia|imper.cia|imprud.ncia",
@@ -60,7 +60,15 @@ class extracao_variaveis():
 			"Indicativo da existência de multa" : r'(imposi..o|aplica..o|fixa..o|substitu).{1,15}multa',
 			"ADPF 45": r"ADPF.{1,10}45",
 			"Súmula 75, 182, 469 STJ": r"S.mula.{1,10}(75|182|469)",
-			"CNJ": r"CNJ|Conselho nacional de justi.a"
+			"CNJ": r"CNJ|Conselho nacional de justi.a",
+			'Indicativo enunciados - gerais' : r"jornadas de saúde|jornadas de direito da saúde|jornadas de direito à saúde|jornada de saúde|jornada de direito da saúde|jornada de direito à saúde",
+			'Enunciado CNJ - 3' : r'busca preliminar.{1,20}disponibilidade do atendimento',
+			'Enunciado CNJ - 4,11' : r'PCDT|protocolos clínicos',
+			'Enunciado CNJ - 5,6,9' : 'off-label|experimental',
+			'Enunciado CNJ - 7' : r'câncer',
+			'Enunciado CNJ - 13' : r'oitiva do gestor do SUS|oitiva do gestor do Sistema Único de Saúde',
+			'Enunciado CNJ - 15' : r'prescrição médica',
+			'Enunciado CNJ - 49' : r'prova pericial|prontuário médico'
 		}
 		self.var_bool['Rename - remédio'] = '|'.join([i.replace(' + ','.{1,20}').strip() for i in open('rename.txt','r')])
 		self.var_bool['Medicamentos atenção básica'] = '|'.join([i.replace(' + ','.{1,20}').strip() for i in open('medicamentos_atencao_basica.txt','r')])
@@ -73,35 +81,57 @@ class extracao_variaveis():
 		index = []
 		index_counter = 1
 		for id_p, texto, tribunal, data_decisao, polo_ativo, polo_passivo, origem in dados:
-			est_ou_fed = 'estadual'
-			if re.search(r'trf',tribunal):
-				est_ou_fed = 'federal'
-			ano_processo = re.search(r'\d{4}',str(data_decisao))
-			if ano_processo:
-				ano_processo = ano_processo.group(0)
-			else:
-				ano_processo = ''
-			dicionario_df = {'numero':id_p, 'ano': ano_processo, 'tribunal':tribunal, 'data_decisao':data_decisao,'polo_ativo':polo_ativo,'polo_passivo':polo_passivo,'origem':origem,'estadual_federal':est_ou_fed,'resultado':self.parser.indicaResultado(texto,'Recurso'),'justica_gratuita':self.parser.justica_gratuita(texto)}
-			for k,v in dicionario.items():
-				if re.search(v, texto, re.DOTALL):
-					dicionario_df[k] = 1
+			try:
+				est_ou_fed = 'estadual'
+				if re.search(r'trf',str(tribunal)):
+					est_ou_fed = 'federal'
+				ano_processo = re.search(r'\d{4}',str(data_decisao))
+				if ano_processo:
+					ano_processo = ano_processo.group(0)
 				else:
-					dicionario_df[k] = 0
-			rows.append(dicionario_df)
-			index.append(index_counter)
-			index_counter += 1
+					ano_processo = ''
+				dicionario_df = {'numero':id_p, 'ano': ano_processo, 'tribunal':tribunal, 'data_decisao':data_decisao,'polo_ativo':polo_ativo,'polo_passivo':polo_passivo,'origem':origem,'estadual_federal':est_ou_fed,'resultado':self.parser.indicaResultado(texto,'Recurso'),'justica_gratuita':self.parser.justica_gratuita(texto)}
+				for k,v in dicionario.items():
+					if re.search(v, texto, re.DOTALL):
+						dicionario_df[k] = 1
+					else:
+						dicionario_df[k] = 0
+				rows.append(dicionario_df)
+				index.append(index_counter)
+				index_counter += 1
+			except Exception as e:
+				print(e)
 		data_frame = pd.DataFrame(rows, index=index)
 		return data_frame
 
 def main():
 	ext = extracao_variaveis()
-	df_saude = pd.read_csv('relatorio_cnj.csv', sep=';', quotechar='"', encoding = 'utf8')
+	df_saude = pd.read_csv('relatorio_cnj_final.csv', sep=';', quotechar='"', encoding = 'utf8')
+	print(len(df_saude.index))
 	dados = []
 	for row in df_saude.itertuples():
 		dados.append((getattr(row,'numero'),getattr(row,'texto_decisao'),getattr(row,'tribunal'),getattr(row,'data_decisao'),getattr(row,'polo_ativo'),getattr(row,'polo_passivo'),getattr(row,'origem')))
 	df = ext.variaveis_textos(ext.var_bool, dados)
 	df['data_decisao'] = pd.to_datetime(df['data_decisao'], format='%d/%m/%Y', errors='coerce')
-	df.to_csv('relatorio_booleano_cnj_03_out_2018.csv',quotechar='"', index= False)
+	df.to_csv('relatorio_booleano_cnj_16_jan_2019_2_inst.csv',quotechar='"', index= False)
+
+	# df_saude = pd.read_csv('relatorio_cnj_final_1_inst.csv', sep=';', quotechar='"', encoding = 'utf8')
+	# novo_nat = []
+	# for index, row in df_saude.iterrows():
+	# 	if re.search(r'N.cleo de Apoio T.cnico|(\s|\.|,)NAT(\s|\.|,)',row['texto_decisao']):
+	# 		novo_nat.append(1)
+	# 	else:
+	# 		novo_nat.append(0)
+	# arq = open('NAT_1_INST.csv','a')
+	# for n in novo_nat:
+	# 	arq.write(str(n)+'\n')
+	# arq.close()
+
+	# contador = 0
+	# df_saude = pd.read_csv('relatorio_cnj_final.csv', sep=';', quotechar='"', encoding = 'utf8', chunksize=100)
+	# for chunk in df_saude:
+	# 	contador += 100
+	# print(contador)
 
 if __name__ == '__main__':
 	main()

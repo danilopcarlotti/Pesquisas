@@ -6,7 +6,7 @@ class parallel_programming(Thread):
 	def __init__(self):
 		Thread.__init__(self) 
 		
-	def run_f_nbatches(self, f, batch_f, nthreads=100):
+	def run_f_nbatches(self, f, batch_f, nthreads=128):
 		q = Queue()
 		contador = 0
 		for i in batch_f:
