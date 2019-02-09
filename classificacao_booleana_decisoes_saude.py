@@ -70,10 +70,10 @@ class extracao_variaveis():
 			'Enunciado CNJ - 15' : r'prescrição médica',
 			'Enunciado CNJ - 49' : r'prova pericial|prontuário médico'
 		}
-		self.var_bool['Rename - remédio'] = '|'.join([i.replace(' + ','.{1,20}').strip() for i in open('rename.txt','r')])
-		self.var_bool['Medicamentos atenção básica'] = '|'.join([i.replace(' + ','.{1,20}').strip() for i in open('medicamentos_atencao_basica.txt','r')])
-		self.var_bool['Medicamentos componente especializado'] = '|'.join([i.replace(' + ','.{1,20}').strip() for i in open('medicamentos_componente_especializado.txt','r')])
-		self.var_bool['Medicamentos estratégicos'] = '|'.join([i.replace(' + ','.{1,20}').strip() for i in open('medicamentos_estrategicos.txt','r')])
+		self.var_bool['Rename - remédio'] = '|'.join([i.replace(' + ','.{1,20}').strip() for i in open('/media/danilo/66F5773E19426C79/CNJ_jud_saude/rename.txt','r')])
+		self.var_bool['Medicamentos atenção básica'] = '|'.join([i.replace(' + ','.{1,20}').strip() for i in open('/media/danilo/66F5773E19426C79/CNJ_jud_saude/medicamentos_atencao_basica.txt','r')])
+		self.var_bool['Medicamentos componente especializado'] = '|'.join([i.replace(' + ','.{1,20}').strip() for i in open('/media/danilo/66F5773E19426C79/CNJ_jud_saude/medicamentos_componente_especializado.txt','r')])
+		self.var_bool['Medicamentos estratégicos'] = '|'.join([i.replace(' + ','.{1,20}').strip() for i in open('/media/danilo/66F5773E19426C79/CNJ_jud_saude/medicamentos_estrategicos.txt','r')])
 		self.parser = parserTextoJuridico()
 
 	def variaveis_textos(self, dicionario, dados):
@@ -106,14 +106,14 @@ class extracao_variaveis():
 
 def main():
 	ext = extracao_variaveis()
-	df_saude = pd.read_csv('relatorio_cnj_final.csv', sep=';', quotechar='"', encoding = 'utf8')
+	df_saude = pd.read_csv('/media/danilo/66F5773E19426C79/CNJ_jud_saude/relatorio_cnj_final_2_inst_sp.csv', encoding = 'utf8')
 	print(len(df_saude.index))
 	dados = []
 	for row in df_saude.itertuples():
 		dados.append((getattr(row,'numero'),getattr(row,'texto_decisao'),getattr(row,'tribunal'),getattr(row,'data_decisao'),getattr(row,'polo_ativo'),getattr(row,'polo_passivo'),getattr(row,'origem')))
 	df = ext.variaveis_textos(ext.var_bool, dados)
 	df['data_decisao'] = pd.to_datetime(df['data_decisao'], format='%d/%m/%Y', errors='coerce')
-	df.to_csv('relatorio_booleano_cnj_16_jan_2019_2_inst.csv',quotechar='"', index= False)
+	df.to_csv('relatorio_booleano_cnj_16_jan_2019_2_inst_sp.csv',quotechar='"', index= False)
 
 	# df_saude = pd.read_csv('relatorio_cnj_final_1_inst.csv', sep=';', quotechar='"', encoding = 'utf8')
 	# novo_nat = []

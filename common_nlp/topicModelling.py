@@ -24,7 +24,7 @@ class topicModelling(textNormalization):
 				t = t.strip().replace('"','')
 				n_t, word = t.split('*')
 				arq.write(int(float(n_t)*10000)*(word+' '))
-				subprocess.Popen('wordcloud_cli --text %s --imagefile wordcloud_%s.png --no_collocations' % ('wordcloud_topico_'+str(n)+'.txt',str(n)),shell=True)
+			subprocess.Popen('wordcloud_cli --text %s --imagefile wordcloud_%s.png --no_collocations' % ('wordcloud_topico_'+str(n)+'.txt',str(n)),shell=True)
 
 dados_1_inst = '/home/danilo/Documents/Pesquisas/relatorio_cnj_final_1_inst.csv' #texto_decisao
 dados_2_inst = '/home/danilo/Documents/Pesquisas/relatorio_cnj_final.csv' #texto_decisao
