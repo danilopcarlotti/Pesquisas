@@ -12,7 +12,7 @@ def csv_base(filepath):
 		if re.search(r'aliena.{1,15}fiduciária',row['texto_publicacao'].lower(),re.DOTALL):
 			cursor.execute('INSERT INTO diarios.publicacoes_diarias (tribunal, texto_publicacao, nome_arquivo, data, numero_processo) VALUES ("%s","%s","%s","%s","%s")' % (row['tribunal'],row['texto_publicacao'].replace('\n',' ').replace('"','').replace('\\',''),row['nome_arquivo'],row['data'],row['numero_processo']))
 
-def main(path_diarios):
+def main(path_diarios, path_relatorio_final):
 	print('comecei')
 	rec_f = recursive_folders()
 	parallel = parallel_programming()
@@ -21,7 +21,7 @@ def main(path_diarios):
 	parallel.run_f_nbatches(csv_base,diarios_processar)
 	print('terminei de inserir dados na base')
 
-	print('gerando o csv')
+	print('gerando o csv com publicacoes')
 	rows = []
 	cursor = cursorConexao()
 	cursor.execute('SELECT tribunal, texto_publicacao, nome_arquivo, data, numero_processo from diarios.publicacoes_diarias')
@@ -29,10 +29,9 @@ def main(path_diarios):
 	for tribunal, texto_publicacao, nome_arquivo, data, numero_processo in dados:
 		rows.append({'tribunal':tribunal, 'texto_publicacao':texto_publicacao, 'nome_arquivo':nome_arquivo, 'data':data, 'numero_processo':numero_processo})
 	data_frame = pd.DataFrame(rows, index=[i for i in range(len(rows))])
-	data_frame.to_csv('/media/danilo/66F5773E19426C79/publicações_alienacao_fid_sp.csv')
-
+	data_frame.to_csv(path_relatorio_final)
 	print('fim')
 
 if __name__ == '__main__':
 	path_diarios = '/media/danilo/66F5773E19426C79/Diarios/Diarios_sp'
-	main(path_diarios)
+	main(path_diarios, '/media/danilo/66F5773E19426C79/extracao_execucao_credito.csv')
