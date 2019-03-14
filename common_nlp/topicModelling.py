@@ -18,7 +18,7 @@ class topicModelling(textNormalization):
 		return models.ldamodel.LdaModel(corpus, num_topics=num_topics, id2word = dicionario, passes=npasses).print_topics(num_topics=num_topics,num_words=num_words)
 
 	def topic_to_txt(self, topics):
-		for n,top in topicos:
+		for n,top in topics:
 			arq = open('wordcloud_topico_'+str(n)+'.txt','w')
 			for t in top.split('+'):
 				t = t.strip().replace('"','')
