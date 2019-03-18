@@ -33,7 +33,7 @@ tp = topicModelling()
 
 print('comecei 2 inst')
 
-df = pd.read_csv(dados_2_inst, sep=';', nrows=100)
+df = pd.read_csv(dados_2_inst,nrows=10)
 textos = []
 for index, row in df.iterrows():
 	textos.append(row['texto_decisao'])
@@ -43,7 +43,7 @@ pickle.dump(topicos,open('topicos_2_inst.pickle','wb'))
 print('terminei 2 inst')
 print('comecei 1 inst')
 
-df = pd.read_csv(dados_1_inst, sep=';', nrows=100)
+df = pd.read_csv(dados_1_inst, nrows=10, sep=';')
 textos = []
 for index, row in df.iterrows():
 	textos.append(row['texto_decisao'])
