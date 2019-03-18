@@ -31,7 +31,9 @@ class crawler_jurisprudencia_stj(crawlerJus):
 		driver.get(link_pesquisa)
 		driver.find_element_by_xpath('//*[@id="pesquisaLivre"]').send_keys(termo)
 		driver.find_element_by_xpath('//*[@id="botoesPesquisa"]/input[1]').click()
+		time.sleep(6)
 		driver.find_elements_by_xpath('//*[@id="itemlistaresultados"]/span[2]/a')[2].click()
+		time.sleep(6)
 		driver.find_element_by_class_name('iconeProximaPagina').send_keys('\n')
 		i = 1
 		while i < self.contador:
@@ -72,7 +74,7 @@ class crawler_jurisprudencia_stj(crawlerJus):
 								link_voto_download = link_voto_download.replace('amp;','')
 								votos += link_voto_download+','
 							info.append(votos[:-1])
-							cursor.execute('INSERT INTO stj.dados_processo (processo, recorrente, recorrido, autuacao, numero_unico, relator, ramo_direito, assunto, tribunal_origem, numeros_origem,link_voto) values ("%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s")',(info[0],info[1],info[2],info[3],info[4],info[5],info[6],info[7],info[8],info[9],info[10]))
+							cursor.execute('INSERT INTO stj.dados_processo_gisela (processo, recorrente, recorrido, autuacao, numero_unico, relator, ramo_direito, assunto, tribunal_origem, numeros_origem,link_voto) values ("%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s")',(info[0],info[1],info[2],info[3],info[4],info[5],info[6],info[7],info[8],info[9],info[10]))
 					driver.switch_to.window(driver.window_handles[0])
 				try:
 					driver.find_element_by_class_name('iconeProximaPagina').send_keys('\n')
@@ -157,6 +159,6 @@ class crawler_jurisprudencia_stj(crawlerJus):
 
 
 if __name__ == '__main__':
-	c = crawler_jurisprudencia_stj(336)
-	# c.baixarDadosProcesso()
+	c = crawler_jurisprudencia_stj(2152)
+	c.baixarDadosProcesso(termo='conflito de competência ou arbitrar ou arbitragem ou lei das sa ou conflito de interesse ou acionista ou recuperação judicial ou negócio jurídico processual ou onerosidade excessiva ou equilíbrio econômico financeiro')
 	c.download_diario_retroativo()

@@ -1,6 +1,6 @@
 from textNormalization import textNormalization
 from gensim import corpora, models
-import subprocess
+import subprocess, pickle, pandas as pd
 
 class topicModelling(textNormalization):
 	"""Creates topic models for normalized texts"""
@@ -26,15 +26,26 @@ class topicModelling(textNormalization):
 				arq.write(int(float(n_t)*10000)*(word+' '))
 			subprocess.Popen('wordcloud_cli --text %s --imagefile wordcloud_%s.png --no_collocations' % ('wordcloud_topico_'+str(n)+'.txt',str(n)),shell=True)
 
-dados_1_inst = '/home/danilo/Documents/Pesquisas/relatorio_cnj_final_1_inst.csv' #texto_decisao
-dados_2_inst = '/home/danilo/Documents/Pesquisas/relatorio_cnj_final.csv' #texto_decisao
+dados_1_inst = '/home/ubuntu/topicmodelling/relatorio_cnj_final_1_inst.csv' #texto_decisao
+dados_2_inst = '/home/ubuntu/topicmodelling/relatorio_cnj_final_2_inst_sp.csv' #texto_decisao
 
-import pandas as pd
 tp = topicModelling()
+
+print('comecei 2 inst')
+
 df = pd.read_csv(dados_2_inst, sep=';', nrows=100)
 textos = []
 for index, row in df.iterrows():
 	textos.append(row['texto_decisao'])
+topicos = tp.lda_Model(textos,num_topics=30,num_words=30)
+pickle.dump(topicos,open('topicos_2_inst.pickle','wb'))
 
-topicos = tp.lda_Model(textos,num_words=30)
-tp.topic_to_txt(topicos)
+print('terminei 2 inst')
+print('comecei 1 inst')
+
+df = pd.read_csv(dados_1_inst, sep=';', nrows=100)
+textos = []
+for index, row in df.iterrows():
+	textos.append(row['texto_decisao'])
+topicos = tp.lda_Model(textos,num_topics=30,num_words=30)
+pickle.dump(topicos,open('topicos_1_inst.pickle','wb'))

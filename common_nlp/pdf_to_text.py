@@ -43,4 +43,13 @@ class pdf_to_text():
         return tika_client.extract_only_content(fname)
 
 if __name__ == '__main__':
-    pass
+    # pass
+    import os
+    prefixo = '/media/danilo/66F5773E19426C79/Backup_audesp/Investigações/'
+    arquivos = os.listdir(prefixo)
+    pdf = pdf_to_text()
+    for arq in arquivos:
+        texto = pdf.convert_Tika(prefixo+arq)
+        file = open(prefixo+arq.split('\\')[-1].split('.')[0]+'.txt','w')
+        file.write(texto)
+        file.close()
