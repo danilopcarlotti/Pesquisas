@@ -27,26 +27,15 @@ class topicModelling(textNormalization):
 			subprocess.Popen('wordcloud_cli --text %s --imagefile wordcloud_%s.png --no_collocations' % ('wordcloud_topico_'+str(n)+'.txt',str(n)),shell=True)
 
 if __name__ == '__main__':
-	dados_1_inst = '/home/ubuntu/topicmodelling/relatorio_cnj_final_1_inst.csv' #texto_decisao
-	dados_2_inst = '/home/ubuntu/topicmodelling/relatorio_cnj_final_2_inst_sp.csv' #texto_decisao
+	# dados_1_inst = '/home/ubuntu/topicmodelling/relatorio_cnj_final_1_inst.csv' #texto_decisao
+	# dados_2_inst = '/home/ubuntu/topicmodelling/relatorio_cnj_final_2_inst_sp.csv' #texto_decisao
+
+	dados_tutela = '/home/ubuntu/topicmodelling/publicacoes_saude.csv'
 
 	tp = topicModelling()
-
-	print('comecei 2 inst')
-
 	df = pd.read_csv(dados_2_inst)
 	textos = []
 	for index, row in df.iterrows():
 		textos.append(row['texto_decisao'])
 	topicos = tp.lda_Model(textos,num_topics=30,num_words=30)
-	pickle.dump(topicos,open('topicos_2_inst.pickle','wb'))
-
-	print('terminei 2 inst')
-	print('comecei 1 inst')
-
-	df = pd.read_csv(dados_1_inst, sep=';')
-	textos = []
-	for index, row in df.iterrows():
-		textos.append(row['texto_decisao'])
-	topicos = tp.lda_Model(textos,num_topics=30,num_words=30)
-	pickle.dump(topicos,open('topicos_1_inst.pickle','wb'))
+	pickle.dump(topicos,open('topicos_tutelas.pickle','wb'))
