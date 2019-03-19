@@ -33,9 +33,9 @@ if __name__ == '__main__':
 	dados_tutela = '/home/ubuntu/topicmodelling/publicacoes_saude.csv'
 
 	tp = topicModelling()
-	df = pd.read_csv(dados_2_inst)
+	df = pd.read_csv(dados_tutela)
 	textos = []
 	for index, row in df.iterrows():
-		textos.append(row['texto_decisao'])
+		textos.append(row['texto_publicacao'])
 	topicos = tp.lda_Model(textos,num_topics=30,num_words=30)
 	pickle.dump(topicos,open('topicos_tutelas.pickle','wb'))
