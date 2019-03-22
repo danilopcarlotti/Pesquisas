@@ -5,7 +5,10 @@ from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import PDFPageAggregator
 from pdfminer.layout import LAParams, LTTextBox, LTTextLine
 from tikapp import TikaApp
-import PyPDF2, subprocess, os
+import PyPDF2, subprocess, os, sys
+
+sys.path.append(os.path.dirname(os.getcwd()))
+from common.recursive_folders import recursive_folders
 
 class pdf_to_text():
     """Converts pdf to text with pdfminer"""
@@ -43,4 +46,12 @@ class pdf_to_text():
         return tika_client.extract_only_content(fname)
 
 if __name__ == '__main__':
-    pass
+    path = sys.argv[1]
+    p = pdf_to_text()
+    r = recursive_folders()
+    for arq in r.find_files(path):
+        if arq[-3:] == 'pdf':
+            texto = p.convert_Tika(arq)
+            arq = open(arq.replace('pdf','txt'),'w')
+            arq.write(texto)
+            arq.close()
