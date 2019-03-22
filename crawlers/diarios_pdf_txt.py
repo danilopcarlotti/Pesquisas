@@ -1,49 +1,42 @@
 from common.download_path_diarios import path
-import time, os, datetime
+import time, os, datetime, sys
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.pdf_to_text import pdf_to_text
 
-data = datetime.date.today().strftime("%Y%m%d")
-ano = data[:4]
-mes = data[4:6]
-dia = data[6:]
-if len(dia)==1:
-    dia = "0" + dia
-
-arq_go = open("go"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_trf1 = open("trf1"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_trt = open("trt"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_sp = open("sp"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_al = open("al"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_am = open("am"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_ce = open("ce"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_ms = open("ms"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_ro = open("ro"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_to = open("to"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_rn = open("rn"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_ma = open("ma"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_rr = open("rr"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_pi = open("pi"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_df = open("df"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_pa = open("pa"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_stf = open("stf"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_stj = open("stj"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_ap = open("ap"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_trf5 = open("trf5"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_trf4 = open("trf4"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_trf3 = open("trf3"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_trf2 = open("trf2"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_ac = open("ac"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_pr = open("pr"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_sc = open("sc"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_pe = open("pe"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_rs = open("rs"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_pb = open("pb"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_ba = open("ba"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_rj = open("rj"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_mg = open("mg"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_se = open("se"+dia+mes+ano+".txt",'a',encoding="utf-8")
-arq_mt = open("mt"+dia+mes+ano+".txt",'a',encoding="utf-8")
+arq_go = open("go"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_trf1 = open("trf1"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_trt = open("trt"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_sp = open("sp"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_al = open("al"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_am = open("am"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_ce = open("ce"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_ms = open("ms"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_ro = open("ro"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_to = open("to"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_rn = open("rn"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_ma = open("ma"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_rr = open("rr"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_pi = open("pi"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_df = open("df"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_pa = open("pa"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_stf = open("stf"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_stj = open("stj"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_ap = open("ap"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_trf5 = open("trf5"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_trf4 = open("trf4"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_trf3 = open("trf3"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_trf2 = open("trf2"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_ac = open("ac"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_pr = open("pr"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_sc = open("sc"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_pe = open("pe"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_rs = open("rs"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_pb = open("pb"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_ba = open("ba"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_rj = open("rj"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_mg = open("mg"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_se = open("se"+dia+mes+ano+".txt",'w',encoding="utf-8")
+arq_mt = open("mt"+dia+mes+ano+".txt",'w',encoding="utf-8")
 
 re_diarios = [
 	[r".+MA\.pdf$",arq_ma],
@@ -86,6 +79,15 @@ diarios_pb_pe = [
 ]
 
 if __name__ == '__main__':
+	if len(sys.argv) == 2:
+		data = sys.argv[1]
+	else:
+		data = datetime.date.today().strftime("%Y%m%d")
+	ano = data[:4]
+	mes = data[4:6]
+	dia = data[6:]
+	if len(dia)==1:
+	    dia = "0" + dia
 	arqs_i = os.listdir(path)
 	arqs_f = []
 	pdf_2_txt = pdf_to_text()
@@ -94,9 +96,8 @@ if __name__ == '__main__':
 			for d in re_diarios:
 				if re.search(d[0],i):
 					try:
-						d[1].write(pdf_2_txt.convert_pdfminer(i))
+						d[1].write(pdf_2_txt.convert_Tika(i))
 						arqs_f.append(i)
 						break
 					except:
-						# log?
 						pass

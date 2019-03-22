@@ -1,4 +1,7 @@
-from textNormalization import textNormalization
+try:
+	from textNormalization import textNormalization
+except:
+	from common_nlp.textNormalization import textNormalization
 from gensim import corpora, models
 import subprocess, pickle, pandas as pd
 
@@ -17,14 +20,14 @@ class topicModelling(textNormalization):
 		corpus = [dicionario.doc2bow(text) for text in textos]
 		return models.ldamodel.LdaModel(corpus, num_topics=num_topics, id2word = dicionario, passes=npasses).print_topics(num_topics=num_topics,num_words=num_words)
 
-	def topic_to_txt(self, topics):
+	def topic_to_txt(self, topics, nome_topicos=''):
 		for n,top in topics:
-			arq = open('wordcloud_topico_'+str(n)+'.txt','w')
+			arq = open('wordcloud_topico_'+str(n)+nome_topicos+'.txt','w')
 			for t in top.split('+'):
 				t = t.strip().replace('"','')
 				n_t, word = t.split('*')
 				arq.write(int(float(n_t)*10000)*(word+' '))
-			subprocess.Popen('wordcloud_cli --text %s --imagefile wordcloud_%s.png --no_collocations' % ('wordcloud_topico_'+str(n)+'.txt',str(n)),shell=True)
+			subprocess.Popen('wordcloud_cli --text %s --imagefile wordcloud_%s.png --no_collocations' % ('wordcloud_topico_'+str(n)+nome_topicos+'.txt',str(n)+nome_topicos),shell=True)
 
 if __name__ == '__main__':
 	# dados_1_inst = '/home/ubuntu/topicmodelling/relatorio_cnj_final_1_inst.csv' #texto_decisao

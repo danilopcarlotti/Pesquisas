@@ -1,5 +1,8 @@
 from scipy.spatial import distance as dist
-from textNormalization import textNormalization
+try:
+	from textNormalization import textNormalization
+except:
+	from common_nlp.textNormalization import textNormalization
 import numpy as np
 
 class word_histogram_comparison():
@@ -10,10 +13,10 @@ class word_histogram_comparison():
 		"Chebysev" : dist.chebyshev
 		}
 
-	def compare_two_hist(histA, histB, method):
+	def compare_two_hist(self,histA, histB, method):
 		return method(histA, histB)
 
-	def compare_all_all(texts, method):
+	def compare_all_all(self,texts, method):
 		results = {}
 		for i in range(len(texts)-1):
 			textA = texts[i]
@@ -21,7 +24,7 @@ class word_histogram_comparison():
 			results[textA[0]] = self.compare_one_all(textA, other_texts, method)
 		return results
 
-	def compare_one_all(textA, texts, method):
+	def compare_one_all(self,textA, texts, method):
 		txt_nrm = textNormalization()
 		results = {}
 		id_A, text_A = textA

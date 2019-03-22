@@ -5,11 +5,14 @@ from common.download_path_diarios import path as path_diarios
 from crawlerJus import crawlerJus
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
 class publicacoes_diarios_oficiais(crawlerJus):
 	def __init__(self, data=None):
+		options = Options()
+		options.headless = True
 		crawlerJus.__init__(self)
 		logging.basicConfig(filename=self.cwd+self.dia+self.mes+self.ano+'.log',level=logging.INFO)
 		self.diarios_a_baixar = [self.baixa_stf,self.baixa_ro,self.baixa_rr,self.baixa_pa,self.baixa_ma,self.baixa_to,self.baixa_pi,self.baixa_stj,self.baixa_trf1,
