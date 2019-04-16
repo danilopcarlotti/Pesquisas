@@ -50,8 +50,8 @@ if __name__ == '__main__':
     p = pdf_to_text()
     r = recursive_folders()
     for arq in r.find_files(path):
-        if arq[-3:] == 'pdf':
+        if arq[-3:] == 'pdf' or arq[-3:] == 'doc' or arq[-4:] == 'docx':
             texto = p.convert_Tika(arq)
-            arq = open(arq.replace('pdf','txt'),'w')
+            arq = open(arq.replace('pdf','txt').replace('docx','txt').replace('doc','txt'),'w')
             arq.write(texto)
             arq.close()
