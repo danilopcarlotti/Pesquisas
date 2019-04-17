@@ -72,6 +72,10 @@ if __name__ == '__main__':
 	def relatorio(path_dados, nome):
 		tp = topicModelling()
 		df = pd.read_csv(path_dados,chunksize=1000)
+		if 'texto_publicacao' in df.columns:
+			coluna_texto = 'texto_publicacao'
+		else:
+			coluna_texto = 'texto_decisao'
 		num_topics = 30
 		npasses = 20
 		textos_0 = [['direito']]
@@ -80,7 +84,7 @@ if __name__ == '__main__':
 		for chunk in df:
 			textos = []
 			for index, row in chunk.iterrows():
-				paragrafos = row['texto_publicacao'].split('\n')
+				paragrafos = row[coluna_texto].split('\n')
 				for p in paragrafos:
 					textos.append(p)
 			textos_n = tp.normalize_texts(textos)
@@ -90,7 +94,7 @@ if __name__ == '__main__':
 		for chunk in df:
 			textos = []
 			for index, row in chunk.iterrows():
-				paragrafos = row['texto_publicacao'].split('\n')
+				paragrafos = row[coluna_texto].split('\n')
 				for p in paragrafos:
 					textos.append(p)
 			textos_n = tp.normalize_texts(textos)
