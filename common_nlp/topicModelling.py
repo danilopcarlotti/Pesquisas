@@ -71,11 +71,12 @@ if __name__ == '__main__':
 
 	def relatorio(path_dados, nome):
 		tp = topicModelling()
-		df = pd.read_csv(path_dados,chunksize=10, nrows=100)
+		df = pd.read_csv(path_dados,chunksize=1000)
 		num_topics = 30
 		npasses = 20
-		dicionario = tp.dicionario_corpora([['direito']])
-		topicos = models.ldamodel.LdaModel([['direito']], num_topics=num_topics, id2word = dicionario, passes=npasses)
+		textos_0 = [['direito']]
+		dicionario = tp.dicionario_corpora(textos_0)
+		topicos = models.ldamodel.LdaModel([dicionario.doc2bow(text) for text in textos_0], num_topics=num_topics, id2word = dicionario, passes=npasses)
 		for chunk in df:
 			textos = []
 			for index, row in chunk.iterrows():
@@ -85,7 +86,7 @@ if __name__ == '__main__':
 			textos_n = tp.normalize_texts(textos)
 			dicionario.add_documents(textos_n)
 		
-		df = pd.read_csv(path_dados,chunksize=10, nrows=100)
+		df = pd.read_csv(path_dados,chunksize=1000)
 		for chunk in df:
 			textos = []
 			for index, row in chunk.iterrows():
