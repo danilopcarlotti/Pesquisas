@@ -71,7 +71,7 @@ if __name__ == '__main__':
 
 	def relatorio(path_dados, nome):
 		tp = topicModelling()
-		df = pd.read_csv(path_dados,chunksize=1000)
+		df = pd.read_csv(path_dados,nrows=1)
 		if 'texto_publicacao' in df.columns:
 			coluna_texto = 'texto_publicacao'
 		else:
@@ -80,16 +80,6 @@ if __name__ == '__main__':
 		npasses = 20
 		textos_0 = [['direito']]
 		dicionario = tp.dicionario_corpora(textos_0)
-		topicos = models.ldamodel.LdaModel([dicionario.doc2bow(text) for text in textos_0], num_topics=num_topics, id2word = dicionario, passes=npasses)
-		for chunk in df:
-			textos = []
-			for index, row in chunk.iterrows():
-				paragrafos = row[coluna_texto].split('\n')
-				for p in paragrafos:
-					textos.append(p)
-			textos_n = tp.normalize_texts(textos)
-			dicionario.add_documents(textos_n)
-		
 		df = pd.read_csv(path_dados,chunksize=1000)
 		for chunk in df:
 			textos = []
@@ -98,8 +88,27 @@ if __name__ == '__main__':
 				for p in paragrafos:
 					textos.append(p)
 			textos_n = tp.normalize_texts(textos)
-			corpus = [dicionario.doc2bow(text) for text in textos_n]
-			topicos.update(corpus)
+			dicionario.add_documents(textos_n)
+		df = pd.read_csv(path_dados,chunksize=1000)
+		# topicos = models.ldamodel.LdaModel([dicionario.doc2bow(text) for text in textos_0], num_topics=num_topics, id2word = dicionario, passes=npasses)
+		# for chunk in df:
+		# 	textos = []
+		# 	for index, row in chunk.iterrows():
+		# 		paragrafos = row[coluna_texto].split('\n')
+		# 		for p in paragrafos:
+		# 			textos.append(p)
+		# 	textos_n = tp.normalize_texts(textos)
+		# 	corpus = [dicionario.doc2bow(text) for text in textos_n]
+		# 	topicos.update(corpus)
+		textos = []
+		for chunk in df:
+			for index, row in chunk.iterrows():
+				paragrafos = row[coluna_texto].split('\n')
+				for p in paragrafos:
+					textos.append(p)
+		textos_n = tp.normalize_texts(textos)
+		corpus = [dicionario.doc2bow(text) for text in textos_n]
+		topicos = models.ldamodel.LdaModel(corpus, num_topics=num_topics, id2word = dicionario, passes=npasses,chunksize=1000)
 		pickle.dump(topicos,open('topicos_%s.pickle' % (nome,),'wb'))
 	
 	relatorio(dados_1_inst,'1_instancia_paragrafos')
