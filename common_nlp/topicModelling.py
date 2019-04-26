@@ -29,7 +29,7 @@ class topicModelling(textNormalization):
 		textos = self.normalize_texts(texts)
 		dicionario = self.dicionario_corpora(textos)
 		corpus = [dicionario.doc2bow(text) for text in textos]
-		return models.ldamodel.LdaModel(corpus, num_topics=num_topics, id2word = dicionario, passes=npasses)
+		return models.ldamodel.LdaModel(corpus, num_topics=num_topics, id2word = dicionario, passes=npasses,chunksize=1000)
 
 	def pca_topics(self, topics, name, n_components=2, num_topics=5, n_words=15):
 		X = self.topics_to_vectorspace(topics, num_topics=num_topics, n_words=n_words)
@@ -71,7 +71,7 @@ if __name__ == '__main__':
 
 	def relatorio(path_dados, nome):
 		tp = topicModelling()
-		df = pd.read_csv(path_dados,nrows=1)
+		df = pd.read_csv(path_dados)
 		if 'texto_publicacao' in df.columns:
 			coluna_texto = 'texto_publicacao'
 		else:
@@ -80,7 +80,7 @@ if __name__ == '__main__':
 		npasses = 20
 		textos_0 = [['direito']]
 		dicionario = tp.dicionario_corpora(textos_0)
-		df = pd.read_csv(path_dados,chunksize=1000)
+		df = pd.read_csv(path_dados,chunksize=1000,nrows=10000)
 		for chunk in df:
 			textos = []
 			for index, row in chunk.iterrows():
@@ -89,7 +89,7 @@ if __name__ == '__main__':
 					textos.append(p)
 			textos_n = tp.normalize_texts(textos)
 			dicionario.add_documents(textos_n)
-		df = pd.read_csv(path_dados,chunksize=1000)
+		df = pd.read_csv(path_dados,chunksize=1000,nrows=10000)
 		# topicos = models.ldamodel.LdaModel([dicionario.doc2bow(text) for text in textos_0], num_topics=num_topics, id2word = dicionario, passes=npasses)
 		# for chunk in df:
 		# 	textos = []
@@ -108,9 +108,12 @@ if __name__ == '__main__':
 					textos.append(p)
 		textos_n = tp.normalize_texts(textos)
 		corpus = [dicionario.doc2bow(text) for text in textos_n]
-		topicos = models.ldamodel.LdaModel(corpus, num_topics=num_topics, id2word = dicionario, passes=npasses,chunksize=1000)
+		topicos = models.ldamodel.LdaModel(corpus, num_topics=num_topics, id2word = dicionario, passes=npasses,chunksize=100)
 		pickle.dump(topicos,open('topicos_%s.pickle' % (nome,),'wb'))
 	
+	print('1_instancia_paragrafos')
 	relatorio(dados_1_inst,'1_instancia_paragrafos')
+	print('2_instancia_paragrafos')
 	relatorio(dados_2_inst,'2_instancia_paragrafos')
+	print('tutela_paragrafos')
 	relatorio(dados_tutela,'tutela_paragrafos')
