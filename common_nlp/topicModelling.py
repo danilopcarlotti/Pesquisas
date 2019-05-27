@@ -71,16 +71,17 @@ if __name__ == '__main__':
 
 	def relatorio(path_dados, nome):
 		tp = topicModelling()
-		df = pd.read_csv(path_dados,sep=';')
+		df = pd.read_csv(path_dados,sep=';',nrows=1)
 		if 'texto_publicacao' in df.columns:
 			coluna_texto = 'texto_publicacao'
+			df = pd.read_csv(path_dados,chunksize=1000,nrows=10000,sep=';')
 		else:
 			coluna_texto = 'texto_decisao'
+			df = pd.read_csv(path_dados,chunksize=1000,nrows=10000)
 		num_topics = 30
 		npasses = 20
 		textos_0 = [['direito']]
 		dicionario = tp.dicionario_corpora(textos_0)
-		df = pd.read_csv(path_dados,,sep=';',chunksize=1000,nrows=10000)
 		for chunk in df:
 			textos = []
 			for index, row in chunk.iterrows():
@@ -89,28 +90,20 @@ if __name__ == '__main__':
 					textos.append(p)
 			textos_n = tp.normalize_texts(textos)
 			dicionario.add_documents(textos_n)
-		df = pd.read_csv(path_dados,,sep=';',chunksize=1000,nrows=10000)
-		# topicos = models.ldamodel.LdaModel([dicionario.doc2bow(text) for text in textos_0], num_topics=num_topics, id2word = dicionario, passes=npasses)
-		# for chunk in df:
-		# 	textos = []
-		# 	for index, row in chunk.iterrows():
-		# 		paragrafos = row[coluna_texto].split('\n')
-		# 		for p in paragrafos:
-		# 			textos.append(p)
-		# 	textos_n = tp.normalize_texts(textos)
-		# 	corpus = [dicionario.doc2bow(text) for text in textos_n]
-		# 	topicos.update(corpus)
-		textos = []
-		for chunk in df:
-			for index, row in chunk.iterrows():
-				paragrafos = row[coluna_texto].split('\n')
-				for p in paragrafos:
-					textos.append(p)
-		textos_n = tp.normalize_texts(textos)
-		corpus = [dicionario.doc2bow(text) for text in textos_n]
-		topicos = models.ldamodel.LdaModel(corpus, num_topics=num_topics, id2word = dicionario, passes=npasses,chunksize=100)
-		pickle.dump(topicos,open('topicos_%s.pickle' % (nome,),'wb'))
-	
+		pickle.dump(dicionario,,open('dicionario_%s.pickle' % (nome,),'wb'))
+		
+		## df = pd.read_csv(path_dados,chunksize=1000,nrows=10000)
+		# # topicos = models.ldamodel.LdaModel([dicionario.doc2bow(text) for text in textos_0], num_topics=num_topics, id2word = dicionario, passes=npasses)
+		# # for chunk in df:
+		# # 	textos = []
+		# # 	for index, row in chunk.iterrows():
+		# # 		paragrafos = row[coluna_texto].split('\n')
+		# # 		for p in paragrafos:
+		# # 			textos.append(p)
+		# # 	textos_n = tp.normalize_texts(textos)
+		# # 	corpus = [dicionario.doc2bow(text) for text in textos_n]
+		# # 	topicos.update(corpus)
+
 	print('1_instancia_paragrafos')
 	relatorio(dados_1_inst,'1_instancia_paragrafos')
 	print('2_instancia_paragrafos')
