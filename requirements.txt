@@ -25,3 +25,4 @@ Flask
 docx2txt
 arrow
 wordcloud
+networkx
