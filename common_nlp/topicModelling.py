@@ -24,10 +24,13 @@ class topicModelling(textNormalization):
 	def dicionario_corpora(self,textos):
 		return corpora.Dictionary(textos)
 
-	def lda_Model(self, texts, num_topics=5, npasses=20):
+	def lda_Model(self, texts, num_topics=5, npasses=20, dicionario=None):
 		'''O input precisa ser uma lista em que cada elemento da lista é uma string correspondendo a um texto'''
 		textos = self.normalize_texts(texts)
-		dicionario = self.dicionario_corpora(textos)
+		if dicionario:
+			dicionario = dicionario
+		else:
+			dicionario = self.dicionario_corpora(textos)
 		corpus = [dicionario.doc2bow(text) for text in textos]
 		return models.ldamodel.LdaModel(corpus, num_topics=num_topics, id2word = dicionario, passes=npasses,chunksize=1000)
 
@@ -90,7 +93,7 @@ if __name__ == '__main__':
 					textos.append(p)
 			textos_n = tp.normalize_texts(textos)
 			dicionario.add_documents(textos_n)
-		pickle.dump(dicionario,,open('dicionario_%s.pickle' % (nome,),'wb'))
+		pickle.dump(dicionario,open('dicionario_%s.pickle' % (nome,),'wb'))
 		
 		## df = pd.read_csv(path_dados,chunksize=1000,nrows=10000)
 		# # topicos = models.ldamodel.LdaModel([dicionario.doc2bow(text) for text in textos_0], num_topics=num_topics, id2word = dicionario, passes=npasses)
