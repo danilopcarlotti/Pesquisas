@@ -47,24 +47,42 @@ class crawler_jurisprudencia_tjma(crawler_jurisprudencia_tj):
 				break
 
 	def download_diario_retroativo(self, data_especifica=None):
-		data_ini_xpath = 'dtaInicio'
-		data_fim_xpath = 'dtaTermino'
+		data_ini_xpath = '//*[@id="dtaInicio"]'
+		data_fim_xpath = '//*[@id="dtaTermino"]'
 		download_xpath = '//*[@id="table1"]/tbody/tr[2]/td[3]/a[1]'
 		link_inicial = 'http://www.tjma.jus.br/inicio/diario'
 		pesquisar_xpath = '//*[@id="btnConsultar"]'
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(link_inicial)
-		time.sleep(3)
+		time.sleep(4)
 		datas = []
 		if data_especifica:
-			driver.find_element_by_id(data_ini_xpath).send_keys(data_especifica)
-			driver.find_element_by_id(data_fim_xpath).send_keys(data_especifica)
-			driver.find_element_by_xpath(pesquisar_xpath).click()
+			data_ini_element = driver.find_element_by_xpath(data_ini_xpath)
+			driver.execute_script("arguments[0].style.visibility = 'visible';",data_ini_element)
+			driver.execute_script("arguments[0].removeAttribute('readonly')", data_ini_element)
+			data_ini_element.click()
+			data_ini_element.clear()
+			data_ini_element.send_keys(data_especifica)
+			data_fim_element = driver.find_element_by_xpath(data_fim_xpath)
+			driver.execute_script("arguments[0].style.visibility = 'visible';",data_fim_element)
+			driver.execute_script("arguments[0].removeAttribute('readonly')", data_fim_element)
+			data_fim_element.click()
+			data_fim_element.clear()
+			data_fim_element.send_keys(data_especifica)
+			data_fim_element.click()
 			try:
 				driver.find_element_by_xpath(download_xpath).click()
 				time.sleep(3)
-				subprocess.Popen('mkdir %s/Diarios_ma/%s' % (path_hd,nome_pasta), shell=True) 
-				subprocess.Popen('mv %s/*.pdf %s/Diarios_ma/%s' % (path,path_hd,nome_pasta), shell=True)
+				driver.switch_to.window(driver.window_handles[-1])
+				url = driver.current_url
+				driver.close()
+				response = urllib.request.urlopen(url,timeout=15)
+				file = open(data_especifica+"_MA.pdf", 'wb')
+				time.sleep(1)
+				file.write(response.read())
+				file.close()
+				# subprocess.Popen('mkdir %s/Diarios_ma/%s' % (path_hd,nome_pasta), shell=True) 
+				# subprocess.Popen('mv %s/*.pdf %s/Diarios_ma/%s' % (path,path_hd,nome_pasta), shell=True)
 			except Exception as e:
 				print(e)
 			return
@@ -91,7 +109,6 @@ class crawler_jurisprudencia_tjma(crawler_jurisprudencia_tj):
 				subprocess.Popen('mv %s/*.pdf %s/Diarios_ma/%s' % (path,path_hd,nome_pasta), shell=True)
 			except Exception as e:
 				print(e)
-
 
 	def parser_acordaos(self,texto,cursor):
 		numero = busca(r'\n(.*?)\(clique aqui para visualizar o processo\)', texto)
@@ -120,4 +137,4 @@ if __name__ == '__main__':
 	# except Exception as e:
 	# 	print(e)
 
-	c.download_diario_retroativo()
+	c.download_diario_retroativo(data_especifica='02/09/2019')

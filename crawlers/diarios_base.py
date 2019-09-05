@@ -15,11 +15,14 @@ re_final_ro = '\nOrigem\:|\nMandado de Segurança|\nNúmero do Processo|\nProces
 re_final_sc = '\n\s*ADV\s*?\:|\nProcesso|\n\d*\s*\.*Recurso |\n\d*\s*\.*Ag\s*ra\s*vo |\n\d*\s*\.*Embargo|\n\d*\s*\.*Apelação |\n\d*\s*\.*Recurso |\n\s*N\.*°*|\n\s*\d+\s*?\-\s*?N\.*°*'
 re_final_stf = '\nHABEAS CORPUS\n(?=\d+)|\nAGRAVO DE INSTRUMENTO\n(?=\d+)|\nMANDADO DE SEGURANÇA\n(?=\d+)|\nRECLAMAÇÃO\n(?=\d.\d+)|\nRECURSO EXTRAORDINÁRIO COM AGRAVO (?=\d+)|\nRECURSO EXTRAORDINÁRIO (?=\d+)|\nAG\.REG\.|\nEMB\.DECL\. (?=\d+)|\nAÇÃO DIRETA DE INCONSTITUCIONALIDADE (?=\d+)|\nAÇÃO ORIGINÁRIA (?=\d+)|\nAÇÃO PENAL (?=\d+)|\nMEDIDA CAUTELAR NA RECLAMAÇÃO (?=\d+)|\nMEDIDA CAUTELAR NA RECLAMAÇÃO (?=\d+)|\nCUMPRIMENTO DE SENTENÇA NA AÇÃO (?=\d+)|\nEXECUÇÃO CONTRA A FAZENDA (?=\d+)|\nEXTRADIÇÃO (?=\d+)|\nRECURSO ORDINÁRIO (?=\d+)|\nSEGUNDO AG\.REG\. (?=\d+)'
 re_final_stj = '\nMANDADO DE SEGURANÇA [Nn]°|\nRECURSO ESPECIAL [Nn]°|\nAGRAVO EM RECURSO ESPECIAL [Nn]°|\nAgInt no RECURSO ESPECIAL [Nn]°|\nAgInt no RCD na MEDIDA CAUTELAR [Nn]°|\nEDcl no AgRg no RECURSO ESPECIAL [Nn]°|\nAgRg no AGRAVO EM RECURSO ESPECIAL [Nn]°|\nAgRg no RECURSO ESPECIAL [Nn]°|\nRECURSO EM HABEAS CORPUS [Nn]°|\nHABEAS CORPUS [Nn]°'
-re_final_to = '\n\s*?Autos n.|\n\s*?AUTOS N|\nProcesso N.|\nEDITAL DE CITAÇÃO|\nEDITAL DE INTIMAÇÃO|\nPROCESSO N.|\nPROTOCOLO|\d{1,4} - Recurso'
-re_final_trf4 = '\nAPELAÇÃO CÍVEL N\.*°|\nAPELAÇÃO.*?REMESSA NECESSÁRIA N\.*°|\nAGRAVO DE INSTRUMENTO N\.*°|\nEMBARGOS DE DECLARAÇÃO |\nEXECUÇÃO FISCAL N\.*°|\nPROCEDIMENTO COMUM N\.*°|\nEXECUÇÃO DE SENTENÇA CONTRA FAZENDA |\nEXECUÇÃO DE TÍTULO |\nEXECUÇÃO H\nIPOTECÁ|\nAÇÃO PENAL N\.*°|\nMON\nITÓR\nIA N\.*°|\nREMESSA NECESSÁRIA CÍVEL N\.*°|\nAPELAÇÃO.*?REEXAME NECESSÁRIO N\.*°'
-re_num_cnj = r'\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}'
+re_final_to = '\n\s*?Autos n|\n\s*?AUTOS N|\n\s*?Processo N|\n\s*?EDITAL DE CITAÇÃO|\n\s*?EDITAL DE INTIMAÇÃO|\n\s*?PROCESSO N|\n\s*?PROTOCOLO|\n\s*?\d{1,4}\s*?\-\s*?Recurso|\n\s*?ORIGEM\:'
+re_final_trf1 = '\n\s*?Numera..o .nica\:|\n\s*?PODER JUDICI.RIO|\n\s*?(\d{4,8}\s*\-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4})'
+re_final_trf3 = '\n\s*?(\d{4,8}\s*\-\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1,3}\s*\.\s*\d{4})'
+re_final_trf4 = '\n\s*?AGRAVO\n\s*?EMBARGOS|\n\s*?EXECUÇÃO|\n\s*?PROCEDIMENTO|\n\s*?AÇÃO|\n\s*?REMESSA|\n\s*?APELAÇÃO\s*?CÍVEL|\n\s*?APELAÇÃO\s*?REMESSA|\n\s*?APELAÇÃO\s*?REEXAME|\n\s*?EDITAL|\n\s*?\d{7}\s'
+re_final_trf5 = '\n\s*?AC \-|\n\s*?REOAC \-|\n\s*?APELREEX \-|\n\s*?AGIVP \-|\s*?PROTOCOLO N|\s*?\d{4}\s*?\.\s*Processo'
+re_num_cnj = r'\d{4,8}\s*\-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}'
 re_num_stf_stj = r'\d.*?( -)'
-re_num_trf_trt =r'\d{7}\s*?-\d{2}\s*?\.\d{4}\s*?\.\d{1}\s*?\.\d{2}\s*?\.\d{4}|\d{7}\s*?-\d{2}\s*?\.\d{4}\s*?\.\d{3}\s*?\.\d{4}|\d{15}'
+re_num_trf_trt =r'\d{4}\.\d{2}\.\d{2}\.\d{6}\-\d|\d{7}\s*?-\d{2}\s*?\.\d{4}\s*?\.\d{1}\s*?\.\d{2}\s*?\.\d{4}|\d{7}\s*?-\d{2}\s*?\.\d{4}\s*?\.\d{3}\s*?\.\d{4}|\d{15}|\d{3,5}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}'
 
 diarios = {
 	'ac':[r'{}'.format(re_final_ac,),re_num_cnj],
@@ -49,12 +52,12 @@ diarios = {
 	'sp':[r'\n\s*?Processo |\n\s*?PROCESSO\:|\n\s*?N\.*[º°]|\n\s*?\d+\s*?\-\s',r'\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}|\d{3}\s*\-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{6}\s*\.*\-*\s*\d{1}'],
 	'stf':[r'{}'.format(re_final_stf,),re_num_stf_stj],
 	'stj':[r'{}'.format(re_final_stj,),re_num_stf_stj],
-	'to':[r'{}'.format(re_final_to,),re_num_cnj],
-	'trf1':[r'{}'.format(re_final_trf4,),re_num_trf_trt],
+	'to':[r'{}'.format(re_final_to,),r'\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.*\-*\s*\d{4}|\d{4}\.\d{4}\.\d{4}\-*\.*\d|\d{4}\/\d{2}'],
+	'trf1':[r'{}'.format(re_final_trf1,),re_num_trf_trt],
 	'trf2':[r'{}'.format(re_final_trf4,),re_num_trf_trt],
-	'trf3':[r'{}'.format(re_final_trf4,),re_num_trf_trt],
+	'trf3':[r'{}'.format(re_final_trf3,),re_num_trf_trt],
 	'trf4':[r'{}'.format(re_final_trf4,),re_num_trf_trt],
-	'trf5':[r'\s*?PROTOCOLO N|\s*?\d{4}\s*?\.\s*Processo',re_num_trf_trt],
+	'trf5':[r'{}'.format(re_final_trf5,),re_num_trf_trt],
 	'trt':[r'\s*?Processo N\.*°|\s*?Processo RO|\s*?PROCESSO N\.',re_num_trf_trt]
 }
 

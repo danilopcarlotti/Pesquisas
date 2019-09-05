@@ -123,12 +123,12 @@ class crawler_jurisprudencia_stj(crawlerJus):
 			for i in range(1,10):
 				for j in range(1,10):
 					datas.append('0'+str(j)+'0'+str(i)+''+lista_anos[l])
-				for j in range(10,29):
+				for j in range(10,32):
 					datas.append(str(j)+'0'+str(i)+lista_anos[l])
 			for i in range(10,13):
 				for j in range(1,10):
 					datas.append('0'+str(j)+str(i)+lista_anos[l])
-				for j in range(10,29):
+				for j in range(10,32):
 					datas.append(str(j)+str(i)+lista_anos[l])
 		for data in datas:
 			driver.find_element_by_xpath('//*[@id="id_data_pesquisa"]').clear()

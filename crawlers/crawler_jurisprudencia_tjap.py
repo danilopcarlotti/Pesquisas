@@ -29,10 +29,19 @@ class crawler_jurisprudencia_tjap():
 		arq.write(crawler_jurisprudencia_tj.extrai_texto_html(self,driver.page_source))
 		driver.close()
 
+	def download_diario(self, ultimo_download=2765):
+		driver = webdriver.Chrome(self.chromedriver)
+		driver.get('http://tucujuris.tjap.jus.br/tucujuris/pages/consultar-dje/consultar-dje.html')
+		time.sleep(5)
+		driver.execute_script("document.getElementById('dje-%s').click()" % (str(ultimo_download+1),))
+		time.sleep(5)
+		#atualizar último_download
+
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjap()
 	print('comecei ',c.__class__.__name__)
 	try:
-		c.download_tj()
-	except:
-		print('finalizei com erro\n')
+		c.download_diario()
+		# c.download_tj()
+	except Exception as e:
+		print('finalizei com erro ',e)

@@ -1,4 +1,4 @@
-import re, time, urllib.request, ssl, logging, subprocess, os
+import re, time, urllib.request, ssl, logging, subprocess, os, pyautogui
 from bs4 import BeautifulSoup
 from common.download_path import path
 from common.download_path_diarios import path as path_diarios
@@ -19,6 +19,12 @@ class publicacoes_diarios_oficiais(crawlerJus):
 		self.baixa_trf5,self.baixa_go,self.baixa_rs,self.baixa_ac,self.baixa_trf4,self.baixa_df,self.baixa_sc,self.baixa_rn,self.baixa_trf3,self.baixa_pe,
 		self.baixa_sp,self.baixa_ce,self.baixa_al,self.baixa_ms,self.baixa_am,self.baixa_pr,self.baixa_trt,self.baixa_es,self.baixa_ap,self.baixa_pb,self.baixa_se,
 		self.baixa_mt,self.baixa_trf2]		
+		hoje = datetime.date.today().strftime("%Y%m%d")
+		self.ano = hoje[:4]
+		self.mes = hoje[4:6]
+		self.dia = hoje[6:]
+		if len(self.dia)==1:
+		    self.dia = "0" + self.dia
 		self.data = data
 		if self.data:
 			self.ano_pesquisar = self.data[:4]
@@ -27,10 +33,11 @@ class publicacoes_diarios_oficiais(crawlerJus):
 
 		# FALTA MG, RJ, BA
 
-	def baixa_stf(self):
+	def baixa_stf(self,ultimo_download=191):
 		if self.data:
-			link_final_stf = ("https://www.stf.jus.br/arquivo/djEletronico/DJE_%s_%s.pdf" % (self.ano_pesquisar+self.mes_pesquisar+self.dia_pesquisar,n_diario_stf_f[0]))
-			response = urllib.request.urlopen(link_final_stf,timeout=1)
+			# PROBLEMA! VERIFICAR SE O DOWNLOAD FOI FEITO. SE ELE FOI, ENTÃO ATUALIZAR ÚLTIMO DOWNLOAD
+			link_final_stf = ("https://www.stf.jus.br/arquivo/djEletronico/DJE_%s_%s.pdf" % (self.ano_pesquisar+self.mes_pesquisar+self.dia_pesquisar,ultimo_download))
+			response = urllib.request.urlopen(link_final_stf,timeout=15)
 			file = open(self.dia_pesquisar+self.mes_pesquisar+self.ano_pesquisar+"STF.pdf", 'wb')
 			time.sleep(1)
 			file.write(response.read())
@@ -78,18 +85,26 @@ class publicacoes_diarios_oficiais(crawlerJus):
 		driver.close()	
 
 	def baixa_ma(self):
-		if self.data:
-			from crawler_jurisprudencia_tjma import crawler_jurisprudencia_tjma
-			c = crawler_jurisprudencia_tjma()
-			c.download_diario_retroativo(data_especifica=self.dia_pesquisar+self.mes_pesquisar+self.ano_pesquisar)
-			return
+		# if self.data:
+		# 	from crawler_jurisprudencia_tjma import crawler_jurisprudencia_tjma
+		# 	c = crawler_jurisprudencia_tjma()
+		# 	c.download_diario_retroativo(data_especifica=self.dia_pesquisar+self.mes_pesquisar+self.ano_pesquisar)
+		# 	return
 		ma_dje = "http://www.tjma.jus.br/inicio/diario"
 		driver = webdriver.Chrome(self.chromedriver)
 		driver.get(ma_dje)
 		driver.find_element_by_xpath('//*[@id="btnConsultar"]').click()
 		driver.find_element_by_xpath('//*[@id="table1"]/tbody/tr[2]/td[3]/a[1]').click()
 		time.sleep(3)
+		driver.switch_to.window(driver.window_handles[-1])
+		url = driver.current_url
 		driver.close()
+		print(url)
+		response = urllib.request.urlopen(url,timeout=15)
+		file = open(str(self.dia+self.mes+self.ano)+"MA.pdf", 'wb')
+		time.sleep(1)
+		file.write(response.read())
+		file.close()
 
 	def baixa_to(self):
 		link_diario_TO_f = []
@@ -127,12 +142,12 @@ class publicacoes_diarios_oficiais(crawlerJus):
 
 	def baixa_stj(self):
 		if self.data:
-			link_stj_f = "http://dj.stj.jus.br/"+self.data+".pdf"
-			file = open(self.dia_pesquisar+self.mes_pesquisar+self.ano_pesquisar+"STJ.pdf", 'wb')
+			link_stj_f = "https://ww2.stj.jus.br/docs_internet/processo/dje/zip/stj_dje_%s.zip" % (self.data,)
+			file = open(self.dia_pesquisar+self.mes_pesquisar+self.ano_pesquisar+"STJ.zip", 'wb')
 		else:
-			link_stj_f = "http://dj.stj.jus.br/"+self.ano+self.mes+self.dia+".pdf"
-			file = open(self.dia+self.mes+self.ano+"STJ.pdf", 'wb')
-		response = urllib.request.urlopen(link_stj_f,timeout=30)
+			link_stj_f = "https://ww2.stj.jus.br/docs_internet/processo/dje/zip/stj_dje_%s.zip" % (self.ano+self.mes+self.dia,)
+			file = open(self.dia+self.mes+self.ano+"STJ.zip", 'wb')
+		response = urllib.request.urlopen(link_stj_f,timeout=300)
 		time.sleep(2)
 		file.write(response.read())
 		file.close()
@@ -451,14 +466,15 @@ class publicacoes_diarios_oficiais(crawlerJus):
 			file.close()
 			subprocess.Popen('mv %s/*.pdf %s/%s' % (os.getcwd(),path_diarios,filename), shell=True)
 
-	def baixa_ap(self):
-		ap_dje = "http://tucujuris.tjap.jus.br/tucujuris/pages/consultar-dje/consultar-dje.html?refer=java"
+	def baixa_ap(self, ultimo_download=2765):
 		driver = webdriver.Chrome(self.chromedriver)
-		driver.get(ap_dje)
-		time.sleep(3)
-		driver.find_element_by_xpath('//*[@id="dje-2498"]').click()
+		driver.get('http://tucujuris.tjap.jus.br/tucujuris/pages/consultar-dje/consultar-dje.html')
 		time.sleep(5)
-		subprocess.Popen('mv %s/*.pdf %s/TJAP_%s.pdf' % (path,path_diarios,self.dia+self.mes+self.ano), shell=True)
+		driver.execute_script("document.getElementById('dje-%s').click()" % (str(ultimo_download+1),))
+		print(driver.execute_script("document.getElementById('dje-%s')" % (str(ultimo_download+1),)))
+		driver.execute_script("%s.download" % (str(ultimo_download+1),))
+		time.sleep(5)
+		# atualizar ultimo_download!!!
 
 	def baixa_pb(self):
 		pb_dje = "https://app.tjpb.jus.br/dje/paginas/diario_justica/publico/buscas.jsf"
@@ -544,10 +560,29 @@ class publicacoes_diarios_oficiais(crawlerJus):
 	def baixa_mg(self):
 		pass
 
-	def baixa_ba(self):
+	def baixa_ba(self, ultimo_download=0):
 		pass
+		# driver = webdriver.Chrome(self.chromedriver)
+		# driver.get('https://diario.tjba.jus.br/diario/internet/inicial.wsp?tmp.diario.nu_edicao=%s&tmp.diario.cd_caderno=&tmp.diario.cd_secao=&tmp.diario.dt_inicio=26/08/2019&tmp.diario.dt_fim=05/09/2019&tmp.diario.id_advogado=&tmp.diario.pal_chave='  % (str(ultimo_download+1),))
+		# time.sleep(5)
+		# driver.switch_to.frame(driver.find_element_by_name("menu"))
+		# time.sleep(1)
+		# driver.find_element_by_xpath('/html/body/table/tbody/tr[3]/td/a').click()
+		# time.sleep(1)
+		# driver.switch_to.window(driver.window_handles[1])
+		# time.sleep(35)
+		# # pyautogui.hotkey('ctrl','s')
+		# # time.sleep(2)
+		# # pyautogui.press('enter')
+		# # file = open(str(self.data)+"_BA.pdf", 'wb')
+		# time.sleep(1)
+		# file.write(driver.page_source)
+		# time.sleep(1)
+		# atualizar ultimo_download!!!
 
 if __name__ == '__main__':
-	publicacoes = publicacoes_diarios_oficiais()
-	for d in publicacoes.diarios_a_baixar:
-		d()
+	publicacoes = publicacoes_diarios_oficiais(data='20190902')
+	# publicacoes = publicacoes_diarios_oficiais()
+	publicacoes.baixa_stj()
+	# for d in publicacoes.diarios_a_baixar:
+	# 	d()
