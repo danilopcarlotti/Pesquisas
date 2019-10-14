@@ -6,9 +6,9 @@ class networkx_graphs():
 	def __init__(self, file_path=None):
 		self.file_path = file_path
 
-	def df_dir_graph(self,originC,desctinationC, csvf=False, excelf=False):
+	def df_dir_graph(self,originC,destinationC, csvf=False, excelf=False):
 		# originC = column representing origin of node of directional graph
-		# desctinationC = column representing destination of node of directional graph
+		# destinationC = column representing destination of node of directional graph
 		# the number of connections between two vertices is represented as an attribute, 'weight', of the edge
 		if excelf:
 			df = pd.read_excel(self.file_path, error_bad_lines=False)
@@ -16,10 +16,10 @@ class networkx_graphs():
 			df = pd.read_csv(self.file_path, error_bad_lines=False)
 		self.create_dir_graph()
 		for index, row in df.iterrows():
-			if self.graph.has_edge(row[originC], row[desctinationC]):
-				self.graph[row[originC]][row[desctinationC]]['weight'] += 1
+			if self.graph.has_edge(row[originC], row[destinationC]):
+				self.graph[row[originC]][row[destinationC]]['weight'] += 1
 			else:
-				self.graph.add_edge(row[originC], row[desctinationC], weight=1)
+				self.graph.add_edge(row[originC], row[destinationC], weight=1)
 
 	def closeness_centrality(self):
 		return networkx.closeness_centrality(self.graph)

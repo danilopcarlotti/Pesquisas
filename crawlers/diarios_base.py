@@ -1,75 +1,230 @@
-import re, os, sys, time
+import pymongo, sys, re, pandas as pd, os
 
-sys.path.append(os.path.dirname(os.getcwd()))
-from common_nlp.parse_texto import busca
-from common_nlp.parserTextoJuridico import parserTextoJuridico
+sys.path.append(os.path.dirname(os.path.dirname(os.getcwd())))
+from Pesquisas.common.recursive_folders import recursive_folders
 
-re_final_ac = '\n\s*?Acórdão n|\n\d+\. Classe|\n\s*?Classe|\n\d+\. CLASSE|\n\s*?CLASSE|\n\d+ - (?=\d{7})|\n\s*?ADV\:|\n\s*?Processo: |\n\s*?Processo (?=\d+)|\n\s*?Autos n\.°'
-re_final_am = '\n.{0,15}PROCESSO DIGITAL\:|\n.{0,15}De ordem d[oa]|\n.{0,15}Despacho proferido pel|\n.{0,15}Apelação n|\n.{0,15}Processo n\.|\n.{0,15}Processo\s*?\:|\n.{0,15}PROCESSO\:|\n.{0,15}Autos n(?=\n\d{7})|\n.{0,15}ADV\:|\n.{0,15}Apelação|\n.{0,15}Agravo|\n.{0,15}Recurso'
-re_final_ce = '\n\s*?PROCESSO\s*?N|\nD\nISTR\nIBU\nIÇÃO|\n[Nn]° (?=\d\d\d\d+)|\n\s*?ADV\:|(\n\s*?\d{4,8}\-\d\d\.\d{4}\.\d\.\d\d\.\d{4})|(\n\s*?\d+\)\s*?\d{4,8}\-\d\d\.\d{4}\.\d\.\d\d\.\d{4})'
-re_final_ma = '\nREQUERIMENTO DE |\nPETIÇÃO N|\nHABEAS CORPUS N|\nPORTARIA-TJ|\n\d{1,3}-PROCESSO|\nACÓRDÃO N|\nProcesso [Nn]°|\nProcesso\:'
-re_final_pb = '\n\s*?APELAÇÃO|\n\s*?HABEAS|\n\s*?MANDADO|\n\s*?EMBARGOS|\n\s*?AGRAVO|\n\s*?CONFLITO NEGATIVO|\n\s*?RECURSO|\n\s*?REEXAME|\n\s*?RELATOR\(A\)\:|\n\s*?COMARCA|\n\s*?Processo|\n\s*?\d+\s*?Processo|\n\s*?Agravo de Instrumento'
-re_final_pi = '\n\s*?PROCESSOS [Nn]|\n\s*?HABEAS CORPUS [Nn]|\n\s*?AGRAVO DE INSTRUMENTO [Nn]|\n\s*?REEXAME NECESSÁRIO [Nn]|\n\s*?APELAÇÃO|\n\s*?MANDADO DE SEGURANÇA [Nn]|\n\s*?DESPACHO|\n\s*?EDITAL |\n\s*?AVISO|\n\s*?ATO ORDINATÓRIO|\n\s*?SENTENÇA|\n\s*?Processos [Nn]|\n\s*?Habeas Corpus [Nn]|\n\s*?Agravo De Instrumento [Nn]|\n\s*?Reexame Necessário [Nn]|\n\s*?Apelação|\n\s*?Mandado de Segurança [Nn]|\n\s*?Despacho|\n\s*?Edital|\n\s*?Aviso|\n\s*?Ato Ordinatório|\n\s*?Sentença|\n\s*?Ref\. Processo|\n\s*?PROCESSO [Nn]|\n\s*?\d*\-*\s*?Processo [Nn]|\n\s*?\d+\.\s(\d{4})'
-re_final_rn = '\n\s*?APELAÇÃO.*?N\.*°|\n\s*?EMBARGOS DE.*?N\.*°|\n\s*?AGRAVO.*?N\.*°|\n\s*?CONFLITO NEGATIVO.*?N\.*°|\n\s*?MANDADO DE SEGUR.*?N\.*°|\n\s*?EXECUÇÃO.*?N\.*°|\n\d*\s*?\-*\s*?Embargos de|\n\d*\s*?\-*\s*?Agravo Interno|\n\d*\s*?\-*\s*?Mandado de Segurança|\n\d*\s*?\-*\s*?Apelação|\n\d*\s*?\-*\s*?Execução|\n\d*\s*?\-*\s*?Ação Rescisória|\n\s*?ADV\:|\n\d*\s*?\-*\s*?Agravo de Instrumento'
-re_final_ro = '\nOrigem\:|\nMandado de Segurança|\nNúmero do Processo|\nProcesso n|\nProc\.\:|\nProcesso\:'
-re_final_sc = '\n\s*ADV\s*?\:|\nProcesso|\n\d*\s*\.*Recurso |\n\d*\s*\.*Ag\s*ra\s*vo |\n\d*\s*\.*Embargo|\n\d*\s*\.*Apelação |\n\d*\s*\.*Recurso |\n\s*N\.*°*|\n\s*\d+\s*?\-\s*?N\.*°*'
-re_final_stf = '\nHABEAS CORPUS\n(?=\d+)|\nAGRAVO DE INSTRUMENTO\n(?=\d+)|\nMANDADO DE SEGURANÇA\n(?=\d+)|\nRECLAMAÇÃO\n(?=\d.\d+)|\nRECURSO EXTRAORDINÁRIO COM AGRAVO (?=\d+)|\nRECURSO EXTRAORDINÁRIO (?=\d+)|\nAG\.REG\.|\nEMB\.DECL\. (?=\d+)|\nAÇÃO DIRETA DE INCONSTITUCIONALIDADE (?=\d+)|\nAÇÃO ORIGINÁRIA (?=\d+)|\nAÇÃO PENAL (?=\d+)|\nMEDIDA CAUTELAR NA RECLAMAÇÃO (?=\d+)|\nMEDIDA CAUTELAR NA RECLAMAÇÃO (?=\d+)|\nCUMPRIMENTO DE SENTENÇA NA AÇÃO (?=\d+)|\nEXECUÇÃO CONTRA A FAZENDA (?=\d+)|\nEXTRADIÇÃO (?=\d+)|\nRECURSO ORDINÁRIO (?=\d+)|\nSEGUNDO AG\.REG\. (?=\d+)'
-re_final_stj = '\nMANDADO DE SEGURANÇA [Nn]°|\nRECURSO ESPECIAL [Nn]°|\nAGRAVO EM RECURSO ESPECIAL [Nn]°|\nAgInt no RECURSO ESPECIAL [Nn]°|\nAgInt no RCD na MEDIDA CAUTELAR [Nn]°|\nEDcl no AgRg no RECURSO ESPECIAL [Nn]°|\nAgRg no AGRAVO EM RECURSO ESPECIAL [Nn]°|\nAgRg no RECURSO ESPECIAL [Nn]°|\nRECURSO EM HABEAS CORPUS [Nn]°|\nHABEAS CORPUS [Nn]°'
-re_final_to = '\n\s*?Autos n|\n\s*?AUTOS N|\n\s*?Processo N|\n\s*?EDITAL DE CITAÇÃO|\n\s*?EDITAL DE INTIMAÇÃO|\n\s*?PROCESSO N|\n\s*?PROTOCOLO|\n\s*?\d{1,4}\s*?\-\s*?Recurso|\n\s*?ORIGEM\:'
-re_final_trf1 = '\n\s*?Numera..o .nica\:|\n\s*?PODER JUDICI.RIO|\n\s*?(\d{4,8}\s*\-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4})'
-re_final_trf3 = '\n\s*?(\d{4,8}\s*\-\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1,3}\s*\.\s*\d{4})'
-re_final_trf4 = '\n\s*?AGRAVO\n\s*?EMBARGOS|\n\s*?EXECUÇÃO|\n\s*?PROCEDIMENTO|\n\s*?AÇÃO|\n\s*?REMESSA|\n\s*?APELAÇÃO\s*?CÍVEL|\n\s*?APELAÇÃO\s*?REMESSA|\n\s*?APELAÇÃO\s*?REEXAME|\n\s*?EDITAL|\n\s*?\d{7}\s'
-re_final_trf5 = '\n\s*?AC \-|\n\s*?REOAC \-|\n\s*?APELREEX \-|\n\s*?AGIVP \-|\s*?PROTOCOLO N|\s*?\d{4}\s*?\.\s*Processo'
-re_num_cnj = r'\d{4,8}\s*\-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}'
-re_num_stf_stj = r'\d.*?( -)'
-re_num_trf_trt =r'\d{4}\.\d{2}\.\d{2}\.\d{6}\-\d|\d{7}\s*?-\d{2}\s*?\.\d{4}\s*?\.\d{1}\s*?\.\d{2}\s*?\.\d{4}|\d{7}\s*?-\d{2}\s*?\.\d{4}\s*?\.\d{3}\s*?\.\d{4}|\d{15}|\d{3,5}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}'
+def month_to_number(month):
+    month = month.lower()
+    dicionario_meses = {
+        'dezembro':'12',
+        'novembro':'11',
+        'outubro':'10',
+        'setembro':'09',
+        'agosto':'08',
+        'julho':'07',
+        'junho':'06',
+        'maio':'05',
+        'abril':'04',
+        'março':'03',
+        'fevereiro':'02',
+        'janeiro':'01'
+    }
+    if month in dicionario_meses:
+        return dicionario_meses[month]
+    else:
+        return ' '
 
-diarios = {
-	'ac':[r'{}'.format(re_final_ac,),re_num_cnj],
-	'al':[r'\n\s*?ADV\s*?\:|\n\s*?Macei.*?\n',re_num_cnj],
-	'am':[r'{}'.format(re_final_am,),re_num_cnj],
-	'ap':[r'\nDISTRIBUIÇÃO|\nN. do processo\:|\nVARA\:',re_num_cnj],
-	'ba':[r'DIREITO (?=\d{7}-\d{2}\.)|\nIntimação',re_num_cnj],
-	'ce':[r'{}'.format(re_final_ce,),r'\d{4,8}\s*-\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}'],
-	'df':[r'\n\d{1,4}\. (?=\d{4})|\nNum Processo|\nN. |\n\s*?Distribuição',r'\d{4,8}\s*-?\.?\s*\d{2}\s*\.?\s*\d{4}\s*\.?\s*\d{1}\s*\.?\s*\d{2}\s*\.?\s*\d{4}|\d{4}\.*\s*\d{2}\.*\s*\d\.*\s*\d{6}\-*\s*\d'],
-	'go':[r'\n\s*?PROTOCOLO\s*?\:|\n\s*?NR\.|\n\s*?PROCESSO\s*?\:|\n\s*?\d+\s*?\-\s*?Processo n',re_num_cnj],
-	'ma':[r'{}'.format(re_final_ma,),re_num_cnj],
-	'mg':[r'\n\d{5} - (?=\d{7}',re_num_cnj],
-	'ms':[r'\nJUÍZO DE DIREITO DA|\n\s*?Agravo de Instrumento|\n\s*?Apelação|\n\s*?Habeas Corpus|\n\s*?Comarca de|\n\s*?Revisão Criminal|\n\s*?Mandado de Segurança|\n\s*?Recurso Em Sentido Estrito|\n\s*?Embargos|\n\s*?Exceção|\n\s*?Reexame',re_num_cnj],
-	'mt':[r'\n\s*?Protocolo|\n\s*?Intimação|\n\s*?Cod\.\s*?Proc\.|\n\s*?Processo',r'\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}|\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1,3}\s*\.\s*\d{2,4}'],
-	'pa':[r'\nPROCESSO\:',re_num_cnj],
-	'pb':[r'{}'.format(re_final_pb,),r'\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}|\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1,3}\s*\.\s*\d{2,4}|\d{17}'],
-	'pe':[r'\n\s*?Protocolo|\n\s*?Processo N',re_num_cnj],
-	'pi':[r'{}'.format(re_final_pi,),r'\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}|\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1,3}\s*\.\s*\d{2,4}|\d{4}\.\d{4,6}\.\d{6,8}\-\d'],
-	'pr':[r'\n\d{1,4} \. Processo[\:/]|\n\d+\.\s',re_num_cnj],
-	'rj':[r'\nProc\.',re_num_cnj],
-	'rn':[r'{}'.format(re_final_rn,),r'\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}|\d{4}\.\d{6}\-\d'],
-	'ro':[r'{}'.format(re_final_ro,),re_num_cnj],
-	'rr':[r'\n\d{3}\s*?\-',re_num_cnj],
-	'rs':[r'\nEDITAL DE|\n(?=\d{7})-|\n\d+\s*?\-\s*?.*?CNJ\s*?\:',re_num_cnj],
-	'sc':[r'{}'.format(re_final_sc,),re_num_cnj],
-	'se':[r'\n\s*?NO\. PROCESSO|\n\s*?NO\. ACORDÃO|\n\s*?PROC\.\:',r'\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}|\d{10,12}'],
-	'sp':[r'\n\s*?Processo |\n\s*?PROCESSO\:|\n\s*?N\.*[º°]|\n\s*?\d+\s*?\-\s',r'\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}|\d{3}\s*\-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{6}\s*\.*\-*\s*\d{1}'],
-	'stf':[r'{}'.format(re_final_stf,),re_num_stf_stj],
-	'stj':[r'{}'.format(re_final_stj,),re_num_stf_stj],
-	'to':[r'{}'.format(re_final_to,),r'\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.*\-*\s*\d{4}|\d{4}\.\d{4}\.\d{4}\-*\.*\d|\d{4}\/\d{2}'],
-	'trf1':[r'{}'.format(re_final_trf1,),re_num_trf_trt],
-	'trf2':[r'{}'.format(re_final_trf4,),re_num_trf_trt],
-	'trf3':[r'{}'.format(re_final_trf3,),re_num_trf_trt],
-	'trf4':[r'{}'.format(re_final_trf4,),re_num_trf_trt],
-	'trf5':[r'{}'.format(re_final_trf5,),re_num_trf_trt],
-	'trt':[r'\s*?Processo N\.*°|\s*?Processo RO|\s*?PROCESSO N\.',re_num_trf_trt]
-}
+def extrair_data_sp(texto):
+    data = re.search(r'Diarios_sp/(.*?)/', texto)
+    if data:
+        data = data.group(1)
+        if len(data) == 8:
+            return data[:2]+'/'+data[2:4]+'/'+data[4:]
+        elif len(data) == 6:
+            return '0'+data[0]+'/0'+data[1]+'/'+data[2:]
+        elif len(data) == 7:
+            if int(data[0]) > 1 or int(data[1]) > 1:
+                return data[:2]+'/0'+data[2]+'/'+data[3:]
+        else:
+            return ''
+    else:
+        return ''
 
-def encontra_publicacoes(tribunal, texto):
-	return re.split(diarios[tribunal][0],texto)
+def extrair_data_pe(arq, path_prefix = '/media/danilo/Seagate Expansion Drive/Diarios/'):
+    try:
+        path_sufix = arq.split('/Diarios/')[1]
+    except:
+        return ''
+    cabecalho = ''
+    contador = 0
+    for line in open(path_prefix+path_sufix,'r'):
+        if contador > 10:
+            break
+        else:
+            contador += 1
+            cabecalho += line
+    data_raw = re.search(r'Publicação: (\d{2}/\d{2}/\d{4})', cabecalho)
+    if data_raw:
+        return data_raw.group(1)
+    else:
+        return ''
 
-def encontra_numero(tribunal, texto):
-	return busca(diarios[tribunal][1],texto,ngroup=0).replace('\n','')
+def extrair_data_mt(arq, path_prefix = '/media/danilo/Seagate Expansion Drive/Diarios/'):
+    try:
+        path_sufix = arq.split('/Diarios/')[1]
+    except:
+        return ''
+    cabecalho = ''
+    contador = 0
+    for line in open(path_prefix+path_sufix,'r'):
+        if contador > 500:
+            break
+        else:
+            contador += 1
+            cabecalho += line
+    data_raw = re.search(r'DISPONIBILIZADA NO DIÁRIO DA JUSTIÇA ELETRÔNICO, EDIÇÃO .*? DE (\d{2}/\d{2}/\d{4})', cabecalho)
+    if data_raw:
+        return data_raw.group(1)
+    else:
+        return ''
 
-def encontra_data(texto):
-	data = re.search(r'\d{2}/\d{2}/\d{4}|\d{2}-\d{2}-\d{4}',texto)
-	if data:
-		return data.group(0)
+def extrair_data_am(texto):
+    data = re.search(r'Diarios_am/(.*?)/', texto)
+    if data:
+        data = data.group(1)
+        if len(data) == 8:
+            return data[:2]+'/'+data[2:4]+'/'+data[4:]
+        elif len(data) == 6:
+            return '0'+data[0]+'/0'+data[1]+'/'+data[2:]
+        elif len(data) == 7:
+            if int(data[0]) > 1 or int(data[1]) > 1:
+                return data[:2]+'/0'+data[2]+'/'+data[3:]
+        else:
+            return '-'
+    else:
+        return '-'
+
+def extrair_data_trf1(texto):
+    data = re.search(r'Diarios_trf1/dir_\d+/.*?(\d{4}\-\d{2}\-\d{2}).*?\.txt', texto)
+    if data:
+        data = data.group(1).replace('-','')
+        return data[-2:]+'/'+data[-4:-2]+'/'+data[:4]
+    else:
+        return ''
+    return ' '
+
+def extrair_data_trf3(arq, path_prefix = '/media/danilo/Seagate Expansion Drive/Diarios/'):
+    try:
+        path_sufix = arq.split('/Diarios/')[1]
+    except:
+        return ''
+    cabecalho = ''
+    contador = 0
+    for line in open(path_prefix+path_sufix,'r'):
+        if contador > 10:
+            break
+        else:
+            contador += 1
+            cabecalho += line
+    data_raw = re.search(r'Edição n.*?((\d{2}) de (.*?) de (\d{4}))', cabecalho, re.DOTALL)
+    if data_raw:
+        day = data_raw.group(2)
+        month = month_to_number(data_raw.group(3))
+        year = data_raw.group(4)
+        return day+'/'+month+'/'+year
+    else:
+        return ''
+
+def extrair_data_trf4(texto):
+    data = re.search(r'Diarios_trf4/(\d{8})\.txt', texto)
+    if data:
+        data = data.group(1)
+        return data[:2]+'/'+data[2:4]+'/'+data[4:]
+    else:
+        return ''
+    return ' '
+
+def extrair_data_trf5(arq, path_prefix = '/media/danilo/Seagate Expansion Drive/Diarios/'):
+    try:
+        path_sufix = arq.split('/Diarios/')[1]
+    except:
+        return ''
+    cabecalho = ''
+    contador = 0
+    for line in open(path_prefix+path_sufix,'r'):
+        if contador > 20:
+            break
+        else:
+            contador += 1
+            cabecalho += line
+    data_raw = re.search(r', (\d{2}) (.*?) (\d{4})', cabecalho, re.DOTALL)
+    if data_raw:
+        day = data_raw.group(1)
+        month = month_to_number(data_raw.group(2))
+        year = data_raw.group(3)
+        return day+'/'+month+'/'+year
+    else:
+        return ''
+
+def extrair_geral(arq):
+	return ' '
+
+def dicionario_funcoes_data(tribunal):
+	dicionario_funcoes = {
+		'sp':{'f':extrair_data_sp,'i':'texto'},
+		'am':{'f':extrair_data_am,'i':'arq'},
+		'mt':{'f':extrair_data_mt,'i':'arq'},
+		'pe':{'f':extrair_data_pe,'i':'texto'},
+        'trf1':{'f':extrair_data_trf1,'i':'texto'},
+        'trf3':{'f':extrair_data_trf3,'i':'arq'},
+        'trf4':{'f':extrair_data_trf4,'i':'arq'},
+        'trf5':{'f':extrair_data_trf5,'i':'arq'},
+		'Geral':{'f':extrair_geral,'i':'arq'}
+	}
+	if tribunal in dicionario_funcoes:
+		return dicionario_funcoes[tribunal]
+	return dicionario_funcoes['Geral']
+
+def insere_publicacoes(path_arquivo, collection_andamentos):
+	df = pd.read_csv(path_arquivo, chunksize=100)
+	for chunk in df:
+		for index, row in chunk.iterrows():
+			numero = str(row['numero_processo']).replace('/','').replace('-','').replace('.','')
+			if len(numero) > 10:
+				texto = row['texto_publicacao'].replace('\n',' ')
+				dic_funcao_data = dicionario_funcoes_data(row['tribunal'])
+				f_data = dic_funcao_data['f']
+				input_type = dic_funcao_data['i']
+				if input_type == 'texto':
+					input_row = texto  
+				else:
+					input_row = row['nome_arquivo']
+				if collection_andamentos.find_one({'_id':numero}):
+					collection_andamentos.update_one({'_id':numero}, 
+										{"$push":
+											{'textos_publicacoes':texto,
+											'nome_arquivo':row['nome_arquivo'],
+											'data':f_data(input_row)
+											}
+										})
+				else:
+					collection_andamentos.insert_one({
+						'_id':numero,
+						'tribunal':row['tribunal'],
+						'textos_publicacoes':[texto],
+						'nome_arquivo':[row['nome_arquivo']],
+						'data':[f_data(input_row)]
+					})
+
+def main(path_diarios, uri_mongo):
+	# VARIÁVEIS DA COLLECTION NA BASE MONGODB
+	if not uri_mongo:
+		uri_mongo = "mongodb://localhost:27017/"
+	myclient = pymongo.MongoClient(uri_mongo)
+	mydb = myclient["jurisprudencia"]
+	collection_andamentos = mydb['andamentos']
+
+	rec = recursive_folders()
+	diarios_processar = [i for i in rec.find_files(path_diarios) if i[-4:] == '.csv']
+	for diario in diarios_processar:
+		try:
+			insere_publicacoes(diario, collection_andamentos)
+		except Exception as e:
+			print(diario)
+			print(e)
+
+if __name__ == '__main__':
+	if len(sys.argv) == 2:
+		main(sys.argv[1], None)
 	else:
-		return ''
+		main(sys.argv[1], sys.argv[2])

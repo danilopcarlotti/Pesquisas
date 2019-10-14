@@ -1,4 +1,4 @@
-from diarios_base import *
+from diarios_separacao import *
 import re, pandas as pd, subprocess
 
 sys.path.append(os.path.dirname(os.path.dirname(os.getcwd())))
@@ -14,7 +14,6 @@ def create_csv(filepath):
 		if re.search(r'Diarios_',p):
 			tribunal = p.split('_')[1]
 			break
-	
 	if tribunal in diarios:
 		texto = '\n'.join([i for i in open(filepath,'r')])
 		publicacoes = encontra_publicacoes(tribunal, texto)
@@ -30,9 +29,9 @@ def create_csv(filepath):
 
 def main(path_diarios):
 	rec_f = recursive_folders()
-	parallel = parallel_programming()
 	arquivos_path = rec_f.find_files(path_diarios)
 	diarios_processar = [i for i in arquivos_path if i[-4:] == '.txt']
+	# parallel = parallel_programming()
 	# parallel.run_f_nbatches(create_csv,diarios_processar)
 	for diario in diarios_processar:
 		create_csv(diario)

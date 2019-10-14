@@ -2,6 +2,7 @@ import urllib.request, json, pandas as pd, time, pyautogui, ssl
 from crawlerJus import crawlerJus
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+import pickle
 
 
 class crawlers_bec(crawlerJus):
@@ -9,9 +10,10 @@ class crawlers_bec(crawlerJus):
 		super().__init__()
 		ssl._create_default_https_context = ssl._create_unverified_context 
 		
-	def crawler_api_bec(self,contador=0):
+	def crawler_api_bec(self,path_excel='/media/danilo/Seagate Expansion Drive/Dados Compras Públicas/df_ocs_nao_baixadas.xlsx',contador=0):
+		ocs_nao_baixadas = []
 		url = 'https://www.bec.sp.gov.br/BEC_API/API/pregao_encerrado/OC_encerrada/20090101/20181008/%s'
-		df = pd.read_excel('/home/danilo/Downloads/OCs_para query Pregoeiros.xlsx')
+		df = pd.read_excel(path_excel)
 		contador_aux = 0
 		for index, row in df.iterrows():
 			# if contador_aux > contador:
@@ -25,12 +27,13 @@ class crawlers_bec(crawlerJus):
 				contador_aux += 1
 			except Exception as e:
 				print(e)
-				print(row['Numero da OC'])
+				ocs_nao_baixadas.append(row['Numero da OC'])
+		return ocs_nao_baixadas
 
 	def crawler_editais_bec(self):
 		url = 'https://www.bec.sp.gov.br/BECSP/aspx/ConsultaOCLinkExterno.aspx?OC=%s&OC=%s'
 		driver = webdriver.Chrome(self.chromedriver)
-		df = pd.read_excel('/home/danilo/Downloads/OCs_para query Pregoeiros.xlsx')
+		df = pd.read_excel('/media/danilo/Seagate Expansion Drive/Dados Compras Públicas/df_ocs_nao_baixadas.xlsx')
 		for index, row in df.iterrows():
 			driver.get(url % (row['Numero da OC'],row['Numero da OC']))
 			driver.execute_script("__doPostBack('dgDocumento$ctl03$ctl00','')")
@@ -38,6 +41,7 @@ class crawlers_bec(crawlerJus):
 			pyautogui.press('enter')
 
 if __name__ == '__main__':
-	#ENDEREÇO DA DF COM NÚMERO DE OC'S
 	c = crawlers_bec()
+	# ocs_nao_baixadas = c.crawler_api_bec()
+	# pickle.dump(ocs_nao_baixadas,open('ocs_bec_nao_baixadas.pickle','wb'))
 	c.crawler_editais_bec()

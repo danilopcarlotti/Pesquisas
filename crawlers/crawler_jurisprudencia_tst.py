@@ -1,4 +1,4 @@
-import sys, re, time, os, subprocess, pyautogui
+import sys, re, time, os, subprocess, pyautogui, urllib.request
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from common.download_path import path, path_hd
@@ -70,15 +70,42 @@ class crawler_jurisprudencia_tst():
 						time.sleep(10)
 		driver.close()
 
+	def download_links_tst(self,links_txt, path_download):
+		encontrei = False
+		for line in open(links_txt,'r'):
+			try:
+				if not encontrei and line.strip() == '#90bb5100faa92d3af41acceb17856fe9':
+					encontrei = True
+					continue
+				if encontrei:
+					id_p = line.strip().replace('#','')
+					link = 'https://jurisprudencia-backend.tst.jus.br/rest/documentos/'+id_p
+					req = urllib.request.Request(link, headers={'User-Agent': 'Mozilla/5.0'})
+					html = urllib.request.urlopen(req,timeout=60).read()
+					soup = BeautifulSoup(html,'lxml')
+					for script in soup(["script", "style"]):
+						script.extract()
+					arq = open(path_download+id_p+'.txt','w')
+					arq.write(soup.get_text())
+					arq.close()
+					time.sleep(1)
+					print(line.strip())
+			except Exception as e:
+				print(e)
+
 	def parser_acordaos(self,texto,cursor):
 		pass
 
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tst()
-	print('comecei ',c.__class__.__name__)
-	try:
-		c.download_tst(pular_n=71180)
-	except Exception as e:
-		print(e)
-		print('finalizei com erro\n')
+	# print('comecei ',c.__class__.__name__)
+	# try:
+	# 	c.download_tst(pular_n=71180)
+	# except Exception as e:
+	# 	print(e)
+	# 	print('finalizei com erro\n')
+	c.download_links_tst('/media/danilo/Seagate Expansion Drive/Links_tst/lista_links.txt','/media/danilo/Seagate Expansion Drive/Diarios/Decisoes_tst/')
+
+
+

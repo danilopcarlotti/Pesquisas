@@ -6,7 +6,7 @@ import gensim, nltk
 class textNormalization():
 	"""Manipula topic models"""
 	def __init__(self):
-		pass
+		self.stemmer = nltk.stem.RSLPStemmer()
 
 	def escape_text_insert(self,text):
 		return text.replace('"','').replace('/','').replace('\\','').replace('<','').replace('>','')
@@ -53,7 +53,8 @@ class textNormalization():
 			tokens = tk.tokenize(texto_bruto)
 			texto_processado = []
 			for tkn in tokens:
-				if len(tkn) > 3 and tkn not in stopwords:
+				tkn = self.stemmer.stem(tkn)
+				if tkn not in stopwords:
 					try:
 						float(tkn)
 					except:
