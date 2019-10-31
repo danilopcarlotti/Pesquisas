@@ -71,25 +71,21 @@ class crawler_jurisprudencia_tst():
 		driver.close()
 
 	def download_links_tst(self,links_txt, path_download):
-		encontrei = False
+		pular_n = len([arq for arq in os.listdir(path_download)])
+		print('Pulei: ',pular_n)
 		for line in open(links_txt,'r'):
 			try:
-				if not encontrei and line.strip() == '#90bb5100faa92d3af41acceb17856fe9':
-					encontrei = True
-					continue
-				if encontrei:
-					id_p = line.strip().replace('#','')
-					link = 'https://jurisprudencia-backend.tst.jus.br/rest/documentos/'+id_p
-					req = urllib.request.Request(link, headers={'User-Agent': 'Mozilla/5.0'})
-					html = urllib.request.urlopen(req,timeout=60).read()
-					soup = BeautifulSoup(html,'lxml')
-					for script in soup(["script", "style"]):
-						script.extract()
-					arq = open(path_download+id_p+'.txt','w')
-					arq.write(soup.get_text())
-					arq.close()
-					time.sleep(1)
-					print(line.strip())
+				id_p = line.strip().replace('#','')
+				link = 'https://jurisprudencia-backend.tst.jus.br/rest/documentos/'+id_p
+				req = urllib.request.Request(link, headers={'User-Agent': 'Mozilla/5.0'})
+				html = urllib.request.urlopen(req,timeout=60).read()
+				soup = BeautifulSoup(html,'lxml')
+				for script in soup(["script", "style"]):
+					script.extract()
+				arq = open(path_download+id_p+'.txt','w')
+				arq.write(soup.get_text())
+				arq.close()
+				time.sleep(1)
 			except Exception as e:
 				print(e)
 

@@ -24,8 +24,27 @@ def month_to_number(month):
     else:
         return ' '
 
-def extrair_data_sp(texto):
-    data = re.search(r'Diarios_sp/(.*?)/', texto)
+def extrair_data_ac(texto):
+    data = re.search(r'dir_00\d/DE(\d*?).csv', texto)
+    if data:
+        data_encontrada = data.group(1)
+        if len(data_encontrada) == 6:
+            return data_encontrada[:2]+'/'+data_encontrada[2:4]+'/20'+data_encontrada[4:]
+        elif len(data_encontrada) == 8:
+            return data_encontrada[6:]+'/'+data_encontrada[4:6]+'/'+data_encontrada[:4]
+    else:
+        data_encontrada = ''
+    return data_encontrada
+
+def extrair_data_al(texto):
+    data = re.search(r'Diarios_al/(\d{8})/', texto)
+    if data:
+        data_encontrada = data.group(1)
+        return data_encontrada[:2]+'/'+data_encontrada[2:4]+'/'+data_encontrada[4:]
+    return ''
+
+def extrair_data_am(texto):
+    data = re.search(r'Diarios_am/(.*?)/', texto)
     if data:
         data = data.group(1)
         if len(data) == 8:
@@ -37,6 +56,105 @@ def extrair_data_sp(texto):
                 return data[:2]+'/0'+data[2]+'/'+data[3:]
         else:
             return ''
+    else:
+        return ''
+
+def extrair_data_ce(texto):
+    data = re.search(r'Diarios_ce/(\d{8})/', texto)
+    if data:
+        data_encontrada = data.group(1)
+        return data_encontrada[:2]+'/'+data_encontrada[2:4]+'/'+data_encontrada[4:]
+    return ''
+
+def extrair_data_df(arq, path_prefix = '/media/danilo/Seagate Expansion Drive/Diarios/'):
+    try:
+        path_sufix = arq.split('/Diarios/')[1]
+    except:
+        return ''
+    cabecalho = ''
+    contador = 0
+    for line in open(path_prefix+path_sufix,'r'):
+        if contador > 10:
+            break
+        else:
+            contador += 1
+            cabecalho += line
+    data_raw = re.search(r'(\d{2}) de (.*?) de (\d{4})', cabecalho, re.DOTALL)
+    if data_raw:
+        day = data_raw.group(1)
+        month = month_to_number(data_raw.group(2))
+        year = data_raw.group(3)
+        return day+'/'+month+'/'+year
+    else:
+        return ''
+
+def extrair_data_go(arq, path_prefix = '/media/danilo/Seagate Expansion Drive/Diarios/'):
+    try:
+        path_sufix = arq.split('/Diarios/')[1]
+    except:
+        return ''
+    cabecalho = ''
+    contador = 0
+    for line in open(path_prefix+path_sufix,'r'):
+        if contador > 10:
+            break
+        else:
+            contador += 1
+            cabecalho += line
+    data_raw = re.search(r'(\d{2}) de (.*?) de (\d{4})', cabecalho, re.DOTALL)
+    if data_raw:
+        day = data_raw.group(1)
+        month = month_to_number(data_raw.group(2))
+        year = data_raw.group(3)
+        return day+'/'+month+'/'+year
+    else:
+        return ''
+
+def extrair_data_ms(texto):
+    data = re.search(r'Diarios_ms/(\d{8})/', texto)
+    if data:
+        data_encontrada = data.group(1)
+        return data_encontrada[:2]+'/'+data_encontrada[2:4]+'/'+data_encontrada[4:]
+    return ''
+
+def extrair_data_mt(arq, path_prefix = '/media/danilo/Seagate Expansion Drive/Diarios/'):
+    try:
+        path_sufix = arq.split('/Diarios/')[1]
+    except:
+        return ''
+    cabecalho = ''
+    contador = 0
+    for line in open(path_prefix+path_sufix,'r'):
+        if contador > 500:
+            break
+        else:
+            contador += 1
+            cabecalho += line
+    data_raw = re.search(r'DISPONIBILIZADA NO DIÁRIO DA JUSTIÇA ELETRÔNICO, EDIÇÃO .*? DE (\d{2}/\d{2}/\d{4})', cabecalho)
+    if data_raw:
+        return data_raw.group(1)
+    else:
+        return ''
+
+def extrair_data_pb(arq, path_prefix = '/media/danilo/Seagate Expansion Drive/Diarios/'):
+    try:
+        path_sufix = arq.split('/Diarios/')[1]
+    except:
+        return ''
+    cabecalho = ''
+    contador = 0
+    for line in open(path_prefix+path_sufix,'r'):
+        if contador > 10:
+            break
+        else:
+            contador += 1
+            cabecalho += line
+    data_raw = re.search(r', (\d{2}) de (.*?) de (\d{4})', cabecalho, re.DOTALL)
+    if data_raw:
+        day = data_raw.group(1)
+        month = month_to_number(data_raw.group(2))
+        year = data_raw.group(3)
+        return day+'/'+month+'/'+year
     else:
         return ''
 
@@ -59,7 +177,14 @@ def extrair_data_pe(arq, path_prefix = '/media/danilo/Seagate Expansion Drive/Di
     else:
         return ''
 
-def extrair_data_mt(arq, path_prefix = '/media/danilo/Seagate Expansion Drive/Diarios/'):
+def extrair_data_pi(texto):
+    data = re.search(r'Diarios_pi/(\d{8})/', texto)
+    if data:
+        data_encontrada = data.group(1)
+        return data_encontrada[:2]+'/'+data_encontrada[2:4]+'/'+data_encontrada[4:]
+    return ''
+
+def extrair_data_pr(arq, path_prefix = '/media/danilo/Seagate Expansion Drive/Diarios/'):
     try:
         path_sufix = arq.split('/Diarios/')[1]
     except:
@@ -67,19 +192,22 @@ def extrair_data_mt(arq, path_prefix = '/media/danilo/Seagate Expansion Drive/Di
     cabecalho = ''
     contador = 0
     for line in open(path_prefix+path_sufix,'r'):
-        if contador > 500:
+        if contador > 10:
             break
         else:
             contador += 1
             cabecalho += line
-    data_raw = re.search(r'DISPONIBILIZADA NO DIÁRIO DA JUSTIÇA ELETRÔNICO, EDIÇÃO .*? DE (\d{2}/\d{2}/\d{4})', cabecalho)
+    data_raw = re.search(r', (\d{2}) de (.*?) de (\d{4})', cabecalho, re.DOTALL)
     if data_raw:
-        return data_raw.group(1)
+        day = data_raw.group(1)
+        month = month_to_number(data_raw.group(2))
+        year = data_raw.group(3)
+        return day+'/'+month+'/'+year
     else:
         return ''
 
-def extrair_data_am(texto):
-    data = re.search(r'Diarios_am/(.*?)/', texto)
+def extrair_data_rn(texto):
+    data = re.search(r'Diarios_rn/(.*?)\.csv', texto)
     if data:
         data = data.group(1)
         if len(data) == 8:
@@ -90,9 +218,120 @@ def extrair_data_am(texto):
             if int(data[0]) > 1 or int(data[1]) > 1:
                 return data[:2]+'/0'+data[2]+'/'+data[3:]
         else:
-            return '-'
+            return ''
     else:
-        return '-'
+        return ''
+
+def extrair_data_rr(texto):
+    data = re.search(r'Diarios_rr/(\d{8})/', texto)
+    if data:
+        data_encontrada = data.group(1)
+        return data_encontrada[6:]+'/'+data_encontrada[4:6]+'/'+data_encontrada[:4]
+    return ''
+
+def extrair_data_rs(arq, path_prefix = '/media/danilo/Seagate Expansion Drive/Diarios/'):
+    try:
+        path_sufix = arq.split('/Diarios/')[1]
+    except:
+        return ''
+    cabecalho = ''
+    contador = 0
+    for line in open(path_prefix+path_sufix,'r'):
+        if contador > 10:
+            break
+        else:
+            contador += 1
+            cabecalho += line
+    data_raw = re.search(r', (\d{2}) de (.*?) de (\d{4})', cabecalho, re.DOTALL)
+    if data_raw:
+        day = data_raw.group(1)
+        month = month_to_number(data_raw.group(2))
+        year = data_raw.group(3)
+        return day+'/'+month+'/'+year
+    else:
+        return ''
+
+def extrair_data_sc(arq, path_prefix = '/media/danilo/Seagate Expansion Drive/Diarios/'):
+    try:
+        path_sufix = arq.split('/Diarios/')[1]
+    except:
+        return ''
+    cabecalho = ''
+    contador = 0
+    for line in open(path_prefix+path_sufix,'r'):
+        if contador > 10:
+            break
+        else:
+            contador += 1
+            cabecalho += line
+    data_raw = re.search(r'(\d{2}) de (.*?) de (\d{4})', cabecalho, re.DOTALL)
+    if data_raw:
+        day = data_raw.group(1)
+        month = month_to_number(data_raw.group(2))
+        year = data_raw.group(3)
+        return day+'/'+month+'/'+year
+    else:
+        return ''
+
+def extrair_data_se(arq, path_prefix = '/media/danilo/Seagate Expansion Drive/Diarios/'):
+    try:
+        path_sufix = arq.split('/Diarios/')[1]
+    except:
+        return ''
+    cabecalho = ''
+    contador = 0
+    for line in open(path_prefix+path_sufix,'r'):
+        if contador > 10:
+            break
+        else:
+            contador += 1
+            cabecalho += line
+    data_raw = re.search(r'(\d{2}) de (.*?) de (\d{4})', cabecalho, re.DOTALL)
+    if data_raw:
+        day = data_raw.group(1)
+        month = month_to_number(data_raw.group(2))
+        year = data_raw.group(3)
+        return day+'/'+month+'/'+year
+    else:
+        return ''
+
+def extrair_data_sp(texto):
+    data = re.search(r'Diarios_sp/(.*?)/', texto)
+    if data:
+        data = data.group(1)
+        if len(data) == 8:
+            return data[:2]+'/'+data[2:4]+'/'+data[4:]
+        elif len(data) == 6:
+            return '0'+data[0]+'/0'+data[1]+'/'+data[2:]
+        elif len(data) == 7:
+            if int(data[0]) > 1 or int(data[1]) > 1:
+                return data[:2]+'/0'+data[2]+'/'+data[3:]
+        else:
+            return ''
+    else:
+        return ''
+
+def extrair_data_to(arq, path_prefix = '/media/danilo/Seagate Expansion Drive/Diarios/'):
+    try:
+        path_sufix = arq.split('/Diarios/')[1]
+    except:
+        return ''
+    cabecalho = ''
+    contador = 0
+    for line in open(path_prefix+path_sufix,'r'):
+        if contador > 10:
+            break
+        else:
+            contador += 1
+            cabecalho += line
+    data_raw = re.search(r'(\d{2}) de (.*?) de (\d{4})', cabecalho, re.DOTALL)
+    if data_raw:
+        day = data_raw.group(1)
+        month = month_to_number(data_raw.group(2))
+        year = data_raw.group(3)
+        return day+'/'+month+'/'+year
+    else:
+        return ''
 
 def extrair_data_trf1(texto):
     data = re.search(r'Diarios_trf1/dir_\d+/.*?(\d{4}\-\d{2}\-\d{2}).*?\.txt', texto)
@@ -224,7 +463,8 @@ def main(path_diarios, uri_mongo):
 			print(e)
 
 if __name__ == '__main__':
-	if len(sys.argv) == 2:
-		main(sys.argv[1], None)
-	else:
-		main(sys.argv[1], sys.argv[2])
+	# if len(sys.argv) == 2:
+	# 	main(sys.argv[1], None)
+	# else:
+	# 	main(sys.argv[1], sys.argv[2])
+    print(extrair_data_al('/media/danilo/Seagate Expansion Drive/Diarios/Diarios_al/01022017/'))
