@@ -36,9 +36,8 @@ class crawler_jurisprudencia_tjto():
 		subprocess.Popen('mv %s/to_2_inst_* %s/to_2_inst' % (path,path), shell=True)
 
 	def download_diario_retroativo(self):
-		contador = 0
 		# último número do diário em 04.07.2018
-		for i in range(3253,0,-1):
+		for i in range(4635,3253,-1):
 			try:
 				print('http://wwa.tjto.jus.br/diario/diariopublicado/%s.pdf' % str(i))
 				response = urllib.request.urlopen('http://wwa.tjto.jus.br/diario/diariopublicado/%s.pdf' % str(i),timeout=15)
@@ -46,8 +45,8 @@ class crawler_jurisprudencia_tjto():
 				time.sleep(1)
 				file.write(response.read())
 				file.close()
-				subprocess.Popen('mkdir %s/Diarios_to/%s' % (path_hd,str(i)), shell=True) 
-				subprocess.Popen('mv %s/*.pdf %s/Diarios_to/%s' % (os.getcwd(),path_hd,str(i)), shell=True)
+				subprocess.Popen('mkdir "%s/Diarios_to/%s"' % (path_hd,str(i)), shell=True) 
+				subprocess.Popen('mv %s/*.pdf "%s/Diarios_to/%s"' % (os.getcwd(),path_hd,str(i)), shell=True)
 			except Exception as e:
 				print(e)
 

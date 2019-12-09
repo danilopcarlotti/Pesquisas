@@ -9,7 +9,7 @@ from selenium.webdriver.common.keys import Keys
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
 
-class crawler_jurisprudencia_tjse():
+class crawler_jurisprudencia_tjse(crawler_jurisprudencia_tj):
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de Santa Catarina"""
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
@@ -21,14 +21,14 @@ class crawler_jurisprudencia_tjse():
 
 	def download_diario_retroativo(self):
 		link_inicial = 'http://www.diario.tjse.jus.br/diario/diarios/%s.pdf'
-		for i in range(4933,0,-1):
+		for i in range(5275,4933,-1):
 			try:
 				print(link_inicial % (str(i),))
 				response = urllib.request.urlopen(link_inicial % (str(i),),timeout=15)
 				file = open(str(i)+'.pdf', 'wb')
 				file.write(response.read())
 				file.close()
-				subprocess.Popen('mv %s/*.pdf %s/Diarios_se' % (os.getcwd(),path_hd), shell=True)
+				subprocess.Popen('mv %s/*.pdf "%s/Diarios_se"' % (os.getcwd(),path_hd), shell=True)
 			except Exception as e:
 				print(e)
 

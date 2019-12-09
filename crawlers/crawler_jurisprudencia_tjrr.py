@@ -10,7 +10,7 @@ from selenium.webdriver.common.keys import Keys
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
 
-class crawler_jurisprudencia_tjrr():
+class crawler_jurisprudencia_tjrr(crawler_jurisprudencia_tj):
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de Roraima"""
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
@@ -61,20 +61,22 @@ class crawler_jurisprudencia_tjrr():
 					break
 		driver.close()
 
-	def download_diario_retroativo(self):
+	def download_diario_retroativo(self, lista_anos=None):
+		if not lista_anos:
+			lista_anos = self.lista_anos
 		link = 'http://diario.tjrr.jus.br/dpj/dpj-%s.pdf'
 		datas = []
-		for l in range(len(self.lista_anos)):
+		for l in range(len(lista_anos)):
 			for i in range(1,10):
 				for j in range(1,10):
-					datas.append(self.lista_anos[l]+'0'+str(i)+'0'+str(j))
+					datas.append(lista_anos[l]+'0'+str(i)+'0'+str(j))
 				for j in range(10,32):
-					datas.append(self.lista_anos[l]+'0'+str(i)+str(j))
+					datas.append(lista_anos[l]+'0'+str(i)+str(j))
 			for i in range(10,13):
 				for j in range(1,10):
-					datas.append(self.lista_anos[l]+str(i)+'0'+str(j))
+					datas.append(lista_anos[l]+str(i)+'0'+str(j))
 				for j in range(10,32):
-					datas.append(self.lista_anos[l]+str(i)+str(j))
+					datas.append(lista_anos[l]+str(i)+str(j))
 		for data in datas:
 			try:
 				driver = webdriver.Chrome(self.chromedriver)
@@ -89,10 +91,10 @@ class crawler_jurisprudencia_tjrr():
 				except:
 					pass
 				try:
-					subprocess.Popen('mkdir %s/Diarios_rr/%s' % (path_hd,data), shell=True) 
-					subprocess.Popen('mv %s/*.pdf %s/Diarios_rr/%s' % (path,path_hd,data), shell=True)
-				except:
-					pass
+					subprocess.Popen('mkdir "%s/Diarios_rr/%s"' % (path_hd,data), shell=True) 
+					subprocess.Popen('mv %s/*.pdf "%s/Diarios_rr/%s"' % (path,path_hd,data), shell=True)
+				except Exception as e:
+					print(e)
 				driver.close()
 			except Exception as e:
 				print(e)

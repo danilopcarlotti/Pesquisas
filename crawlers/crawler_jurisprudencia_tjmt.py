@@ -1,14 +1,14 @@
 from bs4 import BeautifulSoup
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from common.conexao_local import cursorConexao
-from common.download_path import path
+from common.download_path import path, path_hd
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import sys, re, time, os, pyautogui, subprocess, urllib.request
 
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
-from common_nlp.pdf_to_text import pdf_to_text
+# from common_nlp.pdf_to_text import pdf_to_text
 
 contador = 0
 
@@ -32,7 +32,16 @@ class crawler_jurisprudencia_tjmt():
 		links_2011_2015 = [
 		'http://sistemadje.tjmt.jus.br/publicacoes/{}-{}.pdf'
 		]
-		numeros_diarios = {2018 : 10292, 2017 : 10168, 2016 : 9929, 2015 : 9687, 2014 : 9447, 2013 : 9206, 2012 : 8962, 2011 : 8720, 2010 : 8481}
+		numeros_diarios = {2019: 10628, 
+							2018 : 10405, 
+							2017 : 10168, 
+							2016 : 9929, 
+							2015 : 9687, 
+							2014 : 9447, 
+							2013 : 9206, 
+							2012 : 8962, 
+							2011 : 8720, 
+							2010 : 8481}
 		# for i in range(2011,2016):
 		# 	for j in range(numeros_diarios[i-1]+1,numeros_diarios[i]+1):
 		# 		for link in links_2011_2015:
@@ -45,21 +54,20 @@ class crawler_jurisprudencia_tjmt():
 		# 				subprocess.Popen('mv %s/*.pdf %s/Diarios_mt' % (os.getcwd(),path), shell=True)
 		# 			except Exception as e:
 		# 				print(e)
-		for i in range(2018,2015,-1):
+		for i in range(2019,2020):
 			for j in range(numeros_diarios[i-1]+1,numeros_diarios[i]+1):
 				contador = 0
 				for link in links_2016_2018:
 					contador += 1
 					try:
-						print(link.format(str(j),str(i)))
 						response = urllib.request.urlopen(link.format(str(j),str(i)),timeout=15)
-						file = open(str(contador)+'_'+str(i)+str(j)+'.pdf', 'wb')
+						file = open(str(contador)+'_'+str(i)+'_'+str(j)+'.pdf', 'wb')
 						file.write(response.read())
 						file.close()
-						subprocess.Popen('mv %s/*.pdf %s/Diarios_mt' % (os.getcwd(),path), shell=True)
+						subprocess.Popen('mv %s/*.pdf "%s/Diarios_mt"' % (os.getcwd(),path_hd), shell=True)
+						time.sleep(1)
 					except Exception as e:
 						print(e)
-
 
 	def download_tj(self, termo='a'):
 		global contador

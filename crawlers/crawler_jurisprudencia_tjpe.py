@@ -1,6 +1,6 @@
 import sys, re, urllib.request, subprocess, os
 from bs4 import BeautifulSoup
-from common.download_path import path
+from common.download_path import path, path_hd
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from crawlerJus import crawlerJus
 
@@ -15,29 +15,15 @@ class crawler_jurisprudencia_tjpe(crawler_jurisprudencia_tj):
 		self.botao_pesquisar = '//*[@id="formPesquisaJurisprudencia"]/div[5]/div/a[1]'
 
 	def download_diario_retroativo(self):
-		# 240 diários por ano. Salvo 2018, que tem, atualmente 121
-
 		link_inicial = 'http://www.tjpe.jus.br/dje/DownloadServlet?dj=DJ%s_%s-ASSINADO.PDF&statusDoDiario=ASSINADO'
-		for l in range(len(self.lista_anos)-1):
+		for l in range(len(self.lista_anos)):
 			for i in range(240,0,-1):
 				try:
-					print(link_inicial % (str(i),self.lista_anos[l]))
 					response = urllib.request.urlopen(link_inicial % (str(i),self.lista_anos[l]),timeout=15)
 					file = open(str(i)+self.lista_anos[l]+'.pdf', 'wb')
 					file.write(response.read())
 					file.close()
-					subprocess.Popen('mv %s/*.pdf %s/Diarios_pe' % (os.getcwd(),path), shell=True)
-				except Exception as e:
-					print(e)
-		for l in range(len(self.lista_anos)-1,len(self.lista_anos)):
-			for i in range(130,0,-1):
-				try:
-					print(link_inicial % (str(i),self.lista_anos[l]))
-					response = urllib.request.urlopen(link_inicial % (str(i),self.lista_anos[l]),timeout=15)
-					file = open(str(i)+self.lista_anos[l]+'.pdf', 'wb')
-					file.write(response.read())
-					file.close()
-					subprocess.Popen('mv %s/*.pdf %s/Diarios_pe' % (os.getcwd(),path), shell=True)
+					subprocess.Popen('mv %s/*.pdf "%s/Diarios_pe"' % (os.getcwd(),path_hd), shell=True)
 				except Exception as e:
 					print(e)
 

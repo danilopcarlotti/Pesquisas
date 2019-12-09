@@ -1,6 +1,8 @@
-import sys, re, time, os
+import sys, re, time, os, subprocess
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
+from common.download_path import path, path_hd
+from common.download_path_diarios import path as path_diarios
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -9,7 +11,7 @@ from common.conexao_local import cursorConexao
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
 
-class crawler_jurisprudencia_tjpr():
+class crawler_jurisprudencia_tjpr(crawler_jurisprudencia_tj):
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância do Paraná"""
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
@@ -54,6 +56,22 @@ class crawler_jurisprudencia_tjpr():
 						pass
 		driver.close()
 
+	def download_diario_retroativo(self, datas_pesquisar):
+		pag_pr = "https://portal.tjpr.jus.br/e-dj/publico/diario/pesquisar/filtro.do"
+		driver = webdriver.Chrome(self.chromedriver)
+		driver.get(pag_pr)
+		for dia_pesquisar, mes_pesquisar, ano_pesquisar in datas_pesquisar:
+			try:
+				driver.find_element_by_name("dataVeiculacao").clear()
+				driver.find_element_by_name("dataVeiculacao").send_keys(dia_pesquisar+'/'+mes_pesquisar+'/'+ano_pesquisar)
+				driver.find_element_by_xpath("//*[@id=\"searchButton\"]").click()
+				time.sleep(1)
+				driver.find_element_by_xpath("//*[@id=\"diarioPesquisaForm\"]/fieldset/table[3]/tbody/tr/td[3]/a").click()
+				time.sleep(5)
+				subprocess.Popen('mv %s/*.pdf "%s/Diarios_pr/"' % (path,path_diarios), shell=True)
+			except:
+				time.sleep(1)
+
 	def parser_acordaos(self,texto,cursor):
 		decisoes = re.split(r'\n\d+\.\s*?\n',texto)
 		for d in range(1,len(decisoes)):
@@ -71,8 +89,22 @@ if __name__ == '__main__':
 	# except Exception as e:
 	# 	print('finalizei com erro ',e)
 
-	cursor = cursorConexao()
-	cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_pr limit 1000000')
-	dados = cursor.fetchall()
-	for dado in dados:
-		c.parser_acordaos(dado[0], cursor)
+	# cursor = cursorConexao()
+	# cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_pr limit 1000000')
+	# dados = cursor.fetchall()
+	# for dado in dados:
+		# c.parser_acordaos(dado[0], cursor)
+
+	datas_p = []
+	for i in range(11,32):
+		dia = str(i)
+		if len(dia) == 1:
+			dia = '0'+str(i)
+		for j in range(1,13):
+			mes = str(j)
+			if len(mes) == 1:
+				mes = '0'+str(j)
+			for k in range(2018,2020):
+				datas_p.append([dia,mes,str(k)])
+			
+	c.download_diario_retroativo(datas_p)

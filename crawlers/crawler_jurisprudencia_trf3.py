@@ -23,7 +23,7 @@ class crawler_jurisprudencia_trf3():
 
 	def download_diario_retroativo(self):
 		link_inicial = 'http://web.trf3.jus.br/diario/Consulta/BaixarPdf/%s'
-		for i in range(20040,0,-1):
+		for i in range(23102,20040,-1):
 			try:
 				print(link_inicial % str(i))
 				response = urllib.request.urlopen(link_inicial % str(i),timeout=15)
@@ -31,8 +31,8 @@ class crawler_jurisprudencia_trf3():
 				time.sleep(1)
 				file.write(response.read())
 				file.close()
-				subprocess.Popen('mkdir %s/Diarios_trf3/%s' % (path,str(i)), shell=True) 
-				subprocess.Popen('mv %s/*.pdf %s/Diarios_trf3/%s' % (os.getcwd(),path,str(i)), shell=True)
+				subprocess.Popen('mkdir "%s/Diarios_trf3/%s"' % (path_hd,str(i)), shell=True) 
+				subprocess.Popen('mv %s/*.pdf "%s/Diarios_trf3/%s"' % (os.getcwd(),path_hd,str(i)), shell=True)
 			except Exception as e:
 				print(e)
 

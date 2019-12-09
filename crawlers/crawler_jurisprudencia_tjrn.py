@@ -2,14 +2,15 @@ from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
+from common.download_path import path_hd
 from selenium.webdriver.common.keys import Keys
 from common.conexao_local import cursorConexao
-import sys, re, time, os
+import sys, re, time, os, urllib.request, subprocess
 
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
 
-class crawler_jurisprudencia_tjrn():
+class crawler_jurisprudencia_tjrn(crawler_jurisprudencia_tj):
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de Rio Grande do Norte"""
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
@@ -22,10 +23,9 @@ class crawler_jurisprudencia_tjrn():
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_rn (ementas)'
 
 	def download_diario_retroativo(self):
-		# 240 diários por ano. Salvo 2018, que tem, atualmente 121
-
 		link_inicial = 'https://diario.tjrn.jus.br/djonline/pages/repositoriopdfs/%s/%stri/%s/%s_JUD.pdf'
 		datas = []
+		self.lista_anos = ['2018','2019']
 		for l in range(len(self.lista_anos)):
 			for i in range(1,10):
 				for j in range(1,10):
@@ -40,7 +40,6 @@ class crawler_jurisprudencia_tjrn():
 		for data in datas:
 			ano = data[:4]
 			mes = data[4:6]
-			dia = data[6:]
 			try:
 				tri = '1'
 				if int(mes) > 3 and int(mes) < 7:
@@ -54,11 +53,9 @@ class crawler_jurisprudencia_tjrn():
 				file = open(data+'.pdf', 'wb')
 				file.write(response.read())
 				file.close()
-				subprocess.Popen('mv %s/*.pdf %s/Diarios_rn' % (os.getcwd(),path), shell=True)
+				subprocess.Popen('mv %s/*.pdf "%s/Diarios_rn"' % (os.getcwd(),path_hd), shell=True)
 			except Exception as e:
 				print(e)
-
-
 
 	def download_tj(self,data_ini,data_fim,termo):
 		cursor = cursorConexao()
@@ -111,6 +108,9 @@ class crawler_jurisprudencia_tjrn():
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjrn()
+
+	c.download_diario_retroativo()
+
 # 	print('comecei ',c.__class__.__name__)
 # 	try:
 # 		for l in range(len(c.lista_anos)):
@@ -123,8 +123,8 @@ if __name__ == '__main__':
 # 	except Exception as e:
 # 		print('finalizei o ano com erro ',e)
 
-	cursor = cursorConexao()
-	cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_rn limit 1000000')
-	dados = cursor.fetchall()
-	for dado in dados:
-		c.parser_acordaos(dado[0], cursor)
+	# cursor = cursorConexao()
+	# cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_rn limit 1000000')
+	# dados = cursor.fetchall()
+	# for dado in dados:
+	# 	c.parser_acordaos(dado[0], cursor)

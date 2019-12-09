@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from common.download_path import path
+from common.download_path import path, path_hd
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from crawlerJus import crawlerJus
 from selenium import webdriver
@@ -10,7 +10,7 @@ import sys, re, time, os, urllib.request, subprocess
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
 
-class crawler_jurisprudencia_tjrs():
+class crawler_jurisprudencia_tjrs(crawler_jurisprudencia_tj):
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância do Rio Grande do Sul"""
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
@@ -23,10 +23,10 @@ class crawler_jurisprudencia_tjrs():
 		self.data_fimXP = '//*[@id="%s2"]'
 		self.tabela_colunas = 'justica_estadual.jurisprudencia_rs (ementas)'
 
-	def download_diario_retroativo(self):
+	def download_diario_retroativo(self, inicio=6489, fim=6298):
 		link_inicial = 'http://www3.tjrs.jus.br/servicos/diario_justica/download_edicao.php?tp=%s&ed=%s'
 		edicoes = ['0','5','7','6']
-		for i in range(6298,0,-1):
+		for i in range(inicio,fim,-1):
 			for e in edicoes:
 				try:
 					print(link_inicial % (e,str(i)))
@@ -34,7 +34,7 @@ class crawler_jurisprudencia_tjrs():
 					file = open(str(i)+'_'+e+'.pdf', 'wb')
 					file.write(response.read())
 					file.close()
-					subprocess.Popen('mv %s/*.pdf %s/Diarios_rs' % (os.getcwd(),path), shell=True)
+					subprocess.Popen('mv %s/*.pdf "%s/Diarios_rs"' % (os.getcwd(),path_hd), shell=True)
 				except Exception as e:
 					print(e)
 
@@ -98,7 +98,7 @@ class crawler_jurisprudencia_tjrs():
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjrs()
 
-	# c.download_diario_retroativo()
+	c.download_diario_retroativo()
 
 	# print('comecei ',c.__class__.__name__)
 	# try:
@@ -118,11 +118,11 @@ if __name__ == '__main__':
 	# except Exception as e:
 	# 	print('finalizei o ano com erro ',e)
 
-	cursor = cursorConexao()
+	# cursor = cursorConexao()
 
-	cursor.execute('SELECT id, ementas from justica_estadual.jurisprudencia_rs;')
-	links = cursor.fetchall()
-	c.parser_acordaos(links)
+	# cursor.execute('SELECT id, ementas from justica_estadual.jurisprudencia_rs;')
+	# links = cursor.fetchall()
+	# c.parser_acordaos(links)
 
 		
 

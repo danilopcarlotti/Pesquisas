@@ -1,0 +1,26 @@
+{
+  "name": "classificacao_supervisionada",
+  "version": "1.0.0",
+  "description": "Servidor para classificação supervisionada",
+  "main": "js/app.js",
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "hbs": "^4.0.6",
+    "json": "^9.0.6",
+    "mongodb": "^3.3.3",
+    "mongoose": "^5.7.8",
+    "python-shell": "^1.0.8",
+    "sleep": "^6.1.0",
+    "tempfile": "^3.0.0",
+    "uuid": "^3.3.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node js/server.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

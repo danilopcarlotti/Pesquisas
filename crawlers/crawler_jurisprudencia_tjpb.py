@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
-from common.download_path import path
+from common.download_path import path, path_hd
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -57,6 +57,21 @@ class crawler_jurisprudencia_tjpb(crawler_jurisprudencia_tj):
 		crawler_jurisprudencia_tj.download_pdf_acordao(self,link,'','','','pb_2_inst_' + id_acordao)
 		subprocess.Popen('mv /home/danilo/Downloads/pb_2_inst_* /home/danilo/Downloads/acordaos_tj_pb', shell=True)
 
+	def download_diario_retroativo(self):
+		driver = webdriver.Chrome(self.chromedriver)
+		driver.get('https://app.tjpb.jus.br/dje/paginas/diario_justica/publico/buscas.jsf')
+		final_intervalo = int(input('Escolha o final do intervalo\n'))
+		if not final_intervalo:
+			return
+		for i in range(0,final_intervalo,10):
+			for j in range(10):
+				print(j)
+				driver.execute_script("mojarra.jsfcljs(document.getElementById('formDownload'),{'tabela:%s:j_idt46':'tabela:%s:j_idt46'},'');return false" % (str(i+j),str(i+j)))
+				time.sleep(0.5)
+				subprocess.Popen('mv %s/*.pdf "%s/Diarios_pb/"' % (path,path_hd), shell=True)
+			print('mudar a página')
+			time.sleep(3)
+
 	def parser_acordaos(self, arquivo, cursor, pdf_class):
 		texto = pdf_class.convert_PyPDF2(arquivo)
 		numero = busca(r'\d{3,7}\.\d{4}\.\d{6}\-\d{1}/\d{3}', texto, ngroup=0)
@@ -67,15 +82,18 @@ class crawler_jurisprudencia_tjpb(crawler_jurisprudencia_tj):
 
 def main():
 	c = crawler_jurisprudencia_tjpb()
-	cursor = cursorConexao()
 
-	p = pdf_to_text()
-	for arq in os.listdir(path+'/pb_2_inst'):
-		try:
-			c.parser_acordaos(path+'/pb_2_inst/'+arq, cursor, p)
-		except Exception as e:
-			print(arq)
-			print(e)
+	c.download_diario_retroativo()
+
+	# cursor = cursorConexao()
+
+	# p = pdf_to_text()
+	# for arq in os.listdir(path+'/pb_2_inst'):
+	# 	try:
+	# 		c.parser_acordaos(path+'/pb_2_inst/'+arq, cursor, p)
+	# 	except Exception as e:
+	# 		print(arq)
+	# 		print(e)
 
 	
 	# cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_pb where id > 37630 limit 10000000;')

@@ -1,0 +1,39 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        Ferramenta de classificação automática
+    </title>
+    <style>
+        div.texto_central {
+            width: 600px;
+            height: 400px;
+            overflow: auto;
+            text-align: center;
+            margin: auto;
+            width: 60%;
+            padding: 10px;
+            
+        }
+    </style>
+</head>
+<body>
+    <br>
+    <br>
+    <div class="texto_central">
+        <p>{{texto_bruto}}</p>
+    </div>
+    <div style="text-align: center">
+        <form action="/classificar" method="POST" name="form_texto">
+            <input type="hidden" id="textoId" name="textoId" value={{textoId}}>
+            <select name="classe_texto">
+                {{#each classes_disponiveis}}
+                    <option value="{{classe_id}}">{{classe_nome}}</option>
+                {{/each}} 
+            </select> 
+            <br>
+            <br>
+            <button>Enviar classificação</button>
+        </form>
+    </div>
+</body>

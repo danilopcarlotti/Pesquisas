@@ -1,7 +1,7 @@
 import time, re, urllib.request, sys, os, subprocess
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
-from common.download_path import path
+from common.download_path import path, path_hd
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -9,7 +9,7 @@ from selenium.webdriver.common.keys import Keys
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
 
-class crawler_jurisprudencia_trf4():
+class crawler_jurisprudencia_trf4(crawler_jurisprudencia_tj):
 	"""Crawler especializado em retornar textos da jurisprudência do tribunal regional federal da quarta região"""
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
@@ -24,7 +24,16 @@ class crawler_jurisprudencia_trf4():
 
 	def download_diario_retroativo(self):
 		link_inicial = 'https://www2.trf4.jus.br/trf4/diario/download.php?arquivo=%2Fvar%2Fwww%2Fhtml%2Fdiario%2Fdocsa%2Fde_jud_{}1645{}_{}_a.pdf'
-		marcador = {'2018' : '01', '2017' : '01', '2016' : '02', '2015' : '02', '2014' : '02', '2013' : '01', '2012' : '06', '2011' : '01'}
+		marcador = {'2019' : '01',
+					'2018' : '01',
+					'2017' : '01', 
+					'2016' : '02', 
+					'2015' : '02', 
+					'2014' : '02', 
+					'2013' : '01', 
+					'2012' : '06', 
+					'2011' : '01'}
+		self.lista_anos = ['2018','2019']
 		datas = []
 		for a in range(len(self.lista_anos)):
 			for m in range(len(self.lista_meses)):
@@ -38,7 +47,7 @@ class crawler_jurisprudencia_trf4():
 				file = open(dia+mes+ano+'.pdf', 'wb')
 				file.write(response.read())
 				file.close()
-				subprocess.Popen('mv %s/*.pdf %s/Diarios_trf4' % (os.getcwd(),path), shell=True)
+				subprocess.Popen('mv %s/*.pdf "%s/Diarios_trf4"' % (os.getcwd(),path_hd), shell=True)
 			except Exception as e:
 				print(e)
 

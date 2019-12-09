@@ -16,15 +16,15 @@ re_final_sc = '\n\s*ADV\s*?\:|\nProcesso|\n\d*\s*\.*Recurso |\n\d*\s*\.*Ag\s*ra\
 re_final_stf = '\nHABEAS CORPUS\n(?=\d+)|\nAGRAVO DE INSTRUMENTO\n(?=\d+)|\nMANDADO DE SEGURANÇA\n(?=\d+)|\nRECLAMAÇÃO\n(?=\d.\d+)|\nRECURSO EXTRAORDINÁRIO COM AGRAVO (?=\d+)|\nRECURSO EXTRAORDINÁRIO (?=\d+)|\nAG\.REG\.|\nEMB\.DECL\. (?=\d+)|\nAÇÃO DIRETA DE INCONSTITUCIONALIDADE (?=\d+)|\nAÇÃO ORIGINÁRIA (?=\d+)|\nAÇÃO PENAL (?=\d+)|\nMEDIDA CAUTELAR NA RECLAMAÇÃO (?=\d+)|\nMEDIDA CAUTELAR NA RECLAMAÇÃO (?=\d+)|\nCUMPRIMENTO DE SENTENÇA NA AÇÃO (?=\d+)|\nEXECUÇÃO CONTRA A FAZENDA (?=\d+)|\nEXTRADIÇÃO (?=\d+)|\nRECURSO ORDINÁRIO (?=\d+)|\nSEGUNDO AG\.REG\. (?=\d+)'
 re_final_stj = '\nMANDADO DE SEGURANÇA [Nn]°|\nRECURSO ESPECIAL [Nn]°|\nAGRAVO EM RECURSO ESPECIAL [Nn]°|\nAgInt no RECURSO ESPECIAL [Nn]°|\nAgInt no RCD na MEDIDA CAUTELAR [Nn]°|\nEDcl no AgRg no RECURSO ESPECIAL [Nn]°|\nAgRg no AGRAVO EM RECURSO ESPECIAL [Nn]°|\nAgRg no RECURSO ESPECIAL [Nn]°|\nRECURSO EM HABEAS CORPUS [Nn]°|\nHABEAS CORPUS [Nn]°'
 re_final_to = '\n\s*?Autos n|\n\s*?AUTOS N|\n\s*?Processo N|\n\s*?EDITAL DE CITAÇÃO|\n\s*?EDITAL DE INTIMAÇÃO|\n\s*?PROCESSO N|\n\s*?PROTOCOLO|\n\s*?\d{1,4}\s*?\-\s*?Recurso|\n\s*?ORIGEM\:'
-re_final_trf1 = '\n\s*?Numera..o .nica\:|\n\s*?PODER JUDICI.RIO|\n\s*?(\d{4,8}\s*\-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4})'
-re_final_trf3 = r'\n\s*?\d{4,8}\s*\-\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1,3}\s*\.\s*\d{4}|\n\s*?PROCESSO|\n\s*?\d{4,8}\.\d{2}\.\d{2}\.\d{6}\-\d'
-re_final_trf4 = '\n\s*?AGRAVO\n\s*?EMBARGOS|\n\s*?EXECUÇÃO|\n\s*?PROCEDIMENTO|\n\s*?AÇÃO|\n\s*?REMESSA|\n\s*?APELAÇÃO\s*?CÍVEL|\n\s*?APELAÇÃO\s*?REMESSA|\n\s*?APELAÇÃO\s*?REEXAME|\n\s*?EDITAL|\n\s*?\d{7}\s'
-re_final_trf5 = '\n\s*?AC \-|\n\s*?REOAC \-|\n\s*?APELREEX \-|\n\s*?AGIVP \-|\s*?PROTOCOLO N|\s*?\d{4}\s*?\.\s*Processo'
+re_final_trf1 = '\n\s*?Numera..o .nica\:|\n\s*?PODER JUDICI.RIO|\n\s*?(\d{4,8}\s*\-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4})|\n\s*?AGRAVO\n\s*?EMBARGOS|\n\s*?MANDADO|\n\s*?EXECUÇÃO|\n\s*?PROCEDIMENTO|\n\s*?AÇÃO|\n\s*?REMESSA|\n\s*?APELAÇÃO|\n\s*?EDITAL'
+re_final_trf3 = r'\n\s*?\d{4,8}\s*\-\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1,3}\s*\.\s*\d{4}|\n\s*?PROCESSO|\n\s*?\d{4,8}\.\d{2}\.\d{2}\.\d{6}\-\d|\n\s*?\d{5}\s|\n\s*?PROC\.|\n\s*?Processo n|\n\s*?\d{2}\.\d{7}\-\d|\n\s*?AGRAVO|\n\s*?EMBARGOS|\n\s*?MANDADO|\n\s*?EXECUÇÃO|\n\s*?PROCEDIMENTO|\n\s*?AÇÃO|\n\s*?REMESSA|\n\s*?APELAÇÃO\s*?CÍVEL|\n\s*?APELAÇÃO\s*?REMESSA|\n\s*?APELAÇÃO\s*?REEXAME|\n\s*?EDITAL'
+re_final_trf4 = '\n\s*?AGRAVO\n\s*?EMBARGOS|\n\s*?MANDADO|\n\s*?EXECUÇÃO|\n\s*?PROCEDIMENTO|\n\s*?AÇÃO|\n\s*?REMESSA|\n\s*?APELAÇÃO|\n\s*?EDITAL|\n\s*?\d{7}\s'
+re_final_trf5 = '\n\s*?AC \-|\n\s*?AGTR|\n\s*?REOAC|\n\s*?APELREEX|\n\s*?AGIVP|\s*?PROTOCOLO N|\s*?\d{4}\s*?\.\s*Processo'
 re_num_cnj = r'\d{4,8}\s*\-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}'
 re_num_stf_stj = r'\d.*?( -)'
 re_num_trf_trt =r'\d{4}\.\d{2}\.\d{2}\.\d{6}\-\d|\d{7}\s*?-\d{2}\s*?\.\d{4}\s*?\.\d{1}\s*?\.\d{2}\s*?\.\d{4}|\d{7}\s*?-\d{2}\s*?\.\d{4}\s*?\.\d{3}\s*?\.\d{4}|\d{15}|\d{3,5}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}'
 
-diarios = {
+dicionario_separacao_diarios = {
 	'ac':[r'{}'.format(re_final_ac,),re_num_cnj],
 	'al':[r'\n\s*?ADV\s*?\:|\n\s*?Macei.*?\n',re_num_cnj],
 	'am':[r'{}'.format(re_final_am,),re_num_cnj],
@@ -66,10 +66,3 @@ def encontra_publicacoes(tribunal, texto):
 
 def encontra_numero(tribunal, texto):
 	return busca(diarios[tribunal][1],texto,ngroup=0).replace('\n','')
-
-def encontra_data(texto):
-	data = re.search(r'\d{2}/\d{2}/\d{4}|\d{2}-\d{2}-\d{4}',texto)
-	if data:
-		return data.group(0)
-	else:
-		return ''

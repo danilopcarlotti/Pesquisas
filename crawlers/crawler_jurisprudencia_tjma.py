@@ -1,4 +1,4 @@
-import time, re, sys, os
+import time, re, sys, os, urllib.request
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from common.download_path import path, path_hd
@@ -46,7 +46,8 @@ class crawler_jurisprudencia_tjma(crawler_jurisprudencia_tj):
 				print(e)
 				break
 
-	def download_diario_retroativo(self, data_especifica=None):
+	def download_diario_retroativo_old(self, data_especifica=None):
+		# view-source:http://www.tjma.jus.br/inicio/diario/pagina/21/dtaInicio/2011-01-01/dtaTermino/2019-11-13
 		data_ini_xpath = '//*[@id="dtaInicio"]'
 		data_fim_xpath = '//*[@id="dtaTermino"]'
 		download_xpath = '//*[@id="table1"]/tbody/tr[2]/td[3]/a[1]'
@@ -110,6 +111,18 @@ class crawler_jurisprudencia_tjma(crawler_jurisprudencia_tj):
 			except Exception as e:
 				print(e)
 
+	def download_diario_retroativo(self, path_diarios, primeiro=1167, ultimo=3133):
+		for i in range(primeiro, ultimo):
+			link = 'https://www3.tjma.jus.br/diario/VisualizacaoDiarioA3.mtw?idDiario=%s'
+			response = urllib.request.urlopen(link % (str(i),),timeout=40)
+			try:
+				file = open(path_diarios+'diario_ma_'+str(i)+".pdf", 'wb')
+				file.write(response.read())
+				time.sleep(3)
+				file.close()
+			except:
+				print(i)
+
 	def parser_acordaos(self,texto,cursor):
 		numero = busca(r'\n(.*?)\(clique aqui para visualizar o processo\)', texto)
 		data_disponibilizacao = busca(r'Data do registro do acordão\:\n(\d{2}/\d{2}/\d{4})',texto)
@@ -137,4 +150,4 @@ if __name__ == '__main__':
 	# except Exception as e:
 	# 	print(e)
 
-	c.download_diario_retroativo(data_especifica='02/09/2019')
+	c.download_diario_retroativo('/media/danilo/Seagate Expansion Drive/Diarios/Diarios_ma/')

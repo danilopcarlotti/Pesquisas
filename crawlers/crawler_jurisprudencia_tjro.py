@@ -1,4 +1,4 @@
-import sys, re, time, pyautogui, os
+import sys, re, time, pyautogui, os,urllib.request
 from bs4 import BeautifulSoup
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from common.conexao_local import cursorConexao
@@ -58,14 +58,29 @@ class crawler_jurisprudencia_tjro():
 		data_disponibilizacao = busca(r'\nData do julgamento\s*?\:(.*?)\n', texto)
 		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s");' % ('ro',numero, data_disponibilizacao, orgao_julgador, julgador, texto))
 
+	def download_diario_retroativo(self, n_ini, n_fim, ano, path_diarios):
+		link = 'https://www.tjro.jus.br/diario-api/recupera.php?numero=%s&ano=%s'
+		for i in range(n_ini, n_fim):
+			try:
+				response = urllib.request.urlopen(link % (str(i),str(ano)),timeout=20)
+				file = open(path_diarios+'diario_ro_'+str(i)+'_'+str(ano)+".pdf", 'wb')
+				file.write(response.read())
+				time.sleep(1)
+				file.close()
+			except:
+				print(i)
+
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjro()
 
-	cursor = cursorConexao()
-	cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_ro limit 1000000')
-	dados = cursor.fetchall()
-	for dado in dados:
-		c.parser_acordaos(dado[0], cursor)
+	for ano in range(2012,2020):
+		c.download_diario_retroativo(1,260,ano,'/media/danilo/Seagate Expansion Drive/Diarios/Diarios_ro/')
+
+	# cursor = cursorConexao()
+	# cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_ro limit 1000000')
+	# dados = cursor.fetchall()
+	# for dado in dados:
+	# 	c.parser_acordaos(dado[0], cursor)
 
 	# print('comecei ',c.__class__.__name__)
 	# try:

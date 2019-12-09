@@ -9,7 +9,7 @@ from selenium.webdriver.common.keys import Keys
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
 
-class crawler_jurisprudencia_tjpi():
+class crawler_jurisprudencia_tjpi(crawler_jurisprudencia_tj):
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância do Piauí"""
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
@@ -63,9 +63,11 @@ class crawler_jurisprudencia_tjpi():
 				subprocess.Popen('mkdir %s/Diarios_pi/%s' % (path_hd,data_especifica), shell=True) 
 				subprocess.Popen('mv %s/*.pdf %s/Diarios_pi/%s' % (path,path_hd,data_especifica), shell=True)
 			except Exception as e:
+				print(e)
 				driver.close()
 			return
 		datas = []
+		self.lista_anos = ['2018','2019']
 		for l in range(len(self.lista_anos)):
 			for i in range(1,10):
 				for j in range(1,10):
@@ -93,8 +95,8 @@ class crawler_jurisprudencia_tjpi():
 				time.sleep(1)
 				pyautogui.hotkey('ctrl','w')
 				driver.switch_to.window(driver.window_handles[0])
-				subprocess.Popen('mkdir %s/Diarios_pi/%s' % (path_hd,data), shell=True) 
-				subprocess.Popen('mv %s/*.pdf %s/Diarios_pi/%s' % (path,path_hd,data), shell=True)
+				subprocess.Popen('mkdir "%s/Diarios_pi/%s"' % (path_hd,data), shell=True) 
+				subprocess.Popen('mv %s/*.pdf "%s/Diarios_pi/%s"' % (path,path_hd,data), shell=True)
 			except Exception as e:
 				driver.switch_to.window(driver.window_handles[0])
 
@@ -112,16 +114,17 @@ class crawler_jurisprudencia_tjpi():
 
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_tjpi()
+
 	# print('comecei ',c.__class__.__name__)
 	# try:
 	# 	c.download_tj()
 	# except:
 	# 	print('finalizei com erro\n')
 
-	cursor = cursorConexao()
-	cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_pi;')
-	dados = cursor.fetchall()
-	for dado in dados:
-		c.parser_acordaos(dado[0], cursor)
+	# cursor = cursorConexao()
+	# cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_pi;')
+	# dados = cursor.fetchall()
+	# for dado in dados:
+	# 	c.parser_acordaos(dado[0], cursor)
 
-	# c.download_diario_retroativo()
+	c.download_diario_retroativo()

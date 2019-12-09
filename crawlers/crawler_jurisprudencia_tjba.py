@@ -7,9 +7,10 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 import sys, re, time, pyautogui,subprocess, urllib.request, os
 
-sys.path.append(os.path.dirname(os.getcwd()))
-from common_nlp.parse_texto import busca
-from common_nlp.pdf_to_text import pdf_to_text
+# sys.path.append(os.path.dirname(os.getcwd()))
+# sys.path.append(os.path.dirname(os.path.dirname(os.getcwd())))
+# from common_nlp.parse_texto import busca
+# from common_nlp.pdf_to_text import pdf_to_text
 
 class crawler_jurisprudencia_tjba():
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância da Bahia"""
@@ -103,13 +104,27 @@ class crawler_jurisprudencia_tjba():
 		except:
 			pass
 
+	def download_diario_retroativo(self, path_diarios, primeiro=1207, ultimo=2502):
+		link = 'https://diario.tjba.jus.br/diario/internet/download.wsp?tmp.diario.nu_edicao=%s'
+		for i in range(primeiro, ultimo):
+			try:
+				response = urllib.request.urlopen(link % (str(i),),timeout=40)
+				file = open(path_diarios+'diario_ba_'+str(i)+".pdf", 'wb')
+				file.write(response.read())
+				time.sleep(3)
+				file.close()
+			except:
+				print(i)
+
 def main():
 	c = crawler_jurisprudencia_tjba()
 	
-	cursor = cursorConexao()
-	p = pdf_to_text()
-	for arq in os.listdir(path+'/ba_2_inst'):
-		c.parser_acordaos(path+'/ba_2_inst/'+arq, cursor, p)
+	c.download_diario_retroativo('/media/danilo/Seagate Expansion Drive/Diarios/Diarios_ba/')
+
+	# cursor = cursorConexao()
+	# p = pdf_to_text()
+	# for arq in os.listdir(path+'/ba_2_inst'):
+	# 	c.parser_acordaos(path+'/ba_2_inst/'+arq, cursor, p)
 
 
 	# c.download_1_inst()

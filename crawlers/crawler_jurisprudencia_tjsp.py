@@ -68,7 +68,7 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 		subprocess.Popen('mv %s/sp_2_inst_*.pdf %s/sp_2_inst' % (path,path), shell=True)
 
 	def download_diario_retroativo(self, data_especifica=None):
-		cadernos = ['11','12','13','14','15','18']
+		cadernos = ['11','12','13','15']
 		datas = []
 		if data_especifica:
 			datas.append(data_especifica)
@@ -84,25 +84,22 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 						datas.append('0'+str(j)+'/'+str(i)+'/'+self.lista_anos[l])
 					for j in range(10,32):
 						datas.append(str(j)+'/'+str(i)+'/'+self.lista_anos[l])
-		contador = 0
-		driver = webdriver.Chrome(self.chromedriver)
-		driver.get('https://www.dje.tjsp.jus.br/cdje/index.do')
 		for data in datas:
-			contador += 1
-			print(data)
-			for caderno in cadernos:
-				driver.execute_script("popup('/cdje/downloadCaderno.do?dtDiario=%s'+'&cdCaderno=%s','cadernoDownload');" % (data, caderno))
-				time.sleep(1)
-			time.sleep(15)
-			nome_pasta = data.replace('/','')
-			subprocess.Popen('mkdir %s/Diarios_sp/%s' % (path_diarios,nome_pasta), shell=True) 
-			subprocess.Popen('mv %s/*.pdf %s/Diarios_sp/%s' % (path,path_diarios,nome_pasta), shell=True)
-			if contador > 10:
-				time.sleep(10)
-				driver.close()
+			try:
 				driver = webdriver.Chrome(self.chromedriver)
 				driver.get('https://www.dje.tjsp.jus.br/cdje/index.do')
-				contador = 0
+				print(data)
+				for caderno in cadernos:
+					driver.execute_script("popup('/cdje/downloadCaderno.do?dtDiario=%s'+'&cdCaderno=%s','cadernoDownload');" % (data, caderno))
+					time.sleep(1)
+				time.sleep(30)
+				nome_pasta = data.replace('/','')
+				subprocess.Popen('mkdir "%s/Diarios_sp/%s"' % (path_diarios,nome_pasta), shell=True) 
+				subprocess.Popen('mv %s/*.pdf "%s/Diarios_sp/%s"' % (path,path_diarios,nome_pasta), shell=True)
+				driver.quit()
+			except Exception as e:
+				print(e)
+				time.sleep(3)
 
 	# Só funciona para a edição da cidade de jun/2017 e para as edições de 2018
 	# REVER PARA OUTROS DIÁRIOS
@@ -266,8 +263,11 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 
 def main():
 	c = crawler_jurisprudencia_tjsp()
-	cursor = cursorConexao()
-	c.parse_sp_dados_2_inst(cursor)
+
+	c.download_diario_retroativo()
+
+	# cursor = cursorConexao()
+	# c.parse_sp_dados_2_inst(cursor)
 
 	# print('comecei ',c.__class__.__name__)
 	# try:
@@ -281,11 +281,11 @@ def main():
 	# except Exception as e:
 	# 	print(e)
 
-	cursor = cursorConexao()
-	cursor.execute('SELECT sentenca FROM justica_estadual.jurisprudencia_sp_1_inst;')
-	dados = cursor.fetchall()
-	for dado in dados:
-		c.parse_sp_dados_1_inst(dado[0], cursor)
+	# cursor = cursorConexao()
+	# cursor.execute('SELECT sentenca FROM justica_estadual.jurisprudencia_sp_1_inst;')
+	# dados = cursor.fetchall()
+	# for dado in dados:
+	# 	c.parse_sp_dados_1_inst(dado[0], cursor)
 
 	# cursor = cursorConexao()
 	# cursor.execute('SELECT id,ementas from justica_estadual.jurisprudencia_sp limit 10;')
@@ -310,23 +310,23 @@ def main():
 	# 	print('finalizei o ano com erro ',e)
 
 if __name__ == '__main__':
-	# main()
+	main()
 	# c = crawler_jurisprudencia_tjsp()
 	# try:
 	# 	c.download_diario_oficial_adm_retrativo_antigos()
 	# except Exception as e:
 	# 	print(e)
-	cursor = cursorConexao()
+	# cursor = cursorConexao()
 	# p = pdf_to_text()
-	for arq in os.listdir('/home/danilo/Downloads/sp_2_inst/sp_2_inst_saude'):
-		try:
-			if re.search(r'\.txt',arq):
-				texto = ''.join([line for line in open('/home/danilo/Downloads/sp_2_inst/sp_2_inst_saude/'+arq,'r')])
-				tribunal = 'sp'
-				numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}',texto,ngroup=0)
-				polo_ativo = busca(r'apelante\s*?\:(.*?)\n',texto, args=re.I)
-				polo_passivo = busca(r'apelado\s*?\:(.*?)\n',texto, args=re.I)
-				cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst_sp_saude (tribunal, numero, texto_decisao, polo_ativo, polo_passivo) values ("%s","%s","%s","%s","%s");' % (tribunal, numero, texto.replace('"','').replace('\\',''), polo_ativo.replace('"',''), polo_passivo.replace('"','')))
-		except Exception as e:
-			print(arq)
-			print(e)
+	# for arq in os.listdir('/home/danilo/Downloads/sp_2_inst/sp_2_inst_saude'):
+		# try:
+		# 	if re.search(r'\.txt',arq):
+		# 		texto = ''.join([line for line in open('/home/danilo/Downloads/sp_2_inst/sp_2_inst_saude/'+arq,'r')])
+		# 		tribunal = 'sp'
+		# 		numero = busca(r'\d{7}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}',texto,ngroup=0)
+		# 		polo_ativo = busca(r'apelante\s*?\:(.*?)\n',texto, args=re.I)
+		# 		polo_passivo = busca(r'apelado\s*?\:(.*?)\n',texto, args=re.I)
+		# 		cursor.execute('INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst_sp_saude (tribunal, numero, texto_decisao, polo_ativo, polo_passivo) values ("%s","%s","%s","%s","%s");' % (tribunal, numero, texto.replace('"','').replace('\\',''), polo_ativo.replace('"',''), polo_passivo.replace('"','')))
+		# except Exception as e:
+		# 	print(arq)
+		# 	print(e)

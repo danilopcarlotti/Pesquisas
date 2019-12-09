@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from crawlerJus import crawlerJus
 from common.conexao_local import cursorConexao
-from common.download_path import path
+from common.download_path import path, path_hd
 from selenium import webdriver
 import sys, re, os, time, docx2txt, urllib.request, subprocess
 
@@ -23,28 +23,17 @@ class crawler_jurisprudencia_tjdf(crawler_jurisprudencia_tj):
 		# https://dje.tjdft.jus.br/dje/djeletronico?visaoId=tjdf.djeletronico.comum.internet.apresentacao.VisaoDiarioEletronicoInternetPorData
 
 		# 240 diários por ano. Salvo 2018, que tem, atualmente 130
-
+		self.lista_anos = ['2018','2019','2020']
 		link_inicial = 'https://dje.tjdft.jus.br/dje/jsp/dje/DownloadDeDiario.jsp?dj=DJ%s_%s-ASSINADO.PDF&statusDoDiario=ASSINADO'
-		# for l in range(len(self.lista_anos)-1):
-		# 	for i in range(240,0,-1):
-		# 		try:
-		# 			print(link_inicial % (str(i),self.lista_anos[l]))
-		# 			response = urllib.request.urlopen(link_inicial % (str(i),self.lista_anos[l]),timeout=15)
-		# 			file = open(str(i)+self.lista_anos[l]+'.pdf', 'wb')
-		# 			file.write(response.read())
-		# 			file.close()
-		# 			subprocess.Popen('mv %s/*.pdf %s/Diarios_df' % (os.getcwd(),path), shell=True)
-		# 		except Exception as e:
-		# 			print(e)
-		for l in range(len(self.lista_anos)-1,len(self.lista_anos)):
-			for i in range(130,0,-1):
+		for l in range(len(self.lista_anos)-1):
+			for i in range(240,0,-1):
 				try:
-					print(link_inicial % (str(i),self.lista_anos[l]))
+					# print(link_inicial % (str(i),self.lista_anos[l]))
 					response = urllib.request.urlopen(link_inicial % (str(i),self.lista_anos[l]),timeout=15)
-					file = open(str(i)+self.lista_anos[l]+'.pdf', 'wb')
+					file = open(str(i)+'_'+self.lista_anos[l]+'.pdf', 'wb')
 					file.write(response.read())
 					file.close()
-					subprocess.Popen('mv %s/*.pdf %s/Diarios_df' % (os.getcwd(),path), shell=True)
+					subprocess.Popen('mv %s/*.pdf "%s/Diarios_df"' % (os.getcwd(),path_hd), shell=True)
 				except Exception as e:
 					print(e)
 
@@ -97,7 +86,6 @@ def main():
 				c.parser_acordaos(path+'/df_2_inst/'+arq, cursor)
 			except Exception as e:
 				print(arq, e)
-
 
 if __name__ == '__main__':
 	# main()

@@ -10,7 +10,7 @@ import sys, re, time, os, urllib.request, subprocess
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
 
-class crawler_jurisprudencia_tjsc():
+class crawler_jurisprudencia_tjsc(crawler_jurisprudencia_tj):
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de Santa Catarina"""
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
@@ -27,8 +27,7 @@ class crawler_jurisprudencia_tjsc():
 	def download_diario_retroativo(self):
 		link_inicial = 'http://busca.tjsc.jus.br/dje-consulta/rest/diario/caderno?edicao=%s&cdCaderno=%s'
 		cadernos = ['1','2','3']
-		# for i in range(2853,0,-1):
-		for i in range(2474,0,-1):
+		for i in range(3200,2474,-1):
 			for e in cadernos:
 				try:
 					print(link_inicial % (str(i),e))
@@ -36,7 +35,7 @@ class crawler_jurisprudencia_tjsc():
 					file = open(str(i)+'_'+e+'.pdf', 'wb')
 					file.write(response.read())
 					file.close()
-					subprocess.Popen('mv %s/*.pdf %s/Diarios_sc' % (os.getcwd(),path), shell=True)
+					subprocess.Popen('mv %s/*.pdf "%s/Diarios_sc"' % (os.getcwd(),path_hd), shell=True)
 				except Exception as e:
 					print('erro com ')
 					print(e)
