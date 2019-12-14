@@ -32,6 +32,7 @@ class summarization_texts():
             for p in pool_summaries:
                 best_summaries += p
             best_summary[rand] = self.genetic_search_step(rand, best_summaries, self.list_sentences_sections)
+            # insert here loop to force score. if score not > threshold, then repeat
         return best_summary
 
     def genetic_search_step(self, size_summary, list_sentences_indexes, list_sentences_sections):
