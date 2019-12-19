@@ -7,8 +7,6 @@ import boto3, boto.s3, os, sys
 AWS_ACCESS_KEY_ID = ''
 AWS_SECRET_ACCESS_KEY = ''
 BUCKET_NAME = ''
-PATH_ARQUIVOS = ''
-PATH_PREFIX = ''
 
 def send_file(final_path, local_path):
 	conn = boto.connect_s3(AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY)
@@ -18,7 +16,7 @@ def send_file(final_path, local_path):
 	k.key = final_path
 	# PATH DO ARQUIVO NA MÁQUINA
 	k.set_contents_from_filename(local_path)
-
+	
 if __name__ == "__main__":
 	r = recursive_folders()
 	paths = r.find_files(sys.argv[1])

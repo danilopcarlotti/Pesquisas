@@ -5,13 +5,20 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 import pandas as pd, pymongo, nltk, pickle, os, numpy as np
 
-DATABASE_NAME = 'active_learning_db'
-COLLECTION_NAME = 'document_classification_al'
-PATH_MODEL = os.getcwd()
+DATABASE_NAME = 'activeLearningDb'
+COLLECTION_NAME = 'activeLearningCollection'
 
 class active_learning_logreg():
 
-    def __init__(self, N, K, threshold_delta, csv_path, path_model_save=PATH_MODEL, uri_mongo=None):
+    def __init__(self, N, K, threshold_delta, csv_path, path_model_save, uri_mongo=None):
+        # This database will be created in the mongodb at localhost
+        if not uri_mongo:
+            uri_mongo = "mongodb://localhost:27017/"
+        self.myclient = pymongo.MongoClient(uri_mongo)
+        self.mydb = self.myclient[DATABASE_NAME]
+        # This collection will be created in the mongodb
+        self.doc_collection = self.mydb[COLLECTION_NAME]
+        self.model_score = 0.0
         # N is the number of elements that need to be classified initially for the classification to begin
         self.N = N
         # K is the number of elements that will be manually classified in each interation
@@ -23,20 +30,13 @@ class active_learning_logreg():
         self.raw_texts = self.list_texts_raw(csv_path)
         # the texts are transformed in tfidf vectors
         self.normalized_texts_training = self.normalize_texts(self.raw_texts)
-        # This database will be created in the mongodb at localhost
-        if not uri_mongo:
-            uri_mongo = "mongodb://localhost:27017/"
-        self.myclient = pymongo.MongoClient(uri_mongo)
-        self.mydb = self.myclient[DATABASE_NAME]
-        # This collection will be created in the mongodb
-        self.doc_collection = self.mydb[COLLECTION_NAME]
         # Insert the processed documents in the database for future comparison
         self.insert_raw_texts()
         # The model that will be constantly updated
         self.vect_fit = None
         self.current_model = None
-        self.model_score = None
         self.path_model_save = path_model_save
+        self.find_N_documents()
 
     def classify_texts(self):
         for doc in self.doc_collection.find({'class_human':{'$gt':-1}}):
@@ -58,21 +58,29 @@ class active_learning_logreg():
         for doc_v, _id in X:
             results.append([_id, self.current_model.predict_proba([doc_v])[0][1]]) # verificar esse resultado!!
         most_uncertain = [i[0] for i in results if (i[1] < 0.5 + self.threshold_delta and i[1] > 0.5 - self.threshold_delta)][:self.K]
-        # update documents with to_classify to 1
+        for _id in most_uncertain:
+            self.doc_collection.update_one({'_id':_id},{'$set':{
+                'to_classify':1
+            }})
 
     def find_N_documents(self):
-        texts = []
+        counter = self.N
         for doc in self.doc_collection.find({}):
-            # update document with to_classify to 1
-            pass
+            self.doc_collection.update_one({'_id':doc['_id']},{'$set':{
+                'to_classify':1
+            }})
+            if not counter:
+                break
+            else:
+                counter -= 1
 
     def insert_raw_texts(self):
         for t in range(len(self.normalized_texts_training)):
             self.doc_collection.insert_one({
                 'raw_text':self.raw_texts[t],
                 'tfidf_vector':self.normalized_texts_training[t],
-                'class_human':-1,
-                'class_machine':-1,
+                'class_human':-2,
+                'class_machine':-2,
                 'to_classify':0
             })
 
@@ -139,7 +147,9 @@ class active_learning_logreg():
         self.classify_texts()
 
 if __name__ == "__main__":
-    actv_lrn = active_learning_logreg(20, 10, 0.4, 'csv_path.csv')
+    PATH_MODEL = os.getcwd()
+
+    actv_lrn = active_learning_logreg(20, 10, 0.4, 'csv_path.csv', PATH_MODEL, uri_mongo=None)
     
     actv_lrn.find_N_documents()
     # classify them manually and update documents

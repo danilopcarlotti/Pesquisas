@@ -15,7 +15,6 @@ class classifier_legal_phrases():
 		self.list_texts_control = list_texts_control
 		self.vectorizer = TfidfVectorizer()
 		self.txtN = textNormalization()
-		self.nlp = nlp
 		self.normal_texts = [' '.join(i) for i in self.txtN.normalize_texts(self.list_texts_control)]
 		self.vect_fit = self.vectorizer.fit(self.normal_texts)
 		self.X_control = self.vect_fit.transform(self.normal_texts).A
@@ -61,6 +60,8 @@ def create_classifier(class_name, df_path='texts_manually_classified.csv'):
 	pickle.dump(rel_ph,open('classifier_phrases_%s.pickle' % (class_name,),'wb'))
 
 def break_sentences(text, nlp):
+	# return re.split(r'\w\.\s',text)
+	text = re.sub(r'\s+',' ',text)
 	doc = nlp(text)
 	return [sent.text for sent in doc.sents]
 
@@ -117,7 +118,7 @@ def classify_text(text, nlp=None):
 
 def classify_sentences(text, path_classifiers='', nlp=None):
 	if not nlp:
-		nlp = spacy.load('en_core_web_sm')
+		nlp = spacy.load('pt_core_news_sm')
 
 	dictionary_methods = {
 		'fact':pickle.load(open(path_classifiers+'classifier_phrases_fact.pickle','rb')),
@@ -128,7 +129,7 @@ def classify_sentences(text, path_classifiers='', nlp=None):
 
 	classes_sentences = []
 
-	for sentence in break_sentences(text_to_analyse, nlp):
+	for sentence in break_sentences(text, nlp):
 		sentence_found = False
 		for k,v in dictionary_methods.items():
 			if v.belongs_to_class(sentence):
@@ -137,7 +138,6 @@ def classify_sentences(text, path_classifiers='', nlp=None):
 				break
 		if not sentence_found:
 			classes_sentences.append('argument')
-	
 	return classes_sentences
 
 if __name__ == '__main__':
