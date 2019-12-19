@@ -13,3 +13,4 @@ rascunhos.py
 *.xlsx
 *.csv
 *.jar
+*.pickle
