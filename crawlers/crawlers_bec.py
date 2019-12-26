@@ -21,7 +21,6 @@ class crawlers_bec(crawlerJus):
 				r = urllib.request.urlopen(req,timeout=3).read()
 				json_oc = json.loads(r.decode('utf-8'))
 				self.crawler_editais_bec(list_urls=[json_oc])
-				sys.exit()
 				time.sleep(0.5)
 				contador_aux += 1
 			except Exception as e:
