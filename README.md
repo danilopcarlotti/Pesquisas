@@ -1,2 +1,4 @@
 # Pesquisas
-Repositório com material open-source para pesquisas acadêmicas sobre direito a partir da jurisprudência.
+
+Por conta de um bug, perdi acesso a essa conta.
+O repositório foi mudado para gitlab.com/danilopcarlotti/pesquisas
