@@ -100,7 +100,6 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
 			except Exception as e:
 				print(e)
 				time.sleep(3)
-
 	# Só funciona para a edição da cidade de jun/2017 e para as edições de 2018
 	# REVER PARA OUTROS DIÁRIOS
 	def download_diario_oficial_adm_retroativo(self):

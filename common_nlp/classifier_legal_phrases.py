@@ -38,7 +38,7 @@ class classifier_legal_phrases():
 
 def closest_n_index(X, n_c=10):
 	kmeans = KMeans(n_clusters=n_c, random_state=0).fit(X)
-	closest, distances = pairwise_distances_argmin_min(kmeans.cluster_centers_, X)
+	closest, _ = pairwise_distances_argmin_min(kmeans.cluster_centers_, X)
 	return closest
 
 def closest_n_texts(residual_texts, n_c=10):
@@ -149,8 +149,7 @@ if __name__ == '__main__':
 	# sys.exit()
 
 	text_to_analyse = sys.argv[1]
-	n_c = int(sys.argv[2])
-	language = sys.argv[3]
+	language = sys.argv[2]
 	
 	if language == 'pt':
 		nlp = spacy.load('pt_core_news_sm')

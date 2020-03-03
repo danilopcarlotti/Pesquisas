@@ -2,8 +2,7 @@ import re, pandas as pd
 from parserTextoJuridico import parserTextoJuridico
 
 class classificacaoBooleanaTextos():
-	"""docstring for classificacaoBooleanaTextos
-"""
+	
 	def __init__(self, dicionario_bool):
 		self.var_bool = dicionario_bool
 	

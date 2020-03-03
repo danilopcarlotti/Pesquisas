@@ -1,6 +1,6 @@
 import json, os
 
-class parser_json():
+class parser_json_bec():
 	"""Classe para parseamento de json's"""
 	def __init__(self):
 		pass

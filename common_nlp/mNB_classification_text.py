@@ -25,18 +25,12 @@ class mNB_classification_text():
 	def dataframe_data(self, target_class = None):
 		# the existence of a "target_class" represents that all other classes should be interpreted as not the target
 		rows = []
-		index = []
-		index_counter = 1
 		for text, class_text in self.dados:
 			if target_class and class_text != target_class:
 				rows.append({'text': text, 'class': 'OTHER'})
-				index.append(index_counter)
-				index_counter += 1
 			else:
 				rows.append({'text': text, 'class': class_text})
-				index.append(index_counter)
-				index_counter += 1
-		data_frame = pd.DataFrame(rows, index=index)
+		data_frame = pd.DataFrame(rows, index=[i for i in range(len(rows))])
 		return data_frame
 
 	def mNB_classifier(self):

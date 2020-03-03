@@ -4,7 +4,7 @@ from nltk.tokenize import RegexpTokenizer
 import gensim, nltk
 
 class textNormalization():
-	"""Manipula topic models"""
+	
 	def __init__(self):
 		self.stemmer = nltk.stem.RSLPStemmer()
 

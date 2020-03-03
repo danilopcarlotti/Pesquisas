@@ -1,4 +1,4 @@
-import re, os, sys, time, datetime, urllib.request, ssl,logging, pyautogui
+import re, os, sys, time, datetime, urllib.request, ssl,logging, pyautogui, json, pandas as pd
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -8,18 +8,18 @@ from common.login_stf import USER,SENHA
 
 
 class crawler_jurisprudencia_stf(crawlerJus):
-	"""Classe para download de informações sobre processos do STJ"""
+	"""Classe para download de informações sobre processos do STF"""
 	def __init__(self):
 		super().__init__()
 		ssl._create_default_https_context = ssl._create_unverified_context 
 		self.link_base = 'http://www.stf.jus.br/portal/processo/verProcessoAndamento.asp?incidente='
-		self.numero_final = 7000000 # jun 2018
-		self.numero_inicial = 2000000
+		self.numero_final = 7000000 # jan 2020
+		self.numero_inicial = 5307000 # jun 2018
 
 	def baixarDadosProcesso(self,link_processos):
 		cursor = cursorConexao()
 		id_processo_stf = ''
-		for id_p, link in link_processos:
+		for _, link in link_processos:
 			try:
 				relator = ''
 				pag = self.baixa_pag(link)
@@ -85,7 +85,6 @@ class crawler_jurisprudencia_stf(crawlerJus):
 									cursor.execute('INSERT INTO stf.texto_decisoes (link_pagina, texto_decisao) values("%s","%s");' % (link,texto_final))
 
 	def baixa_decisoes_proc(self):
-		contador = 0
 		for i in range(self.numero_inicial,self.numero_final):
 			self.baixarVotos(self.link_base+str(i))
 
@@ -129,6 +128,18 @@ class crawler_jurisprudencia_stf(crawlerJus):
 			pass
 		return driver
 
+	def parse_json_decisions(self, path_json, path_csv):
+		json_file = open(path_json,'r')
+		rows = []
+		for line in json_file:
+			data = json.loads(line)
+			dic = data.copy()
+			data_julgamento = re.search(r'\d{2}\.\d{2}\.\d{4}',data['voto'][-500:])
+			dic['data'] = data_julgamento.group(0) if data_julgamento else ''
+			rows.append(dic)
+		df = pd.DataFrame(rows, index=[i for i in range(len(rows))])
+		df.to_csv(path_csv,index=False)
+
 	def solicitar_link_download_documentos(self,ids_doc):
 		aba_pecas_xpath = '//*[@id="abaPecas"]'
 		download_todas_pecas_xpath = '//*[@id="pecas"]/processo-pecas/div/div/div/div/div/button[3]'
@@ -160,10 +171,13 @@ class crawler_jurisprudencia_stf(crawlerJus):
 			driver.close()
 
 if __name__ == '__main__':
-	cursor = cursorConexao()
+	# cursor = cursorConexao()
+	c = crawler_jurisprudencia_stf()
+	
+	# c.parse_json_decisions('/mnt/Dados/Decisoes_stf/complete.json','/mnt/Dados/Decisoes_stf/complete.csv')
+	
 	# cursor.execute('SELECT id, link_dados from processos_stf.dados_processo where processo is NULL;')
 	# links = cursor.fetchall()
-	c = crawler_jurisprudencia_stf()
 	# c.baixarDadosProcesso(links)
 	# c.baixar_documentos_stf()
 	# c.login_stf()
@@ -176,10 +190,10 @@ if __name__ == '__main__':
 	# links_d = cursor.fetchall()
 	# c.solicitar_link_download_documentos(links_d)
 
-	cursor.execute('SELECT processo from stf.dados_processo limit 5,10;')
-	ids_doc = cursor.fetchall()
-	c.solicitar_link_download_documentos(ids_doc)
-	c.baixar_documentos_stf()
+	# cursor.execute('SELECT processo from stf.dados_processo limit 5,10;')
+	# ids_doc = cursor.fetchall()
+	# c.solicitar_link_download_documentos(ids_doc)
+	# c.baixar_documentos_stf()
 	
 	# cursor.execute('SELECT id, link_pagina from stf.decisoes limit 1000000;')
 	# link_decisoes = cursor.fetchall()

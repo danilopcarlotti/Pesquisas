@@ -8,7 +8,7 @@ from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
 
-class crawler_jurisprudencia_trf1():
+class crawler_jurisprudencia_trf1(crawler_jurisprudencia_tj):
 	"""Crawler especializado em retornar textos da jurisprudência de segunda instância de Maranhão"""
 	def __init__(self):
 		crawler_jurisprudencia_tj.__init__(self)
@@ -18,6 +18,25 @@ class crawler_jurisprudencia_trf1():
 		self.link_acordaos = '//*[@id="td_0005"]'
 		self.botao_pesquisar = 'btnConsultar'
 		self.botao_prox = '//*[@id="conteudo"]/div[1]/input[3]'
+
+	def download_diarios_retroativo(self):
+		link_basico = 'https://portal.trf1.jus.br/dspace/handle/123/'
+		link_basico_links = 'https://portal.trf1.jus.br/dspace/handle/123/163457?offset='
+		for i in range(220,1360,20):
+			links_paginas = []
+			self.encontrar_links_html(link_basico_links+str(i), links_paginas, r'dspace/handle/123/\d{2,}$')
+			counter = i
+			for l in links_paginas:
+				try:
+					lista_links = []
+					self.encontrar_links_html('https://portal.trf1.jus.br'+l, lista_links, r'pdf')
+					self.baixa_html_pdf('https://portal.trf1.jus.br'+lista_links[0],'/mnt/Dados/Diarios_trf1/trf1_'+str(counter))
+					counter += 1
+					time.sleep(20)
+				except:
+					time.sleep(60)
+		# print(lista_links)
+
 
 	def download_tj(self, termo = 'a'):
 		cursor = cursorConexao()
@@ -55,10 +74,12 @@ if __name__ == '__main__':
 	# 	c.download_tj()
 	# except Exception as e:
 	# 	print(e)
+	
+	c.download_diarios_retroativo()
 
-	cursor = cursorConexao()
-	cursor.execute('SELECT ementas from justica_federal.jurisprudencia_trf1;')
-	dados = cursor.fetchall()
-	print(len(dados))
-	for dado in dados:
-		c.parser_acordaos(dado[0], cursor)
+	# cursor = cursorConexao()
+	# cursor.execute('SELECT ementas from justica_federal.jurisprudencia_trf1;')
+	# dados = cursor.fetchall()
+	# print(len(dados))
+	# for dado in dados:
+	# 	c.parser_acordaos(dado[0], cursor)

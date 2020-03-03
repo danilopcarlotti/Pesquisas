@@ -6,7 +6,7 @@ from Pesquisas.common.recursive_folders import recursive_folders
 from Pesquisas.common.parallel_programming import parallel_programming
 
 def month_to_number(month):
-    month = month.lower()
+    month = month.lower().strip()
     dicionario_meses = {
         'dezembro':'12',
         'novembro':'11',
@@ -27,7 +27,7 @@ def month_to_number(month):
         return ' '
 
 def extrair_data_texto_arq(arq):
-    data_raw = re.search(r'(\d{2}) de (.*?) de (\d{4})', arq[:300], re.DOTALL)
+    data_raw = re.search(r'(\d{1,2}) de (\w*?) de (\d{4})', arq, re.DOTALL)
     if data_raw:
         day = data_raw.group(1)
         month = month_to_number(data_raw.group(2))
@@ -79,10 +79,10 @@ def extrair_data_ce(path_arquivo):
     return ''
 
 def extrair_data_df(arq):
-    return extrair_data_texto_arq(arq[:300])
+    return extrair_data_texto_arq(arq[:3000])
 
 def extrair_data_go(arq):
-    return extrair_data_texto_arq(arq[:300])
+    return extrair_data_texto_arq(arq[:3000])
 
 def extrair_data_ms(path_arquivo):
     data = re.search(r'Diarios_ms/(\d{8})/', path_arquivo)
@@ -103,8 +103,11 @@ def extrair_data_mt(arq):
     else:
         return ''
 
+def extrair_data_pa(arq):
+    return extrair_data_texto_arq(arq[:3000])
+
 def extrair_data_pb(arq):
-    return extrair_data_texto_arq(arq[:300])
+    return extrair_data_texto_arq(arq[:3000])
 
 def extrair_data_pe(arq):
     data_raw = re.search(r'Publicação: (\d{2}/\d{2}/\d{4})', arq)
@@ -121,7 +124,7 @@ def extrair_data_pi(path_arquivo):
     return ''
 
 def extrair_data_pr(arq):
-    return extrair_data_texto_arq(arq[:300])
+    return extrair_data_texto_arq(arq[:3000])
 
 def extrair_data_rn(path_arquivo):
     data = re.search(r'Diarios_rn/(.*?)\.', path_arquivo)
@@ -139,13 +142,13 @@ def extrair_data_rr(path_arquivo):
     return ''
 
 def extrair_data_rs(arq):
-    return extrair_data_texto_arq(arq[:300])
+    return extrair_data_texto_arq(arq[:3000])
 
 def extrair_data_sc(arq):
-    return extrair_data_texto_arq(arq[:300])
+    return extrair_data_texto_arq(arq[:3000])
 
 def extrair_data_se(arq):
-    return extrair_data_texto_arq(arq[:300])
+    return extrair_data_texto_arq(arq[:3000])
 
 def extrair_data_sp(path_arquivo):
     data = re.search(r'Diarios_sp/(.*?)/', path_arquivo)
@@ -175,14 +178,15 @@ def extrair_data_to(arq):
     else:
         return ''
 
-def extrair_data_trf1(path_arquivo):
-    data = re.search(r'Diarios_trf1/dir_\d+/.*?(\d{4}\-\d{2}\-\d{2}).*?\.', path_arquivo)
-    if data:
-        data = data.group(1).replace('-','')
-        return data[-2:]+'/'+data[-4:-2]+'/'+data[:4]
-    else:
-        return ''
-    return ' '
+def extrair_data_trf1(arq):
+    return extrair_data_texto_arq(arq[:3000])
+    # data = re.search(r'Diarios_trf1/dir_\d+/.*?(\d{4}\-\d{2}\-\d{2}).*?\.', path_arquivo)
+    # if data:
+    #    data = data.group(1).replace('-','')
+    #    return data[-2:]+'/'+data[-4:-2]+'/'+data[:4]
+    # else:
+    #    return ''
+    # return ' '
 
 def extrair_data_trf3(arq):
     data_raw = re.search(r'Edição n.*?((\d{2}) de (.*?) de (\d{4}))', arq, re.DOTALL)
@@ -228,6 +232,7 @@ def dicionario_funcoes_data(tribunal):
         'go':{'f':extrair_data_go,'i':'arq'},
         'ms':{'f':extrair_data_ms,'i':'path_arquivo'},
         'mt':{'f':extrair_data_mt,'i':'arq'},
+        'pa':{'f':extrair_data_pa,'i':'arq'},
         'pb':{'f':extrair_data_pb,'i':'arq'},
         'pe':{'f':extrair_data_pe,'i':'arq'},
         'pi':{'f':extrair_data_pi,'i':'path_arquivo'},
@@ -239,7 +244,7 @@ def dicionario_funcoes_data(tribunal):
         'se':{'f':extrair_data_se,'i':'arq'},
         'sp':{'f':extrair_data_sp,'i':'path_arquivo'},
         'to':{'f':extrair_data_to,'i':'arq'},
-        'trf1':{'f':extrair_data_trf1,'i':'path_arquivo'},
+        'trf1':{'f':extrair_data_trf1,'i':'arq'},
         'trf3':{'f':extrair_data_trf3,'i':'arq'},
         'trf4':{'f':extrair_data_trf4,'i':'path_arquivo'},
         'trf5':{'f':extrair_data_trf5,'i':'arq'},
@@ -263,7 +268,7 @@ def create_csv(filepath):
 		f_data = dic_funcao_data['f']
 		input_type = dic_funcao_data['i']
 		texto = '\n'.join([i for i in open(filepath,'r')])
-		if input_type == 'path_arquivo':
+		if input_type == 'arq':
 			input_data = texto[:10000]
 		else:
 			input_data = filepath
@@ -276,18 +281,18 @@ def create_csv(filepath):
 				rows.append({'tribunal':tribunal,'texto_publicacao':pub.replace('\n',' '),'nome_arquivo':filepath,'data':data,'numero_processo':numero})
 		index = [j for j in range(len(rows))]
 		df = pd.DataFrame(rows, index=index)
-		df.to_csv(nome_arquivo.replace('.txt','.csv'),index=False)
-		subprocess.Popen('mv "%s.csv" "%s"' % (nome_arquivo[:-4],filepath.replace(nome_arquivo,'')), shell=True)
+		df.to_csv(filepath.replace('.txt','.csv'),index=False)
+		# subprocess.Popen('mv "%s.csv" "%s"' % (nome_arquivo[:-4],filepath.replace(nome_arquivo,'')), shell=True)
 
 def main(path_diarios):
-	rec_f = recursive_folders()
-	arquivos_path = rec_f.find_files(path_diarios)
-	diarios_processar = [i for i in arquivos_path if i[-4:] == '.txt']
-	# parallel = parallel_programming()
-	# parallel.run_f_nbatches(create_csv,diarios_processar)
-	for diario in diarios_processar:
-		create_csv(diario)
-
+    rec_f = recursive_folders()
+    arquivos_path = rec_f.find_files(path_diarios)
+    diarios_processar = [i for i in arquivos_path if i[-4:] == '.txt']
+    # parallel = parallel_programming()
+    # parallel.run_f_nbatches(create_csv,diarios_processar)
+    for diario in diarios_processar:
+        create_csv(diario)
+        
 def main_datas(path_diarios):
     rec = recursive_folders()
     diarios_processar = [i for i in rec.find_files(path_diarios) if i[-4:] == '.txt']
@@ -323,6 +328,6 @@ def main_datas(path_diarios):
     df_datas.to_excel('contagem_diarios_anos_trf5.xlsx',index=False)
 
 if __name__ == '__main__':
-	# path_diarios = sys.argv[1]
-	# main(path_diarios)
-	main('/media/danilo/Seagate Expansion Drive/Diarios/Diarios_trf3')
+	path_diarios = sys.argv[1]
+	main(path_diarios)
+	# main('/media/danilo/Seagate Expansion Drive/Diarios/Diarios_trf3')
