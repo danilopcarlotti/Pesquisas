@@ -1,0 +1,27 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        Pesquisa de preços - 2019 - Municípios do Estado de São Paulo
+    </title>
+</head>
+<body>
+    <br>
+    <div align='center'>
+        <h1>
+            Download de relatório
+        </h1>
+    </div>
+    <br>
+    <br>
+    <div align='center'>
+        <h2> Download de compras com a expressão "{{expressao}}"</h2>
+        <br>
+        <form method="post" action="download_file" enctype="multipart/form-data">
+            <input type="text" name="file_name" hidden="True" value={{nome_arquivo}}/>
+            <input type="submit" value='Download' />
+        </form>
+    </div>
+    <br>
+    <br>
+</body>

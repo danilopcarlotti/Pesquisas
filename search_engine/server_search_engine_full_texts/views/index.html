@@ -1,0 +1,35 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        Pesquisa de jurisprudência
+    </title>
+    <style>
+        div.texto_central {
+            width: 600px;
+            height: 400px;
+            overflow: auto;
+            text-align: center;
+            margin: auto;
+            width: 60%;
+            padding: 10px;
+            
+        }
+    </style>
+</head>
+<body>
+    <br>
+    <br>
+    <h1 align='center'>Pesquisa de jurisprudência<br>COVID - 2019</h1>
+    <br><br><br><br>
+    <div style="text-align: center">
+        <form action="search_text" method="POST" name="form_texto">
+            <label for="search">Insira o texto de busca</label>
+            <br>
+            <textarea id="search" name="search" rows="15" cols="70"></textarea>
+            <br>
+            <br>
+            <button>Encontrar jurisprudência</button>
+        </form>
+    </div>
+</body>
