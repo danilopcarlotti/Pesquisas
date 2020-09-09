@@ -1,6 +1,7 @@
 import time, re, sys, os
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
+from common.download_path_diarios import path as path_diarios
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
@@ -19,7 +20,7 @@ class crawler_jurisprudencia_trf1(crawler_jurisprudencia_tj):
 		self.botao_pesquisar = 'btnConsultar'
 		self.botao_prox = '//*[@id="conteudo"]/div[1]/input[3]'
 
-	def download_diarios_retroativo(self):
+	def download_diarios_retroativo_2015(self):
 		link_basico = 'https://portal.trf1.jus.br/dspace/handle/123/'
 		link_basico_links = 'https://portal.trf1.jus.br/dspace/handle/123/163457?offset='
 		for i in range(220,1360,20):
@@ -36,7 +37,26 @@ class crawler_jurisprudencia_trf1(crawler_jurisprudencia_tj):
 				except:
 					time.sleep(60)
 		# print(lista_links)
-
+	
+	def download_diarios_retroativo_2020(self):
+		dic_pag_diarios_ano = {
+			'2016':224,
+			'2017':232,
+			'2018':236,
+			'2019':238,
+			'2020':163 #Setembro de 2020
+		}
+		for ano in ['2016','2017','2018','2019','2020']:
+			for n_page in range(1,dic_pag_diarios_ano[ano]):
+				link_basico = 'https://edj.trf1.jus.br/edj/handle/123/3/discover?rpp=17&etal=0&group_by=none&page={}&sort_by=dc.date.issued_dt&order=desc&filtertype_0=dateIssued&filtertype_1=dateIssued&filter_relational_operator_1=contains&filter_relational_operator_0=equals&filter_1=&filter_0={}'.format(n_page, ano)
+				lista_links = []
+				self.encontrar_links_html(link_basico, lista_links, r'edj/handle/\d+/\d{2,}')
+				for l in lista_links:
+					print('https://edj.trf1.jus.br'+l)
+					lista_pdf = []
+					self.encontrar_links_html('https://edj.trf1.jus.br'+l, lista_pdf, r'\.pdf\?')
+					self.baixa_html_pdf('https://edj.trf1.jus.br'+lista_pdf[0],path_diarios+'/Diarios_trf1/'+re.search(r'/Caderno\_(.*?)\?',lista_pdf[0]).group(1))
+					sys.exit()
 
 	def download_tj(self, termo = 'a'):
 		cursor = cursorConexao()
@@ -75,7 +95,8 @@ if __name__ == '__main__':
 	# except Exception as e:
 	# 	print(e)
 	
-	c.download_diarios_retroativo()
+	# c.download_diarios_retroativo_2015()
+	c.download_diarios_retroativo_2020()
 
 	# cursor = cursorConexao()
 	# cursor.execute('SELECT ementas from justica_federal.jurisprudencia_trf1;')
