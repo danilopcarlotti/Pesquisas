@@ -156,5 +156,5 @@ class crawler_jurisprudencia_stj(crawlerJus):
 if __name__ == '__main__':
 	c = crawler_jurisprudencia_stj()
 	# c.baixarDadosProcesso()
-	# c.download_diario_retroativo()
-	c.processar_arquivos_diarios('/home/deathstar/Documents/Diarios_outros/STJ_diarios_2019',path_csv_final='decisões_stj_2019.csv')
+	c.download_diario_retroativo()
+	# c.processar_arquivos_diarios('/home/deathstar/Documents/Diarios_outros/STJ_diarios_2019',path_csv_final='decisões_stj_2019.csv')

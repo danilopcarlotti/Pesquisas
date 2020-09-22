@@ -1,6 +1,6 @@
 palavras_interesse = {
     'procedente':'decisao',
-    'procedencia':'decisao',
+    'proced.ncia':'decisao',
     'dar.{,10}provimento':'decisao',
     'provido':'decisao',
     'acolhimento':'decisao',
@@ -16,7 +16,7 @@ palavras_interesse = {
     'solicita ':'pedido',
     'seja condenado':'pedido',
     'seja deferido':'pedido',
-    'lei':'lei',
+    '[\s,]lei[\s,]':'lei',
     'determino':'decisao',
     'pretende':'pedido',
     'provimento':'decisao',

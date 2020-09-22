@@ -12,5 +12,4 @@ server/conexao.py
 rascunhos.py
 *.xlsx
 *.csv
-*.jar
 *.pickle
