@@ -18,9 +18,11 @@ def dicionario_frases_tipos():
         dic_tipos_frases[tipo].append(r'{}'.format(frase))
     return dic_tipos_frases
 
-dic_tipos_frases = dicionario_frases_tipos()
-
-def classifier_legal_phrases_regex(phrase):
+def classifier_legal_phrases_regex(phrase, dic_tipos_frases):
+    for conj_exp in dic_tipos_frases['decisao']:
+        for exp in conj_exp:
+            if re.search(exp, phrase, re.I):
+                return 'decisao'
     for tipo, conj_exp in dic_tipos_frases.items():
         for exp in conj_exp:
             if re.search(exp, phrase, re.I):
