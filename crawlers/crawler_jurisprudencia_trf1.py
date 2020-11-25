@@ -52,11 +52,14 @@ class crawler_jurisprudencia_trf1(crawler_jurisprudencia_tj):
 				lista_links = []
 				self.encontrar_links_html(link_basico, lista_links, r'edj/handle/\d+/\d{2,}')
 				for l in lista_links:
-					print('https://edj.trf1.jus.br'+l)
 					lista_pdf = []
 					self.encontrar_links_html('https://edj.trf1.jus.br'+l, lista_pdf, r'\.pdf\?')
-					self.baixa_html_pdf('https://edj.trf1.jus.br'+lista_pdf[0],path_diarios+'/Diarios_trf1/'+re.search(r'/Caderno\_(.*?)\?',lista_pdf[0]).group(1))
-					sys.exit()
+					try:
+						print(lista_pdf[0])
+						self.baixa_html_pdf('https://edj.trf1.jus.br'+lista_pdf[0],path_diarios+'/Diarios_trf1/dir_008/'+re.search(r'/Caderno\_(.*?)\?',lista_pdf[0]).group(1))
+					except:
+						pass
+					time.sleep(1)
 
 	def download_tj(self, termo = 'a'):
 		cursor = cursorConexao()

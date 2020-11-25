@@ -192,15 +192,14 @@ def extrair_data_to(arq):
     else:
         return ' '
 
-def extrair_data_trf1(arq):
-    return extrair_data_texto_arq(arq[:3000])
-    # data = re.search(r'Diarios_trf1/dir_\d+/.*?(\d{4}\-\d{2}\-\d{2}).*?\.', path_arquivo)
-    # if data:
-    #    data = data.group(1).replace('-','')
-    #    return data[-2:]+'/'+data[-4:-2]+'/'+data[:4]
-    # else:
-    #    return ''
-    # return ' '
+def extrair_data_trf1(path_arquivo):
+    # return extrair_data_texto_arq(arq[:3000])
+    data = re.search(r'Diarios_trf1/dir_\d+/.*?(\d{4}\-\d{2}\-\d{2})', path_arquivo)
+    if data:
+       data = data.group(1).replace('-','')
+       return data[-2:]+'/'+data[-4:-2]+'/'+data[:4]
+    else:
+       return extrair_data_texto_arq('\n'.join([i for i in open(path_arquivo,'r')]))
 
 def extrair_data_trf3(arq):
     data_raw = re.search(r'Edição n.*?((\d{2}) de (.*?) de (\d{4}))', arq, re.DOTALL)
@@ -261,7 +260,7 @@ def dicionario_funcoes_data(tribunal):
         'sp':{'f':extrair_data_sp,'i':'path_arquivo'},
         'stj':{'f':extrair_data_stj,'i':'path_arquivo'},
         'to':{'f':extrair_data_to,'i':'arq'},
-        'trf1':{'f':extrair_data_trf1,'i':'arq'},
+        'trf1':{'f':extrair_data_trf1,'i':'path_arquivo'},
         'trf3':{'f':extrair_data_trf3,'i':'arq'},
         'trf4':{'f':extrair_data_trf4,'i':'path_arquivo'},
         'trf5':{'f':extrair_data_trf5,'i':'arq'},
@@ -346,7 +345,7 @@ def main_datas(path_diarios):
     df_datas.to_excel('contagem_diarios_anos_geral.xlsx',index=False)
 
 if __name__ == '__main__':
-	# path_diarios = sys.argv[1]
-	# main(path_diarios)
+	path_diarios = sys.argv[1]
+	main(path_diarios)
     # main_datas('/home/deathstar/Documents/Diarios')
-    main('/home/deathstar/Dados/Diarios/Diarios_ba')
+    # main('/home/deathstar/Dados/Diarios/Diarios_ba')
