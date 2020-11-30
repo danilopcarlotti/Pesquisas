@@ -68,7 +68,7 @@ def encontra_publicacoes(tribunal, texto):
 	if tribunal in tribunais_sem_separacao:
 		return [texto]
 	# return re.split(dicionario_separacao_diarios[tribunal][0],texto)
-	return [i.strip() for i in re.split(dicionario_separacao_diarios[tribunal][0],texto,flags=dicionario_separacao_diarios[tribunal][2])[1:-1] if i and len(i) > 100]
+	return [re.sub(r'\s+',' ',i) for i in re.split(dicionario_separacao_diarios[tribunal][0],texto,flags=dicionario_separacao_diarios[tribunal][2])[1:-1] if i and len(i) > 100]
 
 def encontra_numero(tribunal, texto):
 	return busca(dicionario_separacao_diarios[tribunal][1],texto,ngroup=0).replace('\n','')
