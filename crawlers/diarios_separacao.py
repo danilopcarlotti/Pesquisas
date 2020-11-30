@@ -17,7 +17,7 @@ re_final_sc = '\n\s*ADV\s*?\:|\nProcesso|\n\d*\s*\.*Recurso |\n\d*\s*\.*Ag\s*ra\
 re_final_stf = '\nHABEAS CORPUS\n(?=\d+)|\nAGRAVO DE INSTRUMENTO\n(?=\d+)|\nMANDADO DE SEGURANÇA\n(?=\d+)|\nRECLAMAÇÃO\n(?=\d.\d+)|\nRECURSO EXTRAORDINÁRIO COM AGRAVO (?=\d+)|\nRECURSO EXTRAORDINÁRIO (?=\d+)|\nAG\.REG\.|\nEMB\.DECL\. (?=\d+)|\nAÇÃO DIRETA DE INCONSTITUCIONALIDADE (?=\d+)|\nAÇÃO ORIGINÁRIA (?=\d+)|\nAÇÃO PENAL (?=\d+)|\nMEDIDA CAUTELAR NA RECLAMAÇÃO (?=\d+)|\nMEDIDA CAUTELAR NA RECLAMAÇÃO (?=\d+)|\nCUMPRIMENTO DE SENTENÇA NA AÇÃO (?=\d+)|\nEXECUÇÃO CONTRA A FAZENDA (?=\d+)|\nEXTRADIÇÃO (?=\d+)|\nRECURSO ORDINÁRIO (?=\d+)|\nSEGUNDO AG\.REG\. (?=\d+)'
 re_final_stj = '\nMANDADO DE SEGURANÇA [Nn]°|\nRECURSO ESPECIAL [Nn]°|\nAGRAVO EM RECURSO ESPECIAL [Nn]°|\nAgInt no RECURSO ESPECIAL [Nn]°|\nAgInt no RCD na MEDIDA CAUTELAR [Nn]°|\nEDcl no AgRg no RECURSO ESPECIAL [Nn]°|\nAgRg no AGRAVO EM RECURSO ESPECIAL [Nn]°|\nAgRg no RECURSO ESPECIAL [Nn]°|\nRECURSO EM HABEAS CORPUS [Nn]°|\nHABEAS CORPUS [Nn]°'
 re_final_to = '\n\s*?Autos n|\n\s*?AUTOS N|\n\s*?Processo N|\n\s*?EDITAL DE CITAÇÃO|\n\s*?EDITAL DE INTIMAÇÃO|\n\s*?PROCESSO N|\n\s*?PROTOCOLO|\n\s*?\d{1,4}\s*?\-\s*?Recurso|\n\s*?ORIGEM\:'
-re_final_trf1 = '\n\s*?Numera..o .nica|\n\s*?PODER JUDICI.RIO|\n\s*?(\d{4,8}\s*\-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4})|\n\n\s*?AGRAVO\n\s*?EMBARGOS|\n\n\s*?MANDADO|\n\n\s*?EXECUÇÃO|\n\n\s*?PROCEDIMENTO|\n\n\s*?AÇÃO|\n\n\s*?REMESSA|\n\n\s*?APELAÇÃO|\n\n\s*?EDITAL|\n\s*?Ap\s'
+re_final_trf1 = '\n\s*?Processo Orig|\n\s*?Tribunal\s*?Regional\s*?Federal\s*?da\s*?1ª\s*?Região\s*?\n|\n\s*?Numera..o .nica|\n\s*?PODER JUDICI.RIO|\n\s*?(\d{4,8}\s*\-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4})|\n\s*?Ap\s'
 re_final_trf3 = '\n\n\s*?\d{4,8}\s*\-\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1,3}|\n\n\n\s*?PROCESSO|\n\n\n\s*?\d{4,8}\.\d{2}\.\d{2}\.\d{6}\-\d|\n\n\n\s*?\d{5}\s|\n\n\n\s*?PROC\.|\n\n\s*?Processo n|\n\n\s*?\d{2}\.\d{7}\-\d|\n\n\s*?AGRAVO.{,20}\(\d+|\n\n\s*?EMBARGOS.{,20}\(\d+|\n\n\s*?MANDADO.{,20}\(\d+|\n\n\s*?EXECUÇÃO.{,20}\(\d+|\n\n\s*?PROCEDIMENTO.{,20}\(\d+|\n\n\s*?AÇÃO.{,20}\(\d+|\n\n\s*?REMESSA.{,20}\(\d+|\n\n\s*?APELAÇÃO\s*?CÍVEL.{,20}\(\d+|\n\n\s*?APELAÇÃO\s*?REMESSA.{,20}\(\d+|\n\n\s*?APELAÇÃO\s*?REEXAME.{,20}\(\d+|\n\n\s*?EDITAL.{,20}\(\d+|\nSão Paulo, \d+ de \w+ de \d+\.\s*?\n'
 re_final_trf4 = '\n\s*?AGRAVO\n\s*?EMBARGOS|\n\s*?MANDADO|\n\s*?EXECUÇÃO|\n\s*?PROCEDIMENTO|\n\s*?AÇÃO|\n\s*?REMESSA|\n\s*?APELAÇÃO|\n\s*?EDITAL|\n\s*?\d{7}\s'
 re_final_trf5 = '\n\s*?AC \-|\n\s*?AGTR|\n\s*?REOAC|\n\s*?APELREEX|\n\s*?AGIVP|\s*?PROTOCOLO N|\s*?\d{4}\s*?\.\s*Processo'
@@ -26,40 +26,40 @@ re_num_stf_stj = r'\d.*?( -)'
 re_num_trf_trt =r'\d{4}\.\d{2}\.\d{2}\.\d{6}\-\d|\d{7}\s*?-\d{2}\s*?\.\d{4}\s*?\.\d{1}\s*?\.\d{2}\s*?\.\d{4}|\d{7}\s*?-\d{2}\s*?\.\d{4}\s*?\.\d{3}\s*?\.\d{4}|\d{15}|\d{3,5}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}'
 
 dicionario_separacao_diarios = {
-	'ac':[r'{}'.format(re_final_ac,),re_num_cnj],
-	'al':[r'\n\s*?ADV\s*?\:|\n\s*?Macei.*?\n',re_num_cnj],
-	'am':[r'{}'.format(re_final_am,),re_num_cnj],
-	'ap':[r'\nDISTRIBUIÇÃO|\nN. do processo\:|\nVARA\:',re_num_cnj],
-	'ba':[r'\nDIREITO (?=\d{7}-\d{2}\.)|\nIntimação|\nINTIMAÇÃO|\w\n\s*?DESPACHO\s*?\n|\w\n\s*?DECISÃO\s*?\n|\nADV\:',re_num_cnj],
-	'ce':[r'{}'.format(re_final_ce,),r'\d{4,8}\s*-\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}'],
-	'df':[r'\n\d{1,4}\. (?=\d{4})|\nNum Processo|\nN. |\n\s*?Distribuição',r'\d{4,8}\s*-?\.?\s*\d{2}\s*\.?\s*\d{4}\s*\.?\s*\d{1}\s*\.?\s*\d{2}\s*\.?\s*\d{4}|\d{4}\.*\s*\d{2}\.*\s*\d\.*\s*\d{6}\-*\s*\d'],
-	'go':[r'\n\s*?PROTOCOLO\s*?\:|\n\s*?NR\.|\n\s*?PROCESSO\s*?\:|\n\s*?\d+\s*?\-\s*?Processo n|\n\s*?Proc\.',re_num_cnj],
-	'ma':[r'{}'.format(re_final_ma,),re_num_cnj],
-	'mg':[r'\n\d{5} - (?=\d{7}',re_num_cnj],
-	'ms':[r'\nJUÍZO DE DIREITO DA|\n\s*?Agravo de Instrumento|\n\s*?Apelação|\n\s*?Habeas Corpus|\n\s*?Comarca de|\n\s*?Revisão Criminal|\n\s*?Mandado de Segurança|\n\s*?Recurso Em Sentido Estrito|\n\s*?Embargos|\n\s*?Exceção|\n\s*?Reexame',re_num_cnj],
-	'mt':[r'\n\s*?Protocolo|\n\s*?Intimação|\n\s*?Cod\.\s*?Proc\.|\n\s*?Processo',r'\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}|\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1,3}\s*\.\s*\d{2,4}'],
-	'pa':[r'{}'.format(re_final_pa,),re_num_cnj],
-	'pb':[r'{}'.format(re_final_pb,),r'\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}|\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1,3}\s*\.\s*\d{2,4}|\d{17}'],
-	'pe':[r'\n\s*?Protocolo|\n\s*?Processo N',re_num_cnj],
-	'pi':[r'{}'.format(re_final_pi,),r'\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}|\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1,3}\s*\.\s*\d{2,4}|\d{4}\.\d{4,6}\.\d{6,8}\-\d'],
-	'pr':[r'\n\d{1,4} \. Processo[\:/]|\n\d+\.\s',re_num_cnj],
-	'rj':[r'\nProc\.',re_num_cnj],
-	'rn':[r'{}'.format(re_final_rn,),r'\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}|\d{4}\.\d{6}\-\d'],
-	'ro':[r'{}'.format(re_final_ro,),re_num_cnj],
-	'rr':[r'\n\d{3}\s*?\-',re_num_cnj],
-	'rs':[r'\nEDITAL DE|\n(?=\d{7})-|\n\d+.*?\(?\s*?CNJ',re_num_cnj],
-	'sc':[r'{}'.format(re_final_sc,),re_num_cnj],
-	'se':[r'\n\s*?NO\. PROCESSO|\n\s*?NO\. ACORDÃO|\n\s*?PROC\.\:',r'\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}|\d{10,12}'],
-	'sp':[r'\n\n\s*?Processo(?!\s+Civil)|\n\n\s*?Processo(?!\s+Penal)|\n\s*?PROCESSO\:|\n\s*?N\.*[º°](?! ORDEM)|\n\s*?\d{3}\s*[\-\.]\s*\d{2}[\-\.\s]|\n\s*?\d{4}/\d{2}|\n\s*?\d{4,8}\s*[\-\.\W]\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}',r'\d{4,8}\s*[-\.]\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}|\d{4,8}\s*-*\.*\s*\d{6}\-*\.*\d'],
-	'stf':[r'{}'.format(re_final_stf,),re_num_cnj],
-	'stj':[r'{}'.format(re_final_stj,),re_num_cnj],
-	'to':[r'{}'.format(re_final_to,),r'\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.*\-*\s*\d{4}|\d{4}\.\d{4}\.\d{4}\-*\.*\d|\d{4}\/\d{2}'],
-	'trf1':[r'{}'.format(re_final_trf1,),re_num_trf_trt],
-	'trf2':[r'{}'.format(re_final_trf4,),re_num_trf_trt],
-	'trf3':[r'{}'.format(re_final_trf3,),re_num_trf_trt],
-	'trf4':[r'{}'.format(re_final_trf4,),re_num_trf_trt],
-	'trf5':[r'{}'.format(re_final_trf5,),re_num_trf_trt],
-	'trt':[r'\s*?Processo N\.*°|\s*?Processo RO|\s*?PROCESSO N\.',re_num_trf_trt]
+	'ac':[r'{}'.format(re_final_ac,),re_num_cnj,0],
+	'al':[r'\n\s*?ADV\s*?\:|\n\s*?Macei.*?\n',re_num_cnj,0],
+	'am':[r'{}'.format(re_final_am,),re_num_cnj,0],
+	'ap':[r'\nDISTRIBUIÇÃO|\nN. do processo\:|\nVARA\:',re_num_cnj,0],
+	'ba':[r'\nDIREITO (?=\d{7}-\d{2}\.)|\nIntimação|\nINTIMAÇÃO|\w\n\s*?DESPACHO\s*?\n|\w\n\s*?DECISÃO\s*?\n|\nADV\:',re_num_cnj,0],
+	'ce':[r'{}'.format(re_final_ce,),r'\d{4,8}\s*-\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}',0],
+	'df':[r'\n\d{1,4}\. (?=\d{4})|\nNum Processo|\nN. |\n\s*?Distribuição',r'\d{4,8}\s*-?\.?\s*\d{2}\s*\.?\s*\d{4}\s*\.?\s*\d{1}\s*\.?\s*\d{2}\s*\.?\s*\d{4}|\d{4}\.*\s*\d{2}\.*\s*\d\.*\s*\d{6}\-*\s*\d',0],
+	'go':[r'\n\s*?PROTOCOLO\s*?\:|\n\s*?NR\.|\n\s*?PROCESSO\s*?\:|\n\s*?\d+\s*?\-\s*?Processo n|\n\s*?Proc\.',re_num_cnj,0],
+	'ma':[r'{}'.format(re_final_ma,),re_num_cnj,0],
+	'mg':[r'\n\d{5} - (?=\d{7}',re_num_cnj,0],
+	'ms':[r'\nJUÍZO DE DIREITO DA|\n\s*?Agravo de Instrumento|\n\s*?Apelação|\n\s*?Habeas Corpus|\n\s*?Comarca de|\n\s*?Revisão Criminal|\n\s*?Mandado de Segurança|\n\s*?Recurso Em Sentido Estrito|\n\s*?Embargos|\n\s*?Exceção|\n\s*?Reexame',re_num_cnj,0],
+	'mt':[r'\n\s*?Protocolo|\n\s*?Intimação|\n\s*?Cod\.\s*?Proc\.|\n\s*?Processo',r'\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}|\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1,3}\s*\.\s*\d{2,4}',0],
+	'pa':[r'{}'.format(re_final_pa,),re_num_cnj,0],
+	'pb':[r'{}'.format(re_final_pb,),r'\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}|\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1,3}\s*\.\s*\d{2,4}|\d{17}',0],
+	'pe':[r'\n\s*?Protocolo|\n\s*?Processo N',re_num_cnj,0],
+	'pi':[r'{}'.format(re_final_pi,),r'\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}|\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1,3}\s*\.\s*\d{2,4}|\d{4}\.\d{4,6}\.\d{6,8}\-\d',0],
+	'pr':[r'\n\d{1,4} \. Processo[\:/]|\n\d+\.\s',re_num_cnj,0],
+	'rj':[r'\nProc\.',re_num_cnj,0],
+	'rn':[r'{}'.format(re_final_rn,),r'\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}|\d{4}\.\d{6}\-\d',0],
+	'ro':[r'{}'.format(re_final_ro,),re_num_cnj,0],
+	'rr':[r'\n\d{3}\s*?\-',re_num_cnj,0],
+	'rs':[r'\nEDITAL DE|\n(?=\d{7})-|\n\d+.*?\(?\s*?CNJ',re_num_cnj,0],
+	'sc':[r'{}'.format(re_final_sc,),re_num_cnj,0],
+	'se':[r'\n\s*?NO\. PROCESSO|\n\s*?NO\. ACORDÃO|\n\s*?PROC\.\:',r'\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}|\d{10,12}',0],
+	'sp':[r'\n\n\s*?Processo(?!\s+Civil)|\n\n\s*?Processo(?!\s+Penal)|\n\s*?PROCESSO\:|\n\s*?N\.*[º°](?! ORDEM)|\n\s*?\d{3}\s*[\-\.]\s*\d{2}[\-\.\s]|\n\s*?\d{4}/\d{2}|\n\s*?\d{4,8}\s*[\-\.\W]\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}',r'\d{4,8}\s*[-\.]\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}|\d{4,8}\s*-*\.*\s*\d{6}\-*\.*\d',0],
+	'stf':[r'{}'.format(re_final_stf,),re_num_cnj,0],
+	'stj':[r'{}'.format(re_final_stj,),re_num_cnj,0],
+	'to':[r'{}'.format(re_final_to,),r'\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.*\-*\s*\d{4}|\d{4}\.\d{4}\.\d{4}\-*\.*\d|\d{4}\/\d{2}',0],
+	'trf1':[r'{}'.format(re_final_trf1,),re_num_trf_trt,re.I],
+	'trf2':[r'{}'.format(re_final_trf4,),re_num_trf_trt,0],
+	'trf3':[r'{}'.format(re_final_trf3,),re_num_trf_trt,0],
+	'trf4':[r'{}'.format(re_final_trf4,),re_num_trf_trt,0],
+	'trf5':[r'{}'.format(re_final_trf5,),re_num_trf_trt,0],
+	'trt':[r'\s*?Processo N\.*°|\s*?Processo RO|\s*?PROCESSO N\.',re_num_trf_trt,0],
 }
 
 tribunais_sem_separacao = ['stj']
@@ -68,7 +68,7 @@ def encontra_publicacoes(tribunal, texto):
 	if tribunal in tribunais_sem_separacao:
 		return [texto]
 	# return re.split(dicionario_separacao_diarios[tribunal][0],texto)
-	return [i.strip() for i in re.split(dicionario_separacao_diarios[tribunal][0],texto)[1:-1] if i and len(i) > 100]
+	return [i.strip() for i in re.split(dicionario_separacao_diarios[tribunal][0],texto,flags=dicionario_separacao_diarios[tribunal][2])[1:-1] if i and len(i) > 100]
 
 def encontra_numero(tribunal, texto):
 	return busca(dicionario_separacao_diarios[tribunal][1],texto,ngroup=0).replace('\n','')
