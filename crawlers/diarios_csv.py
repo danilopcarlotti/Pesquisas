@@ -1,4 +1,4 @@
-from diarios_separacao import *
+from diarios_separacao import dicionario_separacao_diarios, encontra_publicacoes, encontra_numero
 import re, pandas as pd, subprocess, sys, os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.getcwd())))
@@ -273,7 +273,6 @@ def dicionario_funcoes_data(tribunal):
 def create_csv(filepath):
 	rows = []
 	partes_nome = filepath.split('/')
-	nome_arquivo = filepath.split('/')[-1]
 	tribunal = ''
 	for p in partes_nome:
 		if re.search(r'Diarios_',p):
