@@ -1,2 +1,2 @@
 # pacmd list | grep ".monitor"
-audio_monitor = ''
+audio_monitor = ""

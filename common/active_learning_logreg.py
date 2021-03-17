@@ -5,12 +5,14 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 import pandas as pd, pymongo, nltk, pickle, os, numpy as np
 
-DATABASE_NAME = 'activeLearningDb'
-COLLECTION_NAME = 'activeLearningCollection'
+DATABASE_NAME = "activeLearningDb"
+COLLECTION_NAME = "activeLearningCollection"
 
-class active_learning_logreg():
 
-    def __init__(self, N, K, threshold_delta, csv_path, path_model_save, uri_mongo=None):
+class active_learning_logreg:
+    def __init__(
+        self, N, K, threshold_delta, csv_path, path_model_save, uri_mongo=None
+    ):
         # This database will be created in the mongodb at localhost
         if not uri_mongo:
             uri_mongo = "mongodb://localhost:27017/"
@@ -39,36 +41,43 @@ class active_learning_logreg():
         self.find_N_documents()
 
     def classify_texts(self):
-        for doc in self.doc_collection.find({'class_human':{'$gt':-1}}):
-            class_prediction = self.current_model.predict([doc['tfidf_vector']])[0]
-            self.doc_collection.update_one({'_id':doc['_id']},{
-                'class_machine':class_prediction
-            })
+        for doc in self.doc_collection.find({"class_human": {"$gt": -1}}):
+            class_prediction = self.current_model.predict([doc["tfidf_vector"]])[0]
+            self.doc_collection.update_one(
+                {"_id": doc["_id"]}, {"class_machine": class_prediction}
+            )
 
     def dump_model(self):
-        pickle.dump( self.current_model, open(self.path_model_save+'active_learning_model.pickle','wb'))
+        pickle.dump(
+            self.current_model,
+            open(self.path_model_save + "active_learning_model.pickle", "wb"),
+        )
 
     def find_K_documents(self):
         X = []
-        for doc in self.doc_collection.find({'class_machine':-1}):
-            X.append((doc['tfidf_vector'],doc['_id']))
+        for doc in self.doc_collection.find({"class_machine": -1}):
+            X.append((doc["tfidf_vector"], doc["_id"]))
         results = []
         if not len(X):
             return False
         for doc_v, _id in X:
-            results.append([_id, self.current_model.predict_proba([doc_v])[0][1]]) # verificar esse resultado!!
-        most_uncertain = [i[0] for i in results if (i[1] < 0.5 + self.threshold_delta and i[1] > 0.5 - self.threshold_delta)][:self.K]
+            results.append(
+                [_id, self.current_model.predict_proba([doc_v])[0][1]]
+            )  # verificar esse resultado!!
+        most_uncertain = [
+            i[0]
+            for i in results
+            if (i[1] < 0.5 + self.threshold_delta and i[1] > 0.5 - self.threshold_delta)
+        ][: self.K]
         for _id in most_uncertain:
-            self.doc_collection.update_one({'_id':_id},{'$set':{
-                'to_classify':1
-            }})
+            self.doc_collection.update_one({"_id": _id}, {"$set": {"to_classify": 1}})
 
     def find_N_documents(self):
         counter = self.N
         for doc in self.doc_collection.find({}):
-            self.doc_collection.update_one({'_id':doc['_id']},{'$set':{
-                'to_classify':1
-            }})
+            self.doc_collection.update_one(
+                {"_id": doc["_id"]}, {"$set": {"to_classify": 1}}
+            )
             if not counter:
                 break
             else:
@@ -76,25 +85,27 @@ class active_learning_logreg():
 
     def insert_raw_texts(self):
         for t in range(len(self.normalized_texts_training)):
-            self.doc_collection.insert_one({
-                'raw_text':self.raw_texts[t],
-                'tfidf_vector':self.normalized_texts_training[t],
-                'class_human':-2,
-                'class_machine':-2,
-                'to_classify':0
-            })
+            self.doc_collection.insert_one(
+                {
+                    "raw_text": self.raw_texts[t],
+                    "tfidf_vector": self.normalized_texts_training[t],
+                    "class_human": -2,
+                    "class_machine": -2,
+                    "to_classify": 0,
+                }
+            )
 
     def list_texts_raw(self, csv_path):
-        df_raw = pd.read_csv(csv_path, usecols=['raw_text'])
+        df_raw = pd.read_csv(csv_path, usecols=["raw_text"])
         df_raw = df_raw.sample(frac=1).reset_index(drop=True)
-        return df_raw['raw_text']
-    
-    def normalize_texts(self,texts,one_text=False):
+        return df_raw["raw_text"]
+
+    def normalize_texts(self, texts, one_text=False):
         normal_texts = []
-        tk = RegexpTokenizer(r'\w+')
+        tk = RegexpTokenizer(r"\w+")
         # stopwords = nltk.corpus.stopwords.words('portuguese')
         # stemmer = nltk.stem.RSLPStemmer()
-        stopwords = nltk.corpus.stopwords.words('english')
+        stopwords = nltk.corpus.stopwords.words("english")
         stemmer = SnowballStemmer("english")
         if one_text:
             texts = [texts]
@@ -116,13 +127,13 @@ class active_learning_logreg():
         self.vect_fit = vect.fit(normal_texts)
         tfidf = self.vect_fit.transform(normal_texts)
         return tfidf.A
-    
+
     def stop_model_check(self):
         class_human = []
         class_machine = []
-        for doc in self.doc_collection.find({'class_machine': {'$gt':-1}}):
-            class_human.append(doc['class_human'])
-            class_machine.append(doc['class_machine'])
+        for doc in self.doc_collection.find({"class_machine": {"$gt": -1}}):
+            class_human.append(doc["class_human"])
+            class_machine.append(doc["class_machine"])
         results = []
         for i in range(len(class_human)):
             if class_human[i] == class_machine[i]:
@@ -137,20 +148,23 @@ class active_learning_logreg():
     def update_model(self):
         X = []
         y = []
-        for doc in self.doc_collection.find({'class_human': {'$gt':-1}}):
-            X.append(doc['tfidf_vector'])
-            y.append(doc['class_human'])
+        for doc in self.doc_collection.find({"class_human": {"$gt": -1}}):
+            X.append(doc["tfidf_vector"])
+            y.append(doc["class_human"])
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4)
-        self.current_model = LogisticRegression(solver='liblinear', penalty='l1')
+        self.current_model = LogisticRegression(solver="liblinear", penalty="l1")
         self.current_model.fit(X_train, y_train)
-        self.model_score = self.current_model.score(X_test,y_test)
+        self.model_score = self.current_model.score(X_test, y_test)
         self.classify_texts()
+
 
 if __name__ == "__main__":
     PATH_MODEL = os.getcwd()
 
-    actv_lrn = active_learning_logreg(20, 10, 0.4, 'csv_path.csv', PATH_MODEL, uri_mongo=None)
-    
+    actv_lrn = active_learning_logreg(
+        20, 10, 0.4, "csv_path.csv", PATH_MODEL, uri_mongo=None
+    )
+
     actv_lrn.find_N_documents()
     # classify them manually and update documents
 

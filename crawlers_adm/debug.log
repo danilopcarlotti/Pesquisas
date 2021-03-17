@@ -1,0 +1,5 @@
+[1215/115632.039:ERROR:process_reader_win.cc(123)] NtOpenThread: {Acesso Negado} Um processo solicitou acesso a um objeto, mas o direito de acesso não lhe foi concedido. (0xc0000022)
+[1215/115632.041:ERROR:exception_snapshot_win.cc(99)] thread ID 20840 not found in process
+[1215/115632.054:ERROR:process_reader_win.cc(123)] NtOpenThread: {Acesso Negado} Um processo solicitou acesso a um objeto, mas o direito de acesso não lhe foi concedido. (0xc0000022)
+[1215/115632.055:ERROR:exception_snapshot_win.cc(99)] thread ID 18844 not found in process
+[1227/104158.114:ERROR:directory_reader_win.cc(43)] FindFirstFile: O sistema não pode encontrar o caminho especificado. (0x3)

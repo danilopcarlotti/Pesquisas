@@ -1,1 +1,1 @@
-path = '/home/XXXX/Diarios'
+path = "/home/XXXX/Diarios"
