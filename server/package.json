@@ -8,7 +8,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "hbs": "^4.0.6",
-    "json": "^9.0.6",
+    "json": "^10.0.0",
     "mongodb": "^3.3.3",
     "mongoose": "^5.7.8",
     "python-shell": "^1.0.8",
