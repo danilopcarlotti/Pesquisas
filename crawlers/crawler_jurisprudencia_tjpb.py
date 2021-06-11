@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from common.download_path import path, path_hd
+from common.download_path_diarios import path as path_d
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -8,7 +9,6 @@ import sys, re, time, subprocess, urllib.request, os
 
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
-from common_nlp.pdf_to_text import pdf_to_text
 
 
 class crawler_jurisprudencia_tjpb(crawler_jurisprudencia_tj):
@@ -80,6 +80,8 @@ class crawler_jurisprudencia_tjpb(crawler_jurisprudencia_tj):
             return
         for i in range(0, final_intervalo, 10):
             for j in range(10):
+                if i == 0 and j == 1:
+                    time.sleep(5)
                 print(j)
                 driver.execute_script(
                     "mojarra.jsfcljs(document.getElementById('formDownload'),{'tabela:%s:j_idt46':'tabela:%s:j_idt46'},'');return false"
@@ -87,10 +89,10 @@ class crawler_jurisprudencia_tjpb(crawler_jurisprudencia_tj):
                 )
                 time.sleep(0.5)
                 subprocess.Popen(
-                    'mv %s/*.pdf "%s/Diarios_pb/"' % (path, path_hd), shell=True
+                    'mv %s/*.pdf "%s/Diarios_pb/"' % (path, path_d), shell=True
                 )
             print("mudar a página")
-            time.sleep(3)
+            time.sleep(5)
 
     def parser_acordaos(self, arquivo, cursor, pdf_class):
         texto = pdf_class.convert_PyPDF2(arquivo)

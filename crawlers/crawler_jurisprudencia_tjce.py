@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from common.conexao_local import cursorConexao
 from common.download_path import path, path_hd
+from common.download_path_diarios import path as path_d
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import sys, re, os, urllib.request, time, subprocess
@@ -32,6 +33,7 @@ class crawler_jurisprudencia_tjce(crawler_jurisprudencia_tj):
         cadernos = ["1", "2"]
         link_inicial = "http://esaj.tjce.jus.br/cdje/index.do"
         datas = []
+        self.lista_anos = ["2021"]
         if data_especifica:
             datas.append(data_especifica)
         else:
@@ -65,10 +67,10 @@ class crawler_jurisprudencia_tjce(crawler_jurisprudencia_tj):
             time.sleep(3)
             nome_pasta = data.replace("/", "")
             subprocess.Popen(
-                "mkdir %s/Diarios_ce/%s" % (path_hd, nome_pasta), shell=True
+                "mkdir %s/Diarios_ce/%s" % (path_d, nome_pasta), shell=True
             )
             subprocess.Popen(
-                "mv %s/*.pdf %s/Diarios_ce/%s" % (path, path_hd, nome_pasta), shell=True
+                "mv %s/*.pdf %s/Diarios_ce/%s" % (path, path_d, nome_pasta), shell=True
             )
             if contador > 10:
                 time.sleep(3)

@@ -2,6 +2,7 @@ import sys, re, os, urllib.request, time, subprocess
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from common.download_path import path, path_hd
+from common.download_path_diarios import path as path_d
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -25,7 +26,7 @@ class crawler_jurisprudencia_tjse(crawler_jurisprudencia_tj):
 
     def download_diario_retroativo(self):
         link_inicial = "http://www.diario.tjse.jus.br/diario/diarios/%s.pdf"
-        for i in range(5275, 4933, -1):
+        for i in range(5611, 5275, -1):
             try:
                 print(link_inicial % (str(i),))
                 response = urllib.request.urlopen(link_inicial % (str(i),), timeout=15)
@@ -33,7 +34,7 @@ class crawler_jurisprudencia_tjse(crawler_jurisprudencia_tj):
                 file.write(response.read())
                 file.close()
                 subprocess.Popen(
-                    'mv %s/*.pdf "%s/Diarios_se"' % (os.getcwd(), path_hd), shell=True
+                    'mv %s/*.pdf "%s/Diarios_se"' % (os.getcwd(), path_d), shell=True
                 )
             except Exception as e:
                 print(e)
@@ -107,16 +108,5 @@ def main():
 
 if __name__ == "__main__":
     c = crawler_jurisprudencia_tjse()
-    # print('comecei ',c.__class__.__name__)
-    # try:
-    # 	c.download_tj()
-    # except Exception as e:
-    # 	print(e)
-
-    # cursor = cursorConexao()
-    # cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_se limit 1000000')
-    # dados = cursor.fetchall()
-    # for dado in dados:
-    # 	c.parser_acordaos(dado[0], cursor)
 
     c.download_diario_retroativo()

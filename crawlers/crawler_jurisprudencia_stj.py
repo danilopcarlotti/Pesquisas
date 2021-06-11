@@ -1,6 +1,7 @@
-import re, os, sys, time, datetime, urllib.request, ssl, logging, pyautogui, pandas as pd
+import re, os, sys, time, datetime, urllib.request, ssl, pandas as pd
 from bs4 import BeautifulSoup
 from common.download_path import path, path_hd
+from common.download_path_diarios import path as path_diarios
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from crawlerJus import crawlerJus
@@ -156,7 +157,7 @@ class crawler_jurisprudencia_stj(crawlerJus):
 
     def download_diario_retroativo(self, path_download=""):
         datas = []
-        lista_anos = [str(i) for i in range(2019, datetime.date.today().year + 1)]
+        lista_anos = [str(i) for i in range(2021, datetime.date.today().year + 1)]
         for l in range(len(lista_anos)):
             for i in range(1, 10):
                 for j in range(1, 10):
@@ -167,10 +168,10 @@ class crawler_jurisprudencia_stj(crawlerJus):
                 for j in range(1, 10):
                     datas.append(lista_anos[l] + str(i) + "0" + str(j))
                 for j in range(10, 32):
-                    datas.append(lista_anos[l] + str(j) + str(i))
-        # log_datas_stj = open(path_download + "log_datas_stj.txt", "a")
+                    datas.append(lista_anos[l] + str(i) + str(j))
+        log_datas_stj = open(path_download + "log_datas_stj.txt", "a")
         for data in datas:
-            # log_datas_stj.write(data)
+            log_datas_stj.write(data)
             try:
                 link_stj_f = (
                     "https://ww2.stj.jus.br/docs_internet/processo/dje/zip/stj_dje_%s.zip"
@@ -182,7 +183,6 @@ class crawler_jurisprudencia_stj(crawlerJus):
                 file.write(response.read())
                 file.close()
             except Exception as e:
-                print(data)
                 print(e)
 
     def processar_arquivos_diarios(
@@ -207,5 +207,5 @@ class crawler_jurisprudencia_stj(crawlerJus):
 if __name__ == "__main__":
     c = crawler_jurisprudencia_stj()
     # c.baixarDadosProcesso()
-    c.download_diario_retroativo(path_download="Z:/data/raw/Diarios/Diarios/Diarios_stj_new/")
+    c.download_diario_retroativo(path_download=path_diarios + "/Diarios_stj/")
     # c.processar_arquivos_diarios('/home/deathstar/Documents/Diarios_outros/STJ_diarios_2019',path_csv_final='decisões_stj_2019.csv')

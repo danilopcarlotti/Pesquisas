@@ -1,6 +1,7 @@
-import sys, re, os
+import sys, re, os, time, subprocess
 from common.conexao_local import cursorConexao
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
+from common.download_path_diarios import path as path_d
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -28,27 +29,28 @@ class crawler_jurisprudencia_tjms:
         self.tabela_colunas = "justica_estadual.jurisprudencia_ms (ementas)"
 
     def download_diario_retroativo(self, data_especifica=None):
-        cadernos = ["1", "2", "3"]
-        link_inicial = "http://www.tjms.jus.br/cdje/index.do"
+        cadernos = ["2", "3"]
+        link_inicial = "https://esaj.tjms.jus.br/cdje/index.do"
         datas = []
+        self.lista_anos = ["2021"]
         if data_especifica:
             datas.append(data_especifica)
         else:
-            for l in range(len(c.lista_anos)):
+            for l in range(len(self.lista_anos)):
                 for i in range(1, 10):
                     for j in range(1, 10):
                         datas.append(
-                            "0" + str(j) + "/0" + str(i) + "/" + c.lista_anos[l]
+                            "0" + str(j) + "/0" + str(i) + "/" + self.lista_anos[l]
                         )
                     for j in range(10, 32):
-                        datas.append(str(j) + "/0" + str(i) + "/" + c.lista_anos[l])
+                        datas.append(str(j) + "/0" + str(i) + "/" + self.lista_anos[l])
                 for i in range(11, 13):
                     for j in range(1, 10):
                         datas.append(
-                            "0" + str(j) + "/" + str(i) + "/" + c.lista_anos[l]
+                            "0" + str(j) + "/" + str(i) + "/" + self.lista_anos[l]
                         )
                     for j in range(10, 32):
-                        datas.append(str(j) + "/" + str(i) + "/" + c.lista_anos[l])
+                        datas.append(str(j) + "/" + str(i) + "/" + self.lista_anos[l])
         contador = 0
         driver = webdriver.Chrome(self.chromedriver)
         driver.get(link_inicial)
@@ -64,10 +66,10 @@ class crawler_jurisprudencia_tjms:
             time.sleep(3)
             nome_pasta = data.replace("/", "")
             subprocess.Popen(
-                "mkdir %s/Diarios_ms/%s" % (final_path, nome_pasta), shell=True
+                "mkdir %s/Diarios_ms/%s" % (path_d, nome_pasta), shell=True
             )
             subprocess.Popen(
-                "mv %s/*.pdf %s/Diarios_ms/%s" % (path, final_path, nome_pasta),
+                "mv %s/*.pdf %s/Diarios_ms/%s" % (os.getcwd(), path_d, nome_pasta),
                 shell=True,
             )
             if contador > 10:
@@ -120,20 +122,4 @@ class crawler_jurisprudencia_tjms:
 if __name__ == "__main__":
     c = crawler_jurisprudencia_tjms()
     # 	print('comecei ',c.__class__.__name__)
-    # 	try:
-    # 		for l in range(len(c.lista_anos)):
-    # 			print(c.lista_anos[l],'\n')
-    # 			try:
-    # 				crawler_jurisprudencia_tj.download_tj_ESAJ_recaptcha(c,crawler_jurisprudencia_tj,'0101'+c.lista_anos[l],'3112'+c.lista_anos[l])
-    # 			except Exception as e:
-    # 				print(e)
-    # 	except Exception as e:
-    # 		print('finalizei o ano com erro ',e)
-
-    cursor = cursorConexao()
-    cursor.execute(
-        "SELECT ementas from justica_estadual.jurisprudencia_ms limit 1000000"
-    )
-    dados = cursor.fetchall()
-    for dado in dados:
-        c.parser_acordaos(dado[0], cursor)
+    c.download_diario_retroativo()

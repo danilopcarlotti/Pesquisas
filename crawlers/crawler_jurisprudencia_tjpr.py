@@ -68,9 +68,9 @@ class crawler_jurisprudencia_tjpr(crawler_jurisprudencia_tj):
 
     def download_diario_retroativo(self, datas_pesquisar):
         pag_pr = "https://portal.tjpr.jus.br/e-dj/publico/diario/pesquisar/filtro.do"
-        driver = webdriver.Chrome(self.chromedriver)
-        driver.get(pag_pr)
         for dia_pesquisar, mes_pesquisar, ano_pesquisar in datas_pesquisar:
+            driver = webdriver.Chrome(self.chromedriver)
+            driver.get(pag_pr)
             try:
                 driver.find_element_by_name("dataVeiculacao").clear()
                 driver.find_element_by_name("dataVeiculacao").send_keys(
@@ -85,8 +85,10 @@ class crawler_jurisprudencia_tjpr(crawler_jurisprudencia_tj):
                 subprocess.Popen(
                     'mv %s/*.pdf "%s/Diarios_pr/"' % (path, path_diarios), shell=True
                 )
-            except:
+            except Exception as e:
+                print(e)
                 time.sleep(1)
+            driver.close()
 
     def parser_acordaos(self, texto, cursor):
         decisoes = re.split(r"\n\d+\.\s*?\n", texto)
@@ -127,7 +129,7 @@ if __name__ == "__main__":
     # c.parser_acordaos(dado[0], cursor)
 
     datas_p = []
-    for i in range(11, 32):
+    for i in range(1, 32):
         dia = str(i)
         if len(dia) == 1:
             dia = "0" + str(i)
@@ -135,7 +137,7 @@ if __name__ == "__main__":
             mes = str(j)
             if len(mes) == 1:
                 mes = "0" + str(j)
-            for k in range(2018, 2020):
+            for k in range(2020, 2022):
                 datas_p.append([dia, mes, str(k)])
 
     c.download_diario_retroativo(datas_p)

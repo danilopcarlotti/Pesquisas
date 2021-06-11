@@ -2,6 +2,7 @@ import sys, re, time, pyautogui, os, urllib.request
 from bs4 import BeautifulSoup
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from common.conexao_local import cursorConexao
+from common.download_path_diarios import path as path_d
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
@@ -68,28 +69,26 @@ class crawler_jurisprudencia_tjro:
             % ("ro", numero, data_disponibilizacao, orgao_julgador, julgador, texto)
         )
 
-    def download_diario_retroativo(self, n_ini, n_fim, ano, path_diarios):
+    def download_diario_retroativo(self, n_ini, n_fim, ano):
         link = "https://www.tjro.jus.br/diario-api/recupera.php?numero=%s&ano=%s"
         for i in range(n_ini, n_fim):
             try:
                 response = urllib.request.urlopen(link % (str(i), str(ano)), timeout=20)
                 file = open(
-                    path_diarios + "diario_ro_" + str(i) + "_" + str(ano) + ".pdf", "wb"
+                    path_d + "/Diarios_ro/" + str(i) + "_" + str(ano) + ".pdf", "wb"
                 )
                 file.write(response.read())
                 time.sleep(1)
                 file.close()
-            except:
-                print(i)
+            except Exception as e:
+                print(e)
 
 
 if __name__ == "__main__":
     c = crawler_jurisprudencia_tjro()
 
-    for ano in range(2012, 2020):
-        c.download_diario_retroativo(
-            1, 260, ano, "/media/danilo/Seagate Expansion Drive/Diarios/Diarios_ro/"
-        )
+    for ano in range(2020, 2022):
+        c.download_diario_retroativo(1, 260, ano)
 
     # cursor = cursorConexao()
     # cursor.execute('SELECT ementas from justica_estadual.jurisprudencia_ro limit 1000000')

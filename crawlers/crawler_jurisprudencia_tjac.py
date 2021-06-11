@@ -1,7 +1,15 @@
-import sys, re, os, time, urllib.request, subprocess
+import sys
+import re
+import os
+import time
+import urllib.request
+import subprocess
+import datetime
+
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from common.download_path import path
+from common.download_path_diarios import path as path_d
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -111,23 +119,41 @@ class crawler_jurisprudencia_tjac(crawler_jurisprudencia_tj):
                 )
             )
 
+    def download_diario_retroativo(self):
+        link_base = "https://diario.tjac.jus.br/edicoes.php?Ano={}&Mes={}"
+        link_baixar_base = "https://diario.tjac.jus.br"
+        lista_anos = [str(i) for i in range(2011, datetime.date.today().year + 1)]
+        for l in lista_anos:
+            for i in range(1, 12):
+                links_baixar = []
+                link = link_base.format(l, i)
+                self.encontrar_links_html(link, links_baixar, r"\&PDF")
+                links_baixar = [link_baixar_base + i for i in links_baixar]
+                for index, link_b in enumerate(links_baixar):
+                    self.baixa_html_pdf(
+                        link_b,
+                        path_d + "/Diarios_ac/tj_ac_{}_{}_{}".format(l, i, index),
+                    )
+
 
 def main():
     c = crawler_jurisprudencia_tjac()
 
-    cursor = cursorConexao()
-    cursor.execute(
-        "SELECT ementas from justica_estadual.jurisprudencia_ac limit 100000;"
-    )
-    dados = cursor.fetchall()
-    for dado in dados:
-        c.parser_acordaos(dado[0], cursor)
+    # cursor = cursorConexao()
+    # cursor.execute(
+    #     "SELECT ementas from justica_estadual.jurisprudencia_ac limit 100000;"
+    # )
+    # dados = cursor.fetchall()
+    # for dado in dados:
+    #     c.parser_acordaos(dado[0], cursor)
 
     # print('comecei ',c.__class__.__name__)
     # try:
     # 	c.download_tj()
     # except Exception as e:
     # 	print(e)
+
+    c.download_diario_retroativo()
 
 
 if __name__ == "__main__":

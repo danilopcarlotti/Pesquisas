@@ -2,6 +2,7 @@ import sys, re, time, os, subprocess, pyautogui, urllib.request
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from common.download_path import path, path_hd
+from common.download_path_diarios import path as path_d
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -21,9 +22,7 @@ class crawler_jurisprudencia_tst(crawler_jurisprudencia_tj):
             '//*[@id="root"]/div/div[2]/form/div/div[1]/div[2]/div[2]/div/button[1]'
         )
         self.botao_fechar = "/html/body/div[2]/div[2]/div/div[3]/button"
-        self.file_links = open(
-            "/media/danilo/Seagate Expansion Drive/Links_tst/lista_links.txt", "a"
-        )
+        self.file_links = ""
         self.botao_proximo_xp = (
             "/html/body/div/div/main/header/div[2]/div[1]/div[3]/div/div[3]/button[2]"
         )
@@ -108,16 +107,40 @@ class crawler_jurisprudencia_tst(crawler_jurisprudencia_tj):
     def parser_acordaos(self, texto, cursor):
         pass
 
+    def download_diario_retroativo(self):
+        driver = webdriver.Chrome(self.chromedriver)
+        driver.get("https://dejt.jt.jus.br/dejt/f/n/diariocon")
+        if input("Faça os filtros e selecione o range de datas"):
+            pass
+        counter = 1
+        time.sleep(3)
+        counter_pages = 0
+        while True:
+            try:
+                for i in range(30):
+                    driver.execute_script(
+                        "submitForm('corpo:formulario',1,{source:'corpo:formulario:plcLogicaItens:"
+                        + str(i)
+                        + ":j_id131'});return false;"
+                    )
+                driver.find_element_by_xpath(
+                    '//*[@id="diarioNav"]/table/tbody/tr/td[1]/button[{}]/table/tbody/tr/td/div'.format(
+                        counter
+                    )
+                ).click()
+                counter = 3
+                time.sleep(3)
+                subprocess.Popen(
+                    'mv %s/*.pdf "%s/Diarios_trts/"' % (path, path_d),
+                    shell=True,
+                )
+                counter_pages += 1
+            except Exception as e:
+                print(e)
+                print(counter_pages)
+                break
+
 
 if __name__ == "__main__":
     c = crawler_jurisprudencia_tst()
-    # print('comecei ',c.__class__.__name__)
-    # try:
-    # 	c.download_tst(pular_n=71180)
-    # except Exception as e:
-    # 	print(e)
-    # 	print('finalizei com erro\n')
-    c.download_links_tst(
-        "/media/danilo/Seagate Expansion Drive/Links_tst/lista_links.txt",
-        "/media/danilo/Seagate Expansion Drive/Diarios/Decisoes_tst/",
-    )
+    c.download_diario_retroativo()

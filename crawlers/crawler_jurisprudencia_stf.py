@@ -4,6 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from crawlerJus import crawlerJus
 from common.conexao_local import cursorConexao
+from common.download_path_diarios import path as path_d
 from common.login_stf import USER, SENHA
 
 
@@ -18,7 +19,7 @@ class crawler_jurisprudencia_stf(crawlerJus):
         )
         self.numero_final = 7000000  # jan 2020
         self.numero_inicial = 5428907  # jun 2018
-        self.cursor = cursorConexao()
+        self.cursor = None
 
     def baixarDadosProcesso(self, link_processos):
         id_processo_stf = ""
@@ -271,53 +272,35 @@ class crawler_jurisprudencia_stf(crawlerJus):
                     time.sleep(1)
             driver.close()
 
+    def download_diario_retroativo(self):
+        link_inicial = "https://www.stf.jus.br/arquivo/djEletronico/DJE_{}_{}.pdf"
+        self.lista_anos = [str(i) for i in range(2021, 2022)]
+        for l in range(len(self.lista_anos)):
+            datas = []
+            for i in range(7, 10):
+                for j in range(1, 10):
+                    datas.append(self.lista_anos[l] + "0" + str(i) + "0" + str(j))
+                for j in range(10, 32):
+                    datas.append(self.lista_anos[l] + "0" + str(i) + str(j))
+            for i in range(11, 13):
+                for j in range(1, 10):
+                    datas.append(self.lista_anos[l] + str(i) + "0" + str(j))
+                for j in range(10, 32):
+                    datas.append(self.lista_anos[l] + str(i) + str(j))
+            counter = 1
+            for data in datas:
+                try:
+                    link = link_inicial.format(data, "{:03d}".format(counter))
+                    print(link)
+                    self.baixa_html_pdf(link, path_d + "/Diarios_stf/" + data + "_STF")
+                    counter += 1
+                except Exception as e:
+                    print(e)
+                    break
+                break
+
 
 if __name__ == "__main__":
     # cursor = cursorConexao()
     c = crawler_jurisprudencia_stf()
-
-    # c.parse_json_decisions('/mnt/Dados/Decisoes_stf/complete.json','/mnt/Dados/Decisoes_stf/complete.csv')
-
-    # cursor.execute('SELECT id, link_dados from processos_stf.dados_processo where processo is NULL;')
-    # links = cursor.fetchall()
-
-    c = crawler_jurisprudencia_stf()
-
-    # c.baixarDadosProcesso(links)
-    # c.baixar_documentos_stf()
-    # c.login_stf()
-
-    # lista_ids = []
-    # lista_ids = str(set(lista_ids)).replace('[','').replace(']','')
-    # cursor.execute('SELECT processo from stf.dados_processo where id in (%s);' % lista_ids)
-
-    # cursor.execute('SELECT processo from stf.dados_processo where;')
-    # links_d = cursor.fetchall()
-    # c.solicitar_link_download_documentos(links_d)
-
-    # cursor.execute('SELECT processo from stf.dados_processo limit 5,10;')
-    # ids_doc = cursor.fetchall()
-    # c.solicitar_link_download_documentos(ids_doc)
-    # c.baixar_documentos_stf()
-
-    c.baixa_decisoes_proc()
-
-    # cursor.execute('SELECT id, link_pagina from stf.decisoes;')
-    # link_decisoes = cursor.fetchall()
-    # c.baixarDadosProcesso(link_decisoes)
-
-
-# cursor = cursorConexao()
-# cursor.execute('SELECT id, link_dados from stf.dados_processo limit 1000000;')
-# links_pai = cursor.fetchall()
-# links_pai_d = {}
-# for id_p,link in links_pai:
-# 	links_pai_d[int(link.split('incidente=')[1])] = int(id_p)
-
-# cursor.execute('SELECT id, link_pagina from stf.decisoes;')
-# links = cursor.fetchall()
-# for id_l,link_pag in links:
-# 	try:
-# 		cursor.execute('UPDATE stf.decisoes set id_processo = ("%s") where id = ("%s")' % (links_pai_d[int(link_pag.split('incidente=')[1])],id_l))
-# 	except:
-# 		pass
+    c.download_diario_retroativo()

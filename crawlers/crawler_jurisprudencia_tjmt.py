@@ -2,9 +2,10 @@ from bs4 import BeautifulSoup
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from common.conexao_local import cursorConexao
 from common.download_path import path, path_hd
+from common.download_path_diarios import path as path_d
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import sys, re, time, os, pyautogui, subprocess, urllib.request
+import sys, re, time, os, pyautogui, subprocess, urllib.request, sys
 
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
@@ -14,7 +15,7 @@ from common_nlp.parse_texto import busca
 contador = 0
 
 
-class crawler_jurisprudencia_tjmt:
+class crawler_jurisprudencia_tjmt(crawler_jurisprudencia_tj):
     """Crawler especializado em retornar textos da jurisprudência de segunda instância do Mato Grosso"""
 
     def __init__(self):
@@ -28,12 +29,14 @@ class crawler_jurisprudencia_tjmt:
     def download_diario_retroativo(self):
         # numero-ano
         links_2016_2018 = [
-            "http://sistemadje.tjmt.jus.br/publicacoes/{}-{}%20C2%20Comarcas%20-%20Entr%C3%A2ncia%20Especial.pdf",
-            "http://sistemadje.tjmt.jus.br/publicacoes/{}-{}%20C7%20Comarcas%20-%201%C2%AA%202%C2%AA%20e%203%C2%AA%20Entr%C3%A2ncia.pdf",
-            "http://sistemadje.tjmt.jus.br/publicacoes/{}-{}%20C1%20Tribunal%20de%20Justi%C3%A7a.pdf",
+            "https://dje.tjmt.jus.br/dje/relatorio/{}-{}_CADERNO_JUDICIAL_DAS_COMARCAS.pdf",
+            "https://dje.tjmt.jus.br/dje/relatorio/{}-{}_CADERNO_JUDICIAL_DA_COMARCA_DA_CAPITAL.pdf",
+            "https://dje.tjmt.jus.br/dje/relatorio/{}-{}_CADERNO_JUDICIAL_DO_TRIBUNAL_DE_JUSTICA.pdf",
         ]
-        links_2011_2015 = ["http://sistemadje.tjmt.jus.br/publicacoes/{}-{}.pdf"]
         numeros_diarios = {
+            2022: 10990,
+            2021: 10888,
+            2020: 10629,
             2019: 10628,
             2018: 10405,
             2017: 10168,
@@ -45,39 +48,22 @@ class crawler_jurisprudencia_tjmt:
             2011: 8720,
             2010: 8481,
         }
-        # for i in range(2011,2016):
-        # 	for j in range(numeros_diarios[i-1]+1,numeros_diarios[i]+1):
-        # 		for link in links_2011_2015:
-        # 			try:
-        # 				print(link.format(str(j),str(i)))
-        # 				response = urllib.request.urlopen(link.format(str(j),str(i)),timeout=15)
-        # 				file = open(str(i)+str(j)+'.pdf', 'wb')
-        # 				file.write(response.read())
-        # 				file.close()
-        # 				subprocess.Popen('mv %s/*.pdf %s/Diarios_mt' % (os.getcwd(),path), shell=True)
-        # 			except Exception as e:
-        # 				print(e)
-        for i in range(2019, 2020):
+        for i in range(2021, 2022):
             for j in range(numeros_diarios[i - 1] + 1, numeros_diarios[i] + 1):
                 contador = 0
                 for link in links_2016_2018:
                     contador += 1
+                    driver = webdriver.Chrome(self.chromedriver)
                     try:
-                        response = urllib.request.urlopen(
-                            link.format(str(j), str(i)), timeout=15
-                        )
-                        file = open(
-                            str(contador) + "_" + str(i) + "_" + str(j) + ".pdf", "wb"
-                        )
-                        file.write(response.read())
-                        file.close()
-                        subprocess.Popen(
-                            'mv %s/*.pdf "%s/Diarios_mt"' % (os.getcwd(), path_hd),
-                            shell=True,
-                        )
-                        time.sleep(1)
+                        print(link.format(str(j), str(i)))
+                        driver.get(link.format(str(j), str(i)))
+                        time.sleep(10)
+                        driver.find_element_by_xpath(
+                            "/html/body/app-root/uikit-layout/mat-sidenav-container/mat-sidenav-content/div[2]/app-visualiza-pdf/ngx-extended-pdf-viewer/div/div/div/div/div[2]/pdf-toolbar/div/div/div[1]/div[2]/pdf-open-file/button/svg/path"
+                        ).click()
                     except Exception as e:
                         print(e)
+                    driver.close()
 
     def download_tj(self, termo="a"):
         global contador

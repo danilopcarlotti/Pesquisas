@@ -1,6 +1,6 @@
 import sys, re, urllib.request, subprocess, os
 from bs4 import BeautifulSoup
-from common.download_path import path, path_hd
+from common.download_path_diarios import path as path_d
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from crawlerJus import crawlerJus
 
@@ -22,6 +22,7 @@ class crawler_jurisprudencia_tjpe(crawler_jurisprudencia_tj):
 
     def download_diario_retroativo(self):
         link_inicial = "http://www.tjpe.jus.br/dje/DownloadServlet?dj=DJ%s_%s-ASSINADO.PDF&statusDoDiario=ASSINADO"
+        self.lista_anos = ["2021"]
         for l in range(len(self.lista_anos)):
             for i in range(240, 0, -1):
                 try:
@@ -32,7 +33,7 @@ class crawler_jurisprudencia_tjpe(crawler_jurisprudencia_tj):
                     file.write(response.read())
                     file.close()
                     subprocess.Popen(
-                        'mv %s/*.pdf "%s/Diarios_pe"' % (os.getcwd(), path_hd),
+                        'mv %s/*.pdf "%s/Diarios_pe"' % (os.getcwd(), path_d),
                         shell=True,
                     )
                 except Exception as e:

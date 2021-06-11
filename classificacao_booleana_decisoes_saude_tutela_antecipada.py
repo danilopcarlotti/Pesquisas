@@ -147,10 +147,13 @@ def main():
     df = pd.read_csv(path_tutelas, chunksize=1000)
     for chunk in df:
         for index, row in chunk.iterrows():
-            if re.search(
-                r"(concedo|autorizo|defiro).{1,30}(antecipa..o.{1,20}tutela|tutela.{1,20}emerg.ncia|tutela.{,20}antecipada)",
-                row["texto_publicacao"],
-            ) and not re.search(r"penal", row["texto_publicacao"], re.I):
+            if (
+                re.search(
+                    r"(concedo|autorizo|defiro).{1,30}(antecipa..o.{1,20}tutela|tutela.{1,20}emerg.ncia|tutela.{,20}antecipada)",
+                    row["texto_publicacao"],
+                )
+                and not re.search(r"penal", row["texto_publicacao"], re.I)
+            ):
                 dados.append(
                     (
                         row["id"],

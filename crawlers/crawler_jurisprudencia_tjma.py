@@ -2,6 +2,7 @@ import time, re, sys, os, urllib.request
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from common.download_path import path, path_hd
+from common.download_path_diarios import path as path_d
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -133,14 +134,14 @@ class crawler_jurisprudencia_tjma(crawler_jurisprudencia_tj):
             except Exception as e:
                 print(e)
 
-    def download_diario_retroativo(self, path_diarios, primeiro=1167, ultimo=3133):
+    def download_diario_retroativo(self, primeiro=3133, ultimo=3508):
         for i in range(primeiro, ultimo):
             link = (
                 "https://www3.tjma.jus.br/diario/VisualizacaoDiarioA3.mtw?idDiario=%s"
             )
             response = urllib.request.urlopen(link % (str(i),), timeout=40)
             try:
-                file = open(path_diarios + "diario_ma_" + str(i) + ".pdf", "wb")
+                file = open(path_d + "/Diarios_ma/" + str(i) + ".pdf", "wb")
                 file.write(response.read())
                 time.sleep(3)
                 file.close()
@@ -187,6 +188,4 @@ if __name__ == "__main__":
     # except Exception as e:
     # 	print(e)
 
-    c.download_diario_retroativo(
-        "/media/danilo/Seagate Expansion Drive/Diarios/Diarios_ma/"
-    )
+    c.download_diario_retroativo()

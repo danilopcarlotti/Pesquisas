@@ -2,6 +2,7 @@ import sys, re, time, os, subprocess, pyautogui
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from common.download_path import path, path_hd
+from common.download_path_diarios import path as path_d
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -80,7 +81,7 @@ class crawler_jurisprudencia_tjpi(crawler_jurisprudencia_tj):
                 driver.close()
             return
         datas = []
-        self.lista_anos = ["2018", "2019"]
+        self.lista_anos = ["2020", "2021"]
         for l in range(len(self.lista_anos)):
             for i in range(1, 10):
                 for j in range(1, 10):
@@ -109,10 +110,10 @@ class crawler_jurisprudencia_tjpi(crawler_jurisprudencia_tj):
                 pyautogui.hotkey("ctrl", "w")
                 driver.switch_to.window(driver.window_handles[0])
                 subprocess.Popen(
-                    'mkdir "%s/Diarios_pi/%s"' % (path_hd, data), shell=True
+                    'mkdir "%s/Diarios_pi/%s"' % (path_d, data), shell=True
                 )
                 subprocess.Popen(
-                    'mv %s/*.pdf "%s/Diarios_pi/%s"' % (path, path_hd, data), shell=True
+                    'mv %s/*.pdf "%s/Diarios_pi/%s"' % (path, path_d, data), shell=True
                 )
             except Exception as e:
                 driver.switch_to.window(driver.window_handles[0])

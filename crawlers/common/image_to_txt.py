@@ -1,5 +1,6 @@
 from PIL import Image
-import cv2 as cv
+
+# import cv2 as cv
 import numpy as np
 import argparse, pytesseract, subprocess, time
 

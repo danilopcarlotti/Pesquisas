@@ -147,25 +147,23 @@ re_final_sp = [
     r"(\n\n\s*?)(\d{4,8}\s*[\-\.\W]\s*\d{2})",
 ]
 re_final_stf = [
-    r"\n\n\s*?HABEAS CORPUS",
-    r"(\n\n\s*?)(\d+)",
-    r"(\n\n\s*?)(AGRAVO DE INSTRUMENTO)",
-    r"(\n\n\s*?)(MANDADO DE SEGURANÇA)",
-    r"(\n\n\s*?)(RECLAMAÇÃO)",
-    r"(\n\n\s*?)(RECURSO EXTRAORDINÁRIO)",
-    r"(\n\n\s*?)(AG\.REG\.)",
-    r"(\n\n\s*?)(EMB\.DECL\.)",
-    r"(\n\n\s*?)(RECURSO EXTRAORDINÁRIO)",
-    r"(\n\n\s*?)(AÇÃO DIRETA DE INCONSTITUCIONALIDADE)",
-    r"(\n\n\s*?)(AÇÃO ORIGINÁRIA)",
-    r"(\n\n\s*?)(AÇÃO PENAL)",
-    r"(\n\n\s*?)(MEDIDA CAUTELAR NA RECLAMAÇÃO)",
-    r"(\n\n\s*?)(CUMPRIMENTO DE SENTENÇA NA AÇÃO)",
-    r"(\n\n\s*?)()",
-    r"(\n\n\s*?)(EXECUÇÃO CONTRA A FAZENDA)",
-    r"(\n\n\s*?)(nEXTRADIÇÃO)",
-    r"(\n\n\s*?)(RECURSO ORDINÁRIO)",
-    r"(\n\n\s*?)(SEGUNDO AG\.REG\.)",
+    r"(\n\n *?\t*?)(HABEAS CORPUS)",
+    r"(\n\n *?\t*?)(AGRAVO DE INSTRUMENTO)",
+    r"(\n\n *?\t*?)(MANDADO)",
+    r"(\n\n *?\t*?)(RECLAMAÇÃO)",
+    r"(\n\n *?\t*?)(RECURSO EXTRAORDINÁRIO)",
+    r"(\n\n *?\t*?)(AG\.REG\.)",
+    r"(\n\n *?\t*?)(EMB\.DECL\.)",
+    r"(\n\n *?\t*?)(RECURSO EXTRAORDINÁRIO)",
+    r"(\n\n *?\t*?)(AÇÃO DIRETA DE INCONSTITUCIONALIDADE)",
+    r"(\n\n *?\t*?)(AÇÃO ORIGINÁRIA)",
+    r"(\n\n *?\t*?)(AÇÃO PENAL)",
+    r"(\n\n *?\t*?)(MEDIDA CAUTELAR NA RECLAMAÇÃO)",
+    r"(\n\n *?\t*?)(CUMPRIMENTO DE SENTENÇA NA AÇÃO)",
+    r"(\n\n *?\t*?)(EXECUÇÃO CONTRA A FAZENDA)",
+    r"(\n\n *?\t*?)(EXTRADIÇÃO)",
+    r"(\n\n *?\t*?)(RECURSO ORDINÁRIO)",
+    r"(\n\n *?\t*?)(SEGUNDO AG\.REG\.)",
 ]
 re_final_to = [
     r"(\n\n\s*?)(Autos n)",
@@ -238,9 +236,17 @@ re_num_stf_stj = r"\d.*?( -)"
 re_num_trf_trt = r"\d{4}\.\d{2}\.\d{2}\.\d{6}\-\d|\d{7}\s*?-\d{2}\s*?\.\d{4}\s*?\.\d{1}\s*?\.\d{2}\s*?\.\d{4}|\d{7}\s*?-\d{2}\s*?\.\d{4}\s*?\.\d{3}\s*?\.\d{4}|\d{15}|\d{3,5}\-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}"
 
 dicionario_separacao_diarios = {
-    "ac": [re_final_ac, re_num_cnj, 0,],
+    "ac": [
+        re_final_ac,
+        re_num_cnj,
+        0,
+    ],
     "al": [[r"(\n\n\s*?)(ADV\s*?\:)", r"(\n\n\s*?)(Macei.*?\n)"], re_num_cnj, 0],
-    "am": [re_final_am, re_num_cnj, 0,],
+    "am": [
+        re_final_am,
+        re_num_cnj,
+        0,
+    ],
     "ap": [
         [
             r"(\n\n\s*?)(DISTRIBUIÇÃO)",
@@ -288,9 +294,17 @@ dicionario_separacao_diarios = {
         re_num_cnj,
         0,
     ],
-    "ma": [re_final_ma, re_num_cnj, 0,],
+    "ma": [
+        re_final_ma,
+        re_num_cnj,
+        0,
+    ],
     "mg": [[r"(\n\n\s*?)(\d{5} - )"], re_num_cnj, 0],
-    "ms": [re_final_ms, re_num_cnj, 0,],
+    "ms": [
+        re_final_ms,
+        re_num_cnj,
+        0,
+    ],
     "mt": [
         [
             r"(\n\n\s*?)(Protocolo)",
@@ -301,7 +315,11 @@ dicionario_separacao_diarios = {
         r"\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}|\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1,3}\s*\.\s*\d{2,4}",
         0,
     ],
-    "pa": [re_final_pa, re_num_cnj, 0,],
+    "pa": [
+        re_final_pa,
+        re_num_cnj,
+        0,
+    ],
     "pb": [
         re_final_pb,
         r"\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}|\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1,3}\s*\.\s*\d{2,4}|\d{17}",
@@ -320,7 +338,11 @@ dicionario_separacao_diarios = {
         r"\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}|\d{4}\.\d{6}\-\d",
         0,
     ],
-    "ro": [re_final_ro, re_num_cnj, 0,],
+    "ro": [
+        re_final_ro,
+        re_num_cnj,
+        0,
+    ],
     "rr": [[r"(\n\n\s*?)(\d{3}\s*?\-)"], re_num_cnj, 0],
     "rs": [
         [
@@ -331,7 +353,11 @@ dicionario_separacao_diarios = {
         re_num_cnj,
         0,
     ],
-    "sc": [re_final_sc, re_num_cnj, 0,],
+    "sc": [
+        re_final_sc,
+        re_num_cnj,
+        0,
+    ],
     "se": [
         [
             r"(\n\n\s*?)(NO\. PROCESSO)",
@@ -346,17 +372,46 @@ dicionario_separacao_diarios = {
         r"\d{4,8}\s*[-\.]\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.\s*\d{4}|\d{4,8}\s*-*\.*\s*\d{6}\-*\.*\d",
         0,
     ],
-    "stf": [re_final_stf, re_num_cnj, 0,],
+    "stf": [
+        re_final_stf,
+        re_num_cnj,
+        0,
+    ],
+    "stj": [
+        re_final_stf,
+        re_num_cnj,
+        0,
+    ],
     "to": [
         re_final_to,
         r"\d{4,8}\s*-*\.*\s*\d{2}\s*\.\s*\d{4}\s*\.\s*\d{1}\s*\.\s*\d{2}\s*\.*\-*\s*\d{4}|\d{4}\.\d{4}\.\d{4}\-*\.*\d|\d{4}\/\d{2}",
         0,
     ],
-    "trf1": [re_final_trf1, re_num_trf_trt, re.I,],
-    "trf2": [re_final_trf4, re_num_trf_trt, 0,],
-    "trf3": [re_final_trf3, re_num_trf_trt, 0,],
-    "trf4": [re_final_trf4, re_num_trf_trt, 0,],
-    "trf5": [re_final_trf5, re_num_trf_trt, 0,],
+    "trf1": [
+        re_final_trf1,
+        re_num_trf_trt,
+        re.I,
+    ],
+    "trf2": [
+        re_final_trf4,
+        re_num_trf_trt,
+        0,
+    ],
+    "trf3": [
+        re_final_trf3,
+        re_num_trf_trt,
+        0,
+    ],
+    "trf4": [
+        re_final_trf4,
+        re_num_trf_trt,
+        0,
+    ],
+    "trf5": [
+        re_final_trf5,
+        re_num_trf_trt,
+        0,
+    ],
     "trt": [
         [
             r"(\n\n\s*?)(Processo N)",
@@ -368,19 +423,29 @@ dicionario_separacao_diarios = {
     ],
 }
 
-tribunais_sem_separacao = ["stj"]
+
+def separacao_stj(texto):
+    if re.search(r"\s*DECIS.{,5}O\s*", texto):
+        return [texto]
+    else:
+        return []
+
+
+tribunais_especiais = {"stj": separacao_stj}
 
 
 def encontra_publicacoes(tribunal, texto):
-    if tribunal in tribunais_sem_separacao:
-        return [texto]
+    if tribunal in tribunais_especiais:
+        return tribunais_especiais[tribunal](texto)
     else:
         for separador in dicionario_separacao_diarios[tribunal][0]:
             texto = re.sub(separador, r"\1@@@@\2", texto)
         return [
             re.sub(r"\s+", " ", i)
             for i in re.split(
-                r"@@@@", texto, flags=dicionario_separacao_diarios[tribunal][2],
+                r"@@@@",
+                texto,
+                flags=dicionario_separacao_diarios[tribunal][2],
             )[1:-1]
             if i and len(i) > 100
         ]

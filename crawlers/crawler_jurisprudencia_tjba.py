@@ -135,9 +135,9 @@ class crawler_jurisprudencia_tjba:
         except:
             pass
 
-    def download_diario_retroativo(self, path_diarios, primeiro=1207, ultimo=2502):
+    def download_diario_retroativo(self, path_diarios, primeiro=2502, ultimo=2870):
         link = "https://diario.tjba.jus.br/diario/internet/download.wsp?tmp.diario.nu_edicao=%s"
-        for i in range(primeiro, ultimo):
+        for i in range(primeiro, ultimo + 1):
             try:
                 response = urllib.request.urlopen(link % (str(i),), timeout=40)
                 file = open(path_diarios + "diario_ba_" + str(i) + ".pdf", "wb")
@@ -151,9 +151,7 @@ class crawler_jurisprudencia_tjba:
 def main():
     c = crawler_jurisprudencia_tjba()
 
-    c.download_diario_retroativo(
-        "/media/danilo/Seagate Expansion Drive/Diarios/Diarios_ba/"
-    )
+    c.download_diario_retroativo("/home/deathstar/Dados/Diarios_2021/Diarios_ba/")
 
     # cursor = cursorConexao()
     # p = pdf_to_text()

@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from common.download_path import path, path_hd
+from common.download_path_diarios import path as path_d
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from crawlerJus import crawlerJus
 from selenium import webdriver
@@ -25,10 +26,10 @@ class crawler_jurisprudencia_tjrs(crawler_jurisprudencia_tj):
         self.data_fimXP = '//*[@id="%s2"]'
         self.tabela_colunas = "justica_estadual.jurisprudencia_rs (ementas)"
 
-    def download_diario_retroativo(self, inicio=6489, fim=6298):
-        link_inicial = "http://www3.tjrs.jus.br/servicos/diario_justica/download_edicao.php?tp=%s&ed=%s"
+    def download_diario_retroativo(self, inicio=6489, fim=6981):
+        link_inicial = "https://www.tjrs.jus.br/servicos/diario_justica/download_edicao.php?tp=%s&ed=%s"
         edicoes = ["0", "5", "7", "6"]
-        for i in range(inicio, fim, -1):
+        for i in range(inicio, fim):
             for e in edicoes:
                 try:
                     print(link_inicial % (e, str(i)))
@@ -39,7 +40,7 @@ class crawler_jurisprudencia_tjrs(crawler_jurisprudencia_tj):
                     file.write(response.read())
                     file.close()
                     subprocess.Popen(
-                        'mv %s/*.pdf "%s/Diarios_rs"' % (os.getcwd(), path_hd),
+                        'mv %s/*.pdf "%s/Diarios_rs"' % (os.getcwd(), path_d),
                         shell=True,
                     )
                 except Exception as e:

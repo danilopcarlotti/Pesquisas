@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
-from common.download_path import path_hd
+from common.download_path_diarios import path as path_d
 from selenium.webdriver.common.keys import Keys
 from common.conexao_local import cursorConexao
 import sys, re, time, os, urllib.request, subprocess
@@ -27,7 +27,7 @@ class crawler_jurisprudencia_tjrn(crawler_jurisprudencia_tj):
     def download_diario_retroativo(self):
         link_inicial = "https://diario.tjrn.jus.br/djonline/pages/repositoriopdfs/%s/%stri/%s/%s_JUD.pdf"
         datas = []
-        self.lista_anos = ["2018", "2019"]
+        self.lista_anos = ["2020", "2021"]
         for l in range(len(self.lista_anos)):
             for i in range(1, 10):
                 for j in range(1, 10):
@@ -51,14 +51,8 @@ class crawler_jurisprudencia_tjrn(crawler_jurisprudencia_tj):
                 elif int(mes) > 9:
                     tri = "4"
                 print(link_inicial % (ano, tri, data, data))
-                response = urllib.request.urlopen(
-                    link_inicial % (ano, tri, data, data), timeout=15
-                )
-                file = open(data + ".pdf", "wb")
-                file.write(response.read())
-                file.close()
-                subprocess.Popen(
-                    'mv %s/*.pdf "%s/Diarios_rn"' % (os.getcwd(), path_hd), shell=True
+                self.baixa_html_pdf(
+                    link_inicial % (ano, tri, data, data), path_d + "/" + data
                 )
             except Exception as e:
                 print(e)

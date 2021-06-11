@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from common.download_path import path, path_hd
+from common.download_path_diarios import path as path_d
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from crawlerJus import crawlerJus
 from selenium import webdriver
@@ -29,7 +30,7 @@ class crawler_jurisprudencia_tjsc(crawler_jurisprudencia_tj):
     def download_diario_retroativo(self):
         link_inicial = "http://busca.tjsc.jus.br/dje-consulta/rest/diario/caderno?edicao=%s&cdCaderno=%s"
         cadernos = ["1", "2", "3"]
-        for i in range(3200, 2474, -1):
+        for i in range(3549, 3200, -1):
             for e in cadernos:
                 try:
                     print(link_inicial % (str(i), e))
@@ -40,7 +41,7 @@ class crawler_jurisprudencia_tjsc(crawler_jurisprudencia_tj):
                     file.write(response.read())
                     file.close()
                     subprocess.Popen(
-                        'mv %s/*.pdf "%s/Diarios_sc"' % (os.getcwd(), path_hd),
+                        'mv %s/*.pdf "%s/Diarios_sc"' % (os.getcwd(), path_d),
                         shell=True,
                     )
                 except Exception as e:

@@ -3,11 +3,11 @@ from diarios_separacao import (
     encontra_publicacoes,
     encontra_numero,
 )
-import re, pandas as pd, subprocess, sys, os
-
-sys.path.append(os.path.dirname(os.path.dirname(os.getcwd())))
-from pesquisas.common.recursive_folders import recursive_folders
-from pesquisas.common.parallel_programming import parallel_programming
+import re
+import pandas as pd
+import glob
+import sys
+import os
 
 
 def month_to_number(month):
@@ -235,6 +235,15 @@ def extrair_data_stj(path_arquivo):
         return " "
 
 
+def extrair_data_stf(path_arquivo):
+    data = re.search(r"DJE_(.*?)_", path_arquivo)
+    if data:
+        data = data.group(1)
+        return data[6:] + "/" + data[4:6] + "/" + data[:4]
+    else:
+        return " "
+
+
 def extrair_data_to(arq):
     data_raw = re.search(
         r"(\d{2}) de (.*?) de (\d{4})", arq[:3000], flags=re.DOTALL | re.IGNORECASE
@@ -334,7 +343,7 @@ def dicionario_funcoes_data(tribunal):
 
 def create_csv(filepath):
     rows = []
-    partes_nome = filepath.split("/")
+    partes_nome = filepath.split("\\")
     tribunal = ""
     for p in partes_nome:
         if re.search(r"Diarios_", p):
@@ -344,7 +353,7 @@ def create_csv(filepath):
         dic_funcao_data = dicionario_funcoes_data(tribunal)
         f_data = dic_funcao_data["f"]
         input_type = dic_funcao_data["i"]
-        texto = "\n".join([i for i in open(filepath, "r")])
+        texto = "\n".join([i for i in open(filepath, "r", encoding="utf-8")])
         if input_type == "arq":
             input_data = texto[:10000]
         else:
@@ -366,26 +375,20 @@ def create_csv(filepath):
                         "numero_processo": numero,
                     }
                 )
-        index = [j for j in range(len(rows))]
-        df = pd.DataFrame(rows, index=index)
-        df.to_csv(filepath.replace(".txt", ".csv"), index=False)
-        # subprocess.Popen('mv "%s.csv" "%s"' % (nome_arquivo[:-4],filepath.replace(nome_arquivo,'')), shell=True)
+        if len(rows):
+            df = pd.DataFrame(rows)
+            df.to_csv(filepath.replace(".txt", ".csv"), index=False)
 
 
 def main(path_diarios):
-    rec_f = recursive_folders()
-    arquivos_path = rec_f.find_files(path_diarios)
-    diarios_processar = [i for i in arquivos_path if i[-4:] == ".txt"]
-    # parallel = parallel_programming()
-    # parallel.run_f_nbatches(create_csv,diarios_processar)
+    diarios_processar = glob.glob("{}/**/*.txt".format(path_diarios), recursive=True)
     for diario in diarios_processar:
         print(diario)
         create_csv(diario)
 
 
 def main_datas(path_diarios):
-    rec = recursive_folders()
-    diarios_processar = [i for i in rec.find_files(path_diarios) if i[-4:] == ".txt"]
+    diarios_processar = glob.glob("{}/**/*.txt".format(path_diarios), recursive=True)
     dicionario_datas_ano = {}
     for path_arquivo in diarios_processar:
         tribunal = re.search(r"/Diarios_(.*?)/", path_arquivo)

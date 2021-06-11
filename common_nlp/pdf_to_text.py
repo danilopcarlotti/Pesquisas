@@ -5,11 +5,9 @@ import os
 import pytesseract
 import sys
 
+from glob import glob
 from PIL import Image
 from pdf2image import convert_from_path
-
-sys.path.append(os.path.dirname(os.getcwd()))
-from common.recursive_folders import recursive_folders
 
 
 class pdf_to_text:
@@ -19,7 +17,6 @@ class pdf_to_text:
         pass
 
     def convert_Tika(self, fname):
-        print()
         tika_client = TikaApp(
             file_jar=os.path.dirname(os.getcwd()) + "/common_nlp/tika-app-1.20.jar"
         )
@@ -73,12 +70,14 @@ class pdf_to_text:
 if __name__ == "__main__":
     path = sys.argv[1]
     p = pdf_to_text()
-    r = recursive_folders()
-    # lista_arquivos = set(r.find_files(path))
-    lista_arquivos = r.find_files(path)
+    lista_arquivos = glob(path + "/**/*.pdf", recursive=True)
+    set_txts = set(glob(path + "/**/*.txt", recursive=True))
     for arq in lista_arquivos:
-        # if arq[-3:] == 'pdf' and arq.replace('pdf','txt') not in lista_arquivos:
-        if arq[-3:] == "pdf":
-            print(arq)
-            # texto = p.convert_Tika(arq)
-            p.transform_pdf(arq)
+        if arq.replace("pdf", "txt") in set_txts:
+            continue
+        print(arq)
+        texto = p.convert_Tika(arq)
+        arq_txt = open(arq.replace(".pdf", ".txt"), "w")
+        arq_txt.write(texto)
+        arq_txt.close()
+        # p.transform_pdf(arq)

@@ -1,10 +1,11 @@
-import time, ssl, os, urllib.request, subprocess
-from bs4 import BeautifulSoup
+import time
+import ssl
+import os
+import re
 from common.conexao_local import cursorConexao
-from common.download_path import path, path_hd
+from common.download_path_diarios import path as path_d
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 
 
 class crawler_jurisprudencia_trf3:
@@ -25,21 +26,17 @@ class crawler_jurisprudencia_trf3:
 
     def download_diario_retroativo(self):
         link_inicial = "http://web.trf3.jus.br/diario/Consulta/BaixarPdf/%s"
-        for i in range(23102, 20040, -1):
+        # self.chromedriver = self.cwd+"/chromedriver" #linux
+        for i in range(26352, 20000, -1):
             try:
-                print(link_inicial % str(i))
-                response = urllib.request.urlopen(link_inicial % str(i), timeout=15)
-                file = open(str(i) + ".pdf", "wb")
-                time.sleep(1)
-                file.write(response.read())
-                file.close()
-                subprocess.Popen(
-                    'mkdir "%s/Diarios_trf3/%s"' % (path_hd, str(i)), shell=True
-                )
-                subprocess.Popen(
-                    'mv %s/*.pdf "%s/Diarios_trf3/%s"' % (os.getcwd(), path_hd, str(i)),
-                    shell=True,
-                )
+                chromedriver = "chromedriver.exe"  # windows
+                os.environ["webdriver.chrome.driver"] = chromedriver
+                options = webdriver.ChromeOptions()
+                options.add_argument("download.default_directory={}".format(path_d))
+                driver = webdriver.Chrome(chromedriver, options=options)
+                driver.get(link_inicial % str(i))
+                time.sleep(3)
+                driver.close()
             except Exception as e:
                 print(e)
 

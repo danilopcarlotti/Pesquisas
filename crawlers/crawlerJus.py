@@ -1,4 +1,5 @@
-import time, datetime, urllib.request, logging, os, re, ssl
+from socket import timeout
+import time, datetime, urllib.request, logging, os, re, ssl, sys
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -14,9 +15,8 @@ class crawlerJus:
         self.dia = data[6:]
         if len(self.dia) == 1:
             self.dia = "0" + self.dia
-        self.cwd = os.path.dirname(os.getcwd()) + "/crawlers"
-        self.chromedriver = self.cwd + "/chromedriver.exe"  # windows
-        # self.chromedriver = self.cwd+"/chromedriver" #linux
+        self.cwd = os.getcwd()
+        self.chromedriver = self.cwd + "/chromedriver"
         os.environ["webdriver.chrome.driver"] = self.chromedriver
         ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -40,17 +40,28 @@ class crawlerJus:
             driver.close()
 
     def baixa_html_pdf(self, link, nome_arq):
-        response = urllib.request.urlopen(link, timeout=20)
+        hdr = {
+            "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:88.0) Gecko/20100101 Firefox/88.0"
+        }
+        req = urllib.request.Request(link, headers=hdr)
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+        response = urllib.request.urlopen(req, timeout=30, context=ctx)
+        # response = urllib.request.urlopen(req, timeout=20)
         file = open(nome_arq + ".pdf", "wb")
         file.write(response.read())
-        time.sleep(1)
         file.close()
+        time.sleep(1)
 
     def baixa_pag(self, link):
         for i in range(3):
             try:
                 req = urllib.request.Request(
-                    link, headers={"User-Agent": "Mozilla/5.0"}
+                    link,
+                    headers={
+                        "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:88.0) Gecko/20100101 Firefox/88.0"
+                    },
                 )
                 html = urllib.request.urlopen(req, timeout=30).read()
                 return html

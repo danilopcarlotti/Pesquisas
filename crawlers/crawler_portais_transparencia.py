@@ -10,7 +10,7 @@ class crawler_portais_transparencia(crawlerJus):
         crawlerJus.__init__(self)
         self.df_portais = pd.read_csv(path_csv + "portais_transparencia.csv")
 
-    def download_portais(self, download_path, final_path):
+    def download_portais(self, download_path, final_path, ano_xpath):
         for _, row in self.df_portais.iterrows():
             driver = webdriver.Chrome(self.chromedriver)
             driver.get(row["link"])

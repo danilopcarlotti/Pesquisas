@@ -1,8 +1,9 @@
-import sys, re, os, time, subprocess, urllib.request
+import sys, re, os, time, subprocess, urllib.request, pyautogui
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from common.download_path import path, path_hd
 from common.download_path_diarios import path as path_diarios
+from common.image_to_txt import image_to_txt
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from crawlerJus import crawlerJus
 from selenium import webdriver
@@ -10,7 +11,7 @@ from selenium.webdriver.common.keys import Keys
 
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
-from common_nlp.pdf_to_text import pdf_to_text
+from common_nlp.textNormalization import textNormalization
 
 
 class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
@@ -101,6 +102,7 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
         if data_especifica:
             datas.append(data_especifica)
         else:
+            self.lista_anos = ["2021"]
             for l in range(len(self.lista_anos)):
                 for i in range(1, 10):
                     for j in range(1, 10):
@@ -406,7 +408,7 @@ class crawler_jurisprudencia_tjsp(crawler_jurisprudencia_tj):
             try:
                 if re.search(r"\.pdf", arq):
                     texto = (
-                        p.convert_Tika(path_arquivos + arq)
+                        p.convert_pdfminer(path_arquivos + arq)
                         .strip()
                         .replace("\\", "")
                         .replace("/", "")

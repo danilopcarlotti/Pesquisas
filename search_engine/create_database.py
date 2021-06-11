@@ -1,11 +1,5 @@
-import pandas as pd, sys, numpy as np, pickle, pymongo, re, os
+import pandas as pd
 from main_class import main_class
-from mongo_url import mongo_url
-from sklearn.feature_extraction.text import HashingVectorizer
-
-sys.path.append(os.path.dirname(os.path.dirname(os.getcwd())))
-from pesquisas.common.recursive_folders import recursive_folders
-from pesquisas.common_nlp.textNormalization import textNormalization
 
 
 class create_database(main_class):

@@ -3,8 +3,9 @@ from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from crawlerJus import crawlerJus
 from common.conexao_local import cursorConexao
 from common.download_path import path, path_hd
+from common.download_path_diarios import path as path_d
 from selenium import webdriver
-import sys, re, os, time, docx2txt, urllib.request, subprocess
+import sys, re, os, time, urllib.request, subprocess
 
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
@@ -27,9 +28,8 @@ class crawler_jurisprudencia_tjdf(crawler_jurisprudencia_tj):
         # https://dje.tjdft.jus.br/dje/djeletronico?visaoId=tjdf.djeletronico.comum.internet.apresentacao.VisaoDiarioEletronicoInternetPorData
 
         # 240 diários por ano. Salvo 2018, que tem, atualmente 130
-        self.lista_anos = ["2018", "2019", "2020"]
         link_inicial = "https://dje.tjdft.jus.br/dje/jsp/dje/DownloadDeDiario.jsp?dj=DJ%s_%s-ASSINADO.PDF&statusDoDiario=ASSINADO"
-        for l in range(len(self.lista_anos) - 1):
+        for l in range(len(self.lista_anos)):
             for i in range(240, 0, -1):
                 try:
                     # print(link_inicial % (str(i),self.lista_anos[l]))
@@ -40,7 +40,7 @@ class crawler_jurisprudencia_tjdf(crawler_jurisprudencia_tj):
                     file.write(response.read())
                     file.close()
                     subprocess.Popen(
-                        'mv %s/*.pdf "%s/Diarios_df"' % (os.getcwd(), path_hd),
+                        'mv %s/*.pdf "%s/Diarios_df"' % (os.getcwd(), path_d),
                         shell=True,
                     )
                 except Exception as e:
@@ -78,23 +78,23 @@ class crawler_jurisprudencia_tjdf(crawler_jurisprudencia_tj):
             except Exception as e:
                 print(e)
 
-    def parser_acordaos(self, arquivo, cursor):
-        texto = (
-            docx2txt.process(arquivo)
-            .replace("\\", "")
-            .replace("/", "")
-            .replace('"', "")
-        )
-        numero = busca(r"\n\s*?N.\s*?Processo\s*?\:(.*?)\n", texto)
-        if numero == "":
-            numero = busca(r"\n\s*?Processo N.\s*?\n\n.*?(\d{10,30})", texto)
-        julgador = busca(r"\n\s*?Desembargador(.*?)\n", texto)
-        data_decisao = busca(r"\n\s*?Brasília \(DF\)\, (.*?)\n", texto)
-        orgao_julgador = busca(r"\n\s*?Órgão.*?\n\n(.*?)\n", texto)
-        cursor.execute(
-            'INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s");'
-            % ("df", numero, data_decisao, orgao_julgador, julgador, texto)
-        )
+    # def parser_acordaos(self, arquivo, cursor):
+    #     texto = (
+    #         docx2txt.process(arquivo)
+    #         .replace("\\", "")
+    #         .replace("/", "")
+    #         .replace('"', "")
+    #     )
+    #     numero = busca(r"\n\s*?N.\s*?Processo\s*?\:(.*?)\n", texto)
+    #     if numero == "":
+    #         numero = busca(r"\n\s*?Processo N.\s*?\n\n.*?(\d{10,30})", texto)
+    #     julgador = busca(r"\n\s*?Desembargador(.*?)\n", texto)
+    #     data_decisao = busca(r"\n\s*?Brasília \(DF\)\, (.*?)\n", texto)
+    #     orgao_julgador = busca(r"\n\s*?Órgão.*?\n\n(.*?)\n", texto)
+    #     cursor.execute(
+    #         'INSERT INTO jurisprudencia_2_inst.jurisprudencia_2_inst (tribunal, numero, data_decisao, orgao_julgador, julgador, texto_decisao) values ("%s","%s","%s","%s","%s","%s");'
+    #         % ("df", numero, data_decisao, orgao_julgador, julgador, texto)
+    #     )
 
 
 def main():

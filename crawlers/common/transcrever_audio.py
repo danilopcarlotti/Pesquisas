@@ -1,4 +1,4 @@
-import speech_recognition as sr
+# import speech_recognition as sr
 from os import path
 import sys
 

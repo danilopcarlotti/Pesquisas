@@ -2,6 +2,7 @@ import sys, re, time, os, pyautogui, subprocess
 from bs4 import BeautifulSoup
 from common.conexao_local import cursorConexao
 from common.download_path import path, path_hd
+from common.download_path_diarios import path as path_d
 from crawlerJus import crawlerJus
 from crawler_jurisprudencia_tj import crawler_jurisprudencia_tj
 from selenium import webdriver
@@ -112,10 +113,10 @@ class crawler_jurisprudencia_tjrr(crawler_jurisprudencia_tj):
                     pass
                 try:
                     subprocess.Popen(
-                        'mkdir "%s/Diarios_rr/%s"' % (path_hd, data), shell=True
+                        'mkdir "%s/Diarios_rr/%s"' % (path_d, data), shell=True
                     )
                     subprocess.Popen(
-                        'mv %s/*.pdf "%s/Diarios_rr/%s"' % (path, path_hd, data),
+                        'mv %s/*.pdf "%s/Diarios_rr/%s"' % (path, path_d, data),
                         shell=True,
                     )
                 except Exception as e:
@@ -159,4 +160,4 @@ if __name__ == "__main__":
     # for dado in dados:
     # 	c.parser_acordaos(dado[0], cursor)
 
-    c.download_diario_retroativo()
+    c.download_diario_retroativo(lista_anos=["2020", "2021"])

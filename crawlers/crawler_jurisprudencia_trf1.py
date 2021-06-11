@@ -50,38 +50,23 @@ class crawler_jurisprudencia_trf1(crawler_jurisprudencia_tj):
         # print(lista_links)
 
     def download_diarios_retroativo_2020(self):
-        dic_pag_diarios_ano = {
-            "2016": 224,
-            "2017": 232,
-            "2018": 236,
-            "2019": 238,
-            "2020": 163,  # Setembro de 2020
-        }
-        for ano in ["2016", "2017", "2018", "2019", "2020"]:
-            for n_page in range(1, dic_pag_diarios_ano[ano]):
-                link_basico = "https://edj.trf1.jus.br/edj/handle/123/3/discover?rpp=17&etal=0&group_by=none&page={}&sort_by=dc.date.issued_dt&order=desc&filtertype_0=dateIssued&filtertype_1=dateIssued&filter_relational_operator_1=contains&filter_relational_operator_0=equals&filter_1=&filter_0={}".format(
-                    n_page, ano
+        link_basico = (
+            "https://portal.trf1.jus.br/portaltrf1/publicacoes/edjf1/edjf1.htm"
+        )
+        lista_pdf = []
+        self.encontrar_links_html(link_basico, lista_pdf, r"\.pdf")
+        for link_p in lista_pdf:
+            link_p = link_p.replace("../../..", "https://portal.trf1.jus.br")
+            print(link_p)
+            try:
+                self.baixa_html_pdf(
+                    link_p,
+                    path_diarios + "/Diarios_trf1/" + link_p.split("/")[-1],
                 )
-                lista_links = []
-                self.encontrar_links_html(
-                    link_basico, lista_links, r"edj/handle/\d+/\d{2,}"
-                )
-                for l in lista_links:
-                    lista_pdf = []
-                    self.encontrar_links_html(
-                        "https://edj.trf1.jus.br" + l, lista_pdf, r"\.pdf\?"
-                    )
-                    try:
-                        print(lista_pdf[0])
-                        self.baixa_html_pdf(
-                            "https://edj.trf1.jus.br" + lista_pdf[0],
-                            path_diarios
-                            + "/Diarios_trf1/dir_008/"
-                            + re.search(r"/Caderno\_(.*?)\?", lista_pdf[0]).group(1),
-                        )
-                    except:
-                        pass
-                    time.sleep(1)
+            except Exception as e:
+                print(e)
+                pass
+        time.sleep(1)
 
     def download_tj(self, termo="a"):
         cursor = cursorConexao()
@@ -135,17 +120,4 @@ class crawler_jurisprudencia_trf1(crawler_jurisprudencia_tj):
 
 if __name__ == "__main__":
     c = crawler_jurisprudencia_trf1()
-    # try:
-    # 	c.download_tj()
-    # except Exception as e:
-    # 	print(e)
-
-    # c.download_diarios_retroativo_2015()
     c.download_diarios_retroativo_2020()
-
-    # cursor = cursorConexao()
-    # cursor.execute('SELECT ementas from justica_federal.jurisprudencia_trf1;')
-    # dados = cursor.fetchall()
-    # print(len(dados))
-    # for dado in dados:
-    # 	c.parser_acordaos(dado[0], cursor)

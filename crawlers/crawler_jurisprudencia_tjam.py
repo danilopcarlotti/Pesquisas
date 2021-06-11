@@ -8,7 +8,6 @@ from selenium.webdriver.common.keys import Keys
 
 sys.path.append(os.path.dirname(os.getcwd()))
 from common_nlp.parse_texto import busca
-from common_nlp.pdf_to_text import pdf_to_text
 
 
 class crawler_jurisprudencia_tjam(crawler_jurisprudencia_tj):
@@ -44,7 +43,7 @@ class crawler_jurisprudencia_tjam(crawler_jurisprudencia_tj):
             datas.append(data_especifica)
         else:
             for l in range(len(self.lista_anos)):
-                for i in range(1, 10):
+                for i in range(5, 10):
                     for j in range(1, 10):
                         datas.append(
                             "0" + str(j) + "/0" + str(i) + "/" + self.lista_anos[l]
